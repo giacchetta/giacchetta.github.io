@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="Layer_1"
+   data-name="Layer 1"
+   viewBox="0 0 368 56"
+   version="1.1"
+   sodipodi:docname="gn-logo-wide-blue-1.svg"
+   inkscape:version="1.0.2-2 (e86c870879, 2021-01-15)"
+   inkscape:export-filename="C:\Users\luciano\Downloads\gn-logo-wide-blue-1.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   width="368"
+   height="56">
+  <metadata
+     id="metadata56">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Luciano svg</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="2400"
+     inkscape:window-height="1284"
+     id="namedview54"
+     showgrid="false"
+     inkscape:zoom="3.7968751"
+     inkscape:cx="155.71215"
+     inkscape:cy="41.69285"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Layer_1"
+     inkscape:document-rotation="0" />
+  <defs
+     id="defs11">
+    <linearGradient
+       id="linearGradient3684"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#003755;stop-opacity:1;"
+         offset="0"
+         id="stop3682" />
+    </linearGradient>
+    <style
+       id="style2">.cls-1{fill:url(#linear-gradient);}.cls-2{fill:#7c931c;}</style>
+    <linearGradient
+       id="linear-gradient"
+       x1="68.449997"
+       y1="47.540001"
+       x2="26.77"
+       y2="92.580002"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(2.2849732,0,0,2.3893388,-40.503936,-94.801084)">
+      <stop
+         offset="0"
+         stop-color="#9c3"
+         id="stop4" />
+      <stop
+         offset="0.66"
+         stop-color="#878818"
+         id="stop6" />
+      <stop
+         offset="1"
+         stop-color="#858316"
+         id="stop8" />
+    </linearGradient>
+  </defs>
+  <title
+     id="title13">Luciano svg</title>
+  <path
+     class="cls-1"
+     d="M 60.308105,6.0474737 C 53.409217,0.72183004 45.530483,-0.54026105 37.071846,1.8978699 30.242945,3.8770585 25.583694,8.246573 22.664165,14.394486 a 2.529593,2.4190086 0 0 1 -1.999679,1.634982 10.18836,9.7429643 0 0 0 -3.139494,1.233409 c -4.399293,2.419009 -7.128853,7.859388 -6.099019,12.295831 a 31.474934,30.098971 0 0 1 1.549751,-3.250842 c 2.499597,-3.958378 6.418966,-5.402135 10.998229,-5.430818 a 1.6597329,1.5871757 0 0 0 1.839704,-1.214285 C 31.092807,6.8793076 45.37051,5.4642348 53.809152,10.005852 c 6.139012,3.298647 9.198522,8.605168 9.778421,15.164219 A 18.557014,17.745772 0 0 1 57.158614,40.573323 2.1996461,2.1034857 0 0 1 55.538873,41.29998 3.4694418,3.3177709 0 0 1 55.808834,40.697623 19.356885,18.510677 0 0 0 59.248278,24.778058 15.197555,14.533175 0 0 0 40.451301,14.098087 c -5.619095,1.338582 -8.938561,4.990998 -10.998229,9.8577 -0.579907,1.415072 -1.169813,2.199098 -2.859541,1.912259 a 5.5891008,5.3447662 0 0 0 -1.899694,0.152982 c -4.759234,0.793588 -7.888729,3.547241 -9.99839,7.543864 a 13.247869,12.668721 0 0 0 3.159493,16.062979 10.488313,10.029803 0 0 0 17.067251,-4.98143 7.9287239,7.5821105 0 0 0 -5.329142,-9.503935 7.4887945,7.1614133 0 0 0 -5.629095,0.5928 5.5291099,5.2873989 0 0 1 4.759235,-3.681099 10.178362,9.733403 0 0 1 4.499276,0.764903 c 2.4796,0.956131 4.919208,2.055681 7.428803,2.973564 a 8.2086788,7.8498275 0 0 0 5.999035,0.219912 c 3.299469,-1.185601 5.179168,-3.566365 6.328983,-6.61642 l 0.269956,0.73622 0.05998,-0.152981 a 0.79987129,0.76490396 0 0 1 -0.05998,0.152981 27.665548,26.456115 0 0 1 -2.539591,9.284022 c -3.589422,7.362201 -9.588458,12.219335 -17.317214,15.298075 l -2.159652,0.879642 a 1.6897281,1.6158595 0 0 0 1.059829,0.210346 32.444779,31.026417 0 0 0 15.657481,-5.459506 8.3486564,7.9836847 0 0 1 4.069345,-1.443748 C 58.41841,48.164989 63.567581,45.430458 66.797058,39.87535 A 26.665708,25.499984 0 0 0 69.936557,29.128449 C 70.62645,19.959163 67.976872,11.965917 60.308105,6.0474737 Z M 44.360672,33.689188 a 5.1891648,4.9623143 0 0 1 -5.219159,-5.077048 5.1191759,4.8953857 0 0 1 5.309144,-4.943193 5.2191599,4.9909987 0 0 1 5.189166,4.990998 5.2691518,5.0388049 0 0 1 -5.279151,5.029243 z"
+     id="path15"
+     style="fill:#003755;fill-opacity:1;stroke-width:0.977737" />
+  <text
+     xml:space="preserve"
+     style="font-size:40px;line-height:1.25;font-family:'Microsoft Yi Baiti';-inkscape-font-specification:'Microsoft Yi Baiti'"
+     x="151.96684"
+     y="76.355896"
+     id="text3690"><tspan
+       sodipodi:role="line"
+       id="tspan3688"
+       x="151.96684"
+       y="76.355896" /></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:38.2192px;line-height:0;font-family:'Yu Gothic UI';-inkscape-font-specification:'Yu Gothic UI';fill:#003755;fill-opacity:1;stroke-width:1.02373"
+     x="108.51256"
+     y="34.395321"
+     id="text3696"
+     transform="scale(0.74106061,1.3494173)"><tspan
+       sodipodi:role="line"
+       x="108.51256"
+       y="34.395321"
+       id="tspan3698"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:38.2192px;line-height:1;font-family:'Yu Gothic UI';-inkscape-font-specification:'Yu Gothic UI Bold';stroke-width:1.02373"><tspan
+   id="tspan64"
+   style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:38.2192px;line-height:1.25;font-family:'Yu Gothic UI';-inkscape-font-specification:'Yu Gothic UI Bold';stroke-width:1.02373">Giacchetta </tspan>Networks</tspan></text>
+</svg>

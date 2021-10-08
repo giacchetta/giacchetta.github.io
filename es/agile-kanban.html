@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- Title -->
+   
+  <title>Agile Kanban</title>
+
+
+  <!-- Required Meta Tags Always Come First -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Custom Meta Tags -->
+   
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HC300E141G"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    if (location.hostname == 'localhost' || location.hostname == '127.0.0.1') {
+      gtag('config', 'G-HC300E141G', { 'send_page_view': false });
+    }else{
+      gtag('config', 'G-HC300E141G', {
+        'page_title' : location.pathname
+      });
+    }
+  </script>
+  <!-- End Google Analytics -->
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="../favicon.ico">
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+  
+  <!-- CSS Implementing Plugins -->
+  <link rel="stylesheet" href="../assets/css/vendor.min.css">
+
+
+  <!-- CSS Front Template -->
+  <link rel="stylesheet" href="../assets/css/theme.min.css?v=1.0">
+</head>
+<body>
+  
+  <!-- ========== HEADER ========== -->
+  
+  
+<header id="header" class="header header-box-shadow-on-scroll header-white-bg-on-scroll header-abs-top header-show-hide  "
+      data-hs-header-options='{
+        "fixMoment": 1000,
+        "fixEffect": "slide"
+      }'>
+
+    <div class="header-section">
+      <!-- Topbar -->
+      <div class="container header-hide-content pt-2 px-4">
+        <div class="d-flex align-items-center">
+          <!-- Language -->
+          <div class="hs-unfold">
+            <a class="js-hs-unfold-invoker dropdown-nav-link dropdown-toggle d-flex align-items-center" href="javascript:;"
+              data-hs-unfold-options='{
+                "target": "#languageDropdown",
+                "type": "css-animation",
+                "event": "hover",
+                "hideOnScroll": "true"
+              }'>
+              
+                <span class="d-inline-block nav-link p-0">Español</span>
+              
+            </a>
+
+            <div id="languageDropdown" class="hs-unfold-content dropdown-menu">
+              
+                <a class="dropdown-item " data-lang="en" href="/">English</a>
+              
+              
+              <a class="dropdown-item  active disabled " data-lang="es" href="/es/">Español</a>
+              
+              
+            </div>
+          </div>
+          <!-- End Language -->
+        </div>
+      </div>
+      <!-- End Topbar -->
+
+      <div id="logoAndNav" class="container">
+        <!-- Nav -->
+        <nav class="js-mega-menu navbar navbar-expand-lg">
+          <!-- Logo -->
+          <a class="navbar-brand w-auto"  aria-label="" href="../es/">
+            <img src="../assets/svg/customs/giacchetta-networks-logo-wide.svg" style="width: 14rem;" alt="">
+          </a>
+          <!-- End Logo -->
+
+          <!-- Responsive Toggle Button -->
+          <button type="button" class="navbar-toggler btn btn-icon btn-sm rounded-circle"
+                  aria-label="Toggle navigation"
+                  aria-expanded="false"
+                  aria-controls="navBar"
+                  data-toggle="collapse"
+                  data-target="#navBar">
+            <span class="navbar-toggler-default">
+              <svg width="14" height="14" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                <path fill="currentColor" d="M17.4,6.2H0.6C0.3,6.2,0,5.9,0,5.5V4.1c0-0.4,0.3-0.7,0.6-0.7h16.9c0.3,0,0.6,0.3,0.6,0.7v1.4C18,5.9,17.7,6.2,17.4,6.2z M17.4,14.1H0.6c-0.3,0-0.6-0.3-0.6-0.7V12c0-0.4,0.3-0.7,0.6-0.7h16.9c0.3,0,0.6,0.3,0.6,0.7v1.4C18,13.7,17.7,14.1,17.4,14.1z"/>
+              </svg>
+            </span>
+            <span class="navbar-toggler-toggled">
+              <svg width="14" height="14" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                <path fill="currentColor" d="M11.5,9.5l5-5c0.2-0.2,0.2-0.6-0.1-0.9l-1-1c-0.3-0.3-0.7-0.3-0.9-0.1l-5,5l-5-5C4.3,2.3,3.9,2.4,3.6,2.6l-1,1 C2.4,3.9,2.3,4.3,2.5,4.5l5,5l-5,5c-0.2,0.2-0.2,0.6,0.1,0.9l1,1c0.3,0.3,0.7,0.3,0.9,0.1l5-5l5,5c0.2,0.2,0.6,0.2,0.9-0.1l1-1 c0.3-0.3,0.3-0.7,0.1-0.9L11.5,9.5z"/>
+              </svg>
+            </span>
+          </button>
+          <!-- End Responsive Toggle Button -->
+
+          <!-- Navigation -->
+          <div id="navBar" class="collapse navbar-collapse">
+            <div class="navbar-body header-abs-top-inner">
+              <ul class="js-scroll-nav navbar-nav">
+                
+                  <li class="navbar-nav-item">
+                    <a class="nav-link" href="../es/#services">Servicios</a>
+                  </li>
+                
+                  <li class="navbar-nav-item">
+                    <a class="nav-link" href="../es/#projects">Proyectos</a>
+                  </li>
+                
+                  <li class="navbar-nav-item">
+                    <a class="nav-link" href="../es/#about">Conozcanos</a>
+                  </li>
+                
+                  <li class="navbar-nav-item">
+                    <a class="nav-link" href="#contact">Contacto</a>
+                  </li>
+                
+                  <li class="navbar-nav-item">
+                    <a class="nav-link" href="../es/blog/">Blog</a>
+                  </li>
+                
+              </ul>
+            </div>
+          </div>
+          <!-- End Navigation -->
+        </nav>
+        <!-- End Nav -->
+      </div>
+    </div>
+</header>
+
+
+
+
+
+
+  <!-- ========== END HEADER ========== -->
+
+  <!-- ========== MAIN ========== -->
+  <main id="content" role="main">
+    <!-- Hero Section -->
+    <div class="position-relative bg-dark overflow-hidden mt-8 mt-lg-10">
+      <div class="container position-relative z-index-2 space-top-3 space-top-md-4 space-bottom-3 space-bottom-md-4">
+        <div class="w-md-80 w-lg-70 text-center mx-md-auto">
+          <div class="mb-7">
+            <h1 class="display-4 text-white mb-3">Agile Kanban</h1>
+            
+            
+          </div>
+        </div>
+      </div>
+
+      <!-- SVG Shapes -->
+      <figure class="position-absolute top-0 left-0 w-60">
+        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 1246 1078">
+          <g opacity=".4">
+            <linearGradient id="doubleEllipseTopLeftID1" gradientUnits="userSpaceOnUse" x1="2073.5078" y1="1.7251" x2="2273.4375" y2="1135.5818" gradientTransform="matrix(-1 0 0 1 2600 0)">
+              <stop class="stop-color-primary-lighter" offset="0.4976" style="stop-color:#19A0FF"/>
+              <stop class="stop-color-primary" offset="1" style="stop-color:#377DFF"/>
+            </linearGradient>
+            <polygon fill="url(#doubleEllipseTopLeftID1)" points="519.8,0.6 0,0.6 0,1078 863.4,1078   "/>
+            <linearGradient id="doubleEllipseTopLeftID2" gradientUnits="userSpaceOnUse" x1="1717.1648" y1="3.779560e-05" x2="1717.1648" y2="644.0417" gradientTransform="matrix(-1 0 0 1 2600 0)">
+              <stop class="stop-color-primary-lighter" offset="1.577052e-06" style="stop-color:#19A0FF"/>
+              <stop class="stop-color-primary" offset="1" style="stop-color:#377DFF"/>
+            </linearGradient>
+            <polygon fill="url(#doubleEllipseTopLeftID2)" points="519.7,0 1039.4,0.6 1246,639.1 725.2,644   "/>
+          </g>
+        </svg>
+      </figure>
+      <figure class="position-absolute right-0 bottom-0 left-0 mb-n1">
+        <svg preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 1920 100.1">
+          <path fill="#fff" d="M0,0c0,0,934.4,93.4,1920,0v100.1H0L0,0z"/>
+        </svg>
+      </figure>
+      <!-- End SVG Shapes -->
+    </div>
+    <!-- End Hero Section -->
+
+    <!-- Content Section -->
+    <div class="container space-top-1 space-bottom-3">
+      <div class="w-lg-60 mx-lg-auto" id="serviceContent">
+        <p>Sin lugar a dudas el marco de trabajo más antiguo y funcional para todo tipo de proyectos, no solo de desarrollo de programación. Kanban hace foco en la comunicación en tiempo real y en una visualización del trabajo de forma completa y organizada.</p>
+<p>Kanban es la perfecta elección para un equipo de trabajo ágil donde las tareas llegan de forma impredecible y/o cuando tu quieres implementar un trabajo tan pronto como sea posible en vez de esperar por una serie de rituales, como los de Scrum.</p>
+<p>Kanban es muy utilizado para la gestión ágil en proyectos de Marketing, Operaciones, Industria y todo tipo de proyectos donde el seguimiento se realiza de forma visual y en tiempo real.</p>
+<h2 id="agile-kanban-roles">Agile Kanban Roles</h2>
+<p>A diferencia de otros marcos de trabajos ágiles, Kanban no tiene bien definidos los roles, pero podemos ejemplificar algunos muy utilizados.</p>
+<ul>
+<li><p><strong>Lider de Equipo:</strong> Es el responsable del equipo de desarrollo, usualmente toma el rol de Agile Coach guiando al resto del equipo por el proceso Kanban de entrega continua.</p>
+</li>
+<li><p><strong>Agile Coach:</strong> Poco visto, pero es la persona que asesora y entrena al equipo para una efectiva gestión y entrega. Usualmente trabaja en multiple equipos en simultáneo.</p>
+</li>
+<li><p><strong>Equipo de Desarrollo:</strong> Son las personas del equipo de desarrollo que agregan valor a la entrega continua del proyecto. Participan activamente en la gestión del proyecto.</p>
+</li>
+</ul>
+<h2 id="agile-kanban-reuniones">Agile Kanban Reuniones</h2>
+<p>Scrum requiere de una serie de rituales específicos los cuales tienen como objetivo la fluida comunicación entre los miembros del equipo. Dado que Kanban es un marco de trabajo ágil, visual y colaborativo; la comunicación es vital.</p>
+<ul>
+<li><p><strong>Seguimiento Rápido:</strong> Se trata de una reunión rápida, de no más de 15 minutos, donde el Líder de Equipo revisa el avance con todos los miembros del equipo. Cada uno de los miembros expone cuál fue su progreso o donde ha quedado bloqueado.</p>
+</li>
+<li><p><strong>Planificación de Tareas:</strong> Se trata de una reunión semanal, la cual no debería ocupar más de 1 hora, donde los miembros del equipo de desarrollo colaboran en la creación de nuevas tareas. Para proyectos de servicios, muchas de estas pueden provenir directamente de requerimientos del Cliente para su tratamiento inmediato.</p>
+</li>
+</ul>
+<h2 id="agile-kanban-objetos">Agile Kanban Objetos</h2>
+<p>Kanban incluye una serie de objetos que si bien no son obligatorias son muy útiles para una correcta planificación y entrega a tiempo.</p>
+<ul>
+<li><p><strong>Backlog del Producto:</strong> El backlog es una lista de tareas ordenadas que fueron creadas y acordadas por el equipo de trabajo durante las reuniones de planificación.</p>
+</li>
+<li><p><strong>Tareas del Producto:</strong> Las tareas del producto es la implementación del equipo de desarrollo basado en las historias del producto o mismo de sus ideas de mejoras.</p>
+</li>
+<li><p><strong>Definición de Terminado:</strong> Algo no muy usado, pero muy importante a la hora de definir exactamente qué es lo que se considera por terminado. Aquí, se detallan las exigencias que debe cumplimentar el trabajo para ser considerado ‘terminado’.</p>
+</li>
+<li><p><strong>Límite del Trabajo en Progreso (WIP):</strong> Limitar la cantidad de trabajo en progreso facilita la identificación de la ineficiencia en el flujo de trabajo de un equipo. Los cuellos de botella en la tubería de entrega de un equipo son claramente visibles antes de que una situación se vuelva grave.</p>
+</li>
+</ul>
+
+      </div>
+    </div>
+    <!-- End Content Section -->
+  </main>
+  <!-- ========== END MAIN ========== -->
+
+  <!-- ========== FOOTER ========== -->
+  
+<footer id="contact" class="bg-dark position-relative">
+  <div class="container space-bottom-1 position-relative z-index-2">
+    <div class="row justify-content-lg-between mb-11">
+      <!-- Contact Info -->
+      <div class="col-lg-5 space-top-2 space-top-lg-3 text-white mb-7 mb-lg-0">
+        <h2 class="h1 text-white mb-7">Estamos para ayudar</h2>
+
+        <div class="row">
+          <!-- Address -->
+          <div class="col-sm-6 mb-5">
+            <span class="icon icon-soft-light icon-circle mb-3">
+              <i class="fas fa-map-marker-alt"></i>
+            </span>
+            <h4 class="text-white mb-0">Direccion</h4>
+
+            
+            <address class="">
+              <a class="text-white-70 font-size-1" href="https://goo.gl/maps/p4uopynmjLT9bFETA" target="_blank" >
+                109 E 17th Street<br>
+Suite #5614<br>
+Cheyenne, WY 82001<br>
+USA
+
+              </a>
+            </address>
+            
+          </div>
+          <!-- End Address -->
+          
+          <!-- Phone Number -->
+          <div class="col-sm-6 mb-5">
+            <span class="icon icon-soft-light icon-circle mb-3">
+              <i class="fas fa-phone"></i>
+            </span>
+            <h4 class="text-white mb-0">Telefonos</h4>
+            
+            
+            <div>
+              <a class="text-white-70 font-size-1" href="tel:+1 (307) 369-0540" target="_blank" >
+                +1 (307) 369-0540
+              </a>
+            </div>
+            
+          </div>
+          <!-- End Phone Number -->
+        </div>
+      </div>
+      <!-- End Contact Info -->
+
+      <!-- Contact Form -->
+      <div class="col-lg-6 mt-lg-n11">
+        <form id="contactForm" class="js-validate card p-5">
+          <div class="mb-4">
+            <h3>Dejanos un mensaje</h3>
+          </div>
+
+          <div class="row mx-n2">
+            <div class="col-md-12 px-2 mb-3">
+              <!-- Input -->
+              <label class="sr-only">Nombre</label>
+
+              <div class="js-form-message">
+                <div class="input-group">
+                  <input type="text" class="form-control" name="name" placeholder="Juan Perez" aria-label="Juan Perez" required>
+                </div>
+              </div>
+              <!-- End Input -->
+            </div>
+
+            <div class="w-100"></div>
+
+            <div class="col-md-6 px-2 mb-3">
+              <!-- Input -->
+              <label class="sr-only">Direccion de Correo</label>
+
+              <div class="js-form-message">
+                <div class="input-group">
+                  <input type="text" class="form-control" name="email" placeholder="juanperez@gmail.com" aria-label="juanperez@gmail.com" required>
+                </div>
+              </div>
+              <!-- End Input -->
+            </div>
+
+            <div class="col-md-6 px-2 mb-3">
+              <!-- Input -->
+              <label class="sr-only">Numero Telefonico</label>
+
+              <div class="js-form-message">
+                <div class="input-group">
+                  <input type="text" class="form-control" name="phone" placeholder="1-800-643-4500" aria-label="1-800-643-4500" required>
+                </div>
+              </div>
+              <!-- End Input -->
+            </div>
+
+          </div>
+
+          <!-- Input -->
+          <div class="mb-5">
+            <label class="sr-only">Mensaje</label>
+
+            <div class="js-form-message input-group">
+                <textarea class="form-control" rows="4" name="message" placeholder="Hola, me gustaria..." aria-label="Hola, me gustaria..." required></textarea>
+            </div>
+          </div>
+          <!-- End Input -->
+
+          <!-- Checkbox -->
+          <div class="js-form-message mb-3">
+            <div class="custom-control custom-checkbox d-flex align-items-center text-muted">
+              <input type="checkbox" class="custom-control-input" id="terms" name="terms" required>
+              <label class="custom-control-label" for="terms">
+                <small>
+                  Acepto los <a class="link-underline" href="../es/terms.html" target="_blank">Terminos y Condiciones</a>; y la <a class="link-underline" href="../es/privacy.html" target="_blank">Politica de Privacidad</a>.
+
+                </small>
+              </label>
+            </div>
+          </div>
+          <!-- End Checkbox -->
+
+          <!-- Checkbox -->
+          <div class="js-form-message mb-5">
+            <div class="custom-control custom-checkbox d-flex align-items-center text-muted">
+              <input type="checkbox" class="custom-control-input" id="newsletter" name="newsletter">
+              <label class="custom-control-label" for="newsletter">
+                <small>
+                  Quiero recibir Newsletters.
+
+                </small>
+              </label>
+            </div>
+          </div>
+          <!-- End Checkbox -->
+
+          <button type="submit" class="btn btn-primary btn-pill btn-wide transition-3d-hover">Enviar Mensaje</button>
+        </form>
+      </div>
+      <!-- End Contact Form -->
+    </div>
+
+    <div class="text-center">
+      <!-- Logo -->
+      <div class="d-inline-flex align-items-center mb-2">
+        <img class="brand" style="max-width: 14rem;" src="" alt="">
+      </div>
+      <!-- End Logo -->
+
+      <p class="small text-white-70">&copy; Giacchetta Networks LLC 2021. Todos los derechos reservados.</p>
+
+      <!-- Social Networks -->
+      <ul class="list-inline mb-0">
+        <li class="list-inline-item">
+          <a class="btn btn-md btn-icon btn-soft-secondary text-white rounded-circle" href="https://twitter.com/giacchetta_net" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        </li>
+        <li class="list-inline-item">
+          <a class="btn btn-md btn-icon btn-soft-secondary text-white rounded-circle" href="https://www.linkedin.com/company/giacchetta" target="_blank">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+        </li>
+      </ul>
+      <!-- End Social Networks -->
+    </div>
+  </div>
+
+  <!-- SVG Background Shape -->
+  <figure class="w-100 position-absolute bottom-0 left-0">
+    <img class="img-fluid" src="../assets/svg/components/isometric-squares.svg">
+  </figure>
+  <!-- End SVG Background Shape -->
+</footer>
+
+
+
+
+
+
+  <!-- ========== END FOOTER ========== -->
+
+  <!-- Go to Top --> 
+<a class="js-go-to go-to position-fixed" href="#hero" style="visibility: hidden;"
+  data-hs-go-to-options='{
+    "offsetTop": 700,
+    "position": {
+      "init": {
+        "right": 15
+      },
+      "show": {
+        "bottom": 15
+      },
+      "hide": {
+        "bottom": -15
+      }
+    }
+  }'>
+  <i class="fas fa-arrow-up"></i>
+</a>
+<!-- End Go to Top -->
+
+
+
+
+
+
+
+  
+  <!-- JS Implementing Plugins -->
+  <script src="../assets/js/vendor.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script> <!-- Footer --> 
+
+  <!-- JS Front -->
+  <script src="../assets/js/theme.min.js"></script>
+
+  <!-- JS Plugins Init. -->
+  <script>
+    $(document).on('ready', function () {
+      // INITIALIZATION OF HEADER
+      // =======================================================
+      var header = new HSHeader($('#header')).init();
+
+
+      // INITIALIZATION OF MEGA MENU
+      // =======================================================
+      var megaMenu = new HSMegaMenu($('.js-mega-menu')).init();
+
+      // INITIALIZATION OF UNFOLD
+      // =======================================================
+      var unfold = new HSUnfold('.js-hs-unfold-invoker').init();
+
+      // INITIALIZATION OF GO TO
+      // =======================================================
+      $('.js-go-to').each(function () {
+        var goTo = new HSGoTo($(this)).init();
+      });
+    });
+
+    /* ------------------------------------------------------------ */
+    /* ----------------- GENERAL STYLES OF CONTENT ---------------- */
+    /* ------------------------------------------------------------ */
+
+    const $serviceContent = document.querySelector('#serviceContent');
+    const $serviceContentH2Tags = Array.from(document.querySelectorAll('#serviceContent h2'));
+    const $serviceContentImageTags = Array.from(document.querySelectorAll('#serviceContent img'));
+    const $serviceContentListTags = Array.from(document.querySelectorAll('#serviceContent ol, #serviceContent ul'));
+
+    $serviceContentH2Tags.map($element => {
+      $element.classList.add('mb-3');
+      if ($element.previousElementSibling) $element.classList.add('mt-5', 'pt-5', 'border-top');
+      let $elementLink = $element.querySelector('a');
+      if ($elementLink) $elementLink.classList.add('text-dark');
+    })
+
+    $serviceContentImageTags.map($element => {
+      $element.classList.add('img-fluid', 'rounded-lg', 'mb-1', 'mt-sm-2', 'mb-sm-3')
+    })
+
+    $serviceContentListTags.map($element => {
+      $element.classList.add('pl-3')
+    })
+  </script>
+
+  
+  
+  <script>
+    var $languageLinks = Array.from(document.querySelectorAll('#languageDropdown a'))
+
+    var pathName = window.location.pathname;
+    var pathNameWithoutLang = pathName.replace('/es/', '/').replace('/pt/', '/');
+
+    $languageLinks.map($languageLink => {
+      let pathNameWithLinkLang;
+
+      if ($languageLink.dataset.lang == 'en') pathNameWithLinkLang = '' + pathNameWithoutLang;
+      if ($languageLink.dataset.lang == 'es') pathNameWithLinkLang = '/es' + pathNameWithoutLang;
+      if ($languageLink.dataset.lang == 'pt') pathNameWithLinkLang = '/pt' + pathNameWithoutLang;
+
+      $languageLink.setAttribute('href', pathNameWithLinkLang)
+      $languageLink.addEventListener('click', () => localStorage.setItem('lang', $languageLink.dataset.lang))
+    })
+  </script>
+
+
+  
+  
+  <script>
+    $(document).on('ready', function () {
+      // INITIALIZATION OF FORM VALIDATION
+      // =======================================================
+      $('#contactForm').each(function() {
+        var validation = $.HSCore.components.HSValidation.init($(this), {
+          onkeyup: false,
+          rules: {
+            name: {
+              required: true,
+              minlength: 3
+            },
+            email: {
+              required: true,
+              email: true
+            },
+            phone: {
+              required: true,
+              phone: true
+            },
+            message: {
+              required: true,
+              minlength: 10
+            }
+          },
+          messages: {
+            name: {
+              required: "Introduzca su nombre aqui",
+              minlength: "El nombre debe tener al menos 3 letras"
+            },
+            email: {
+              required: "Introduzca una direccion de correo valida.",
+              email: "Introduzca una direccion de correo valida."
+            },
+            phone: {
+              required: "Ingrese un numbero valido de telefono.",
+              phone: "Ingrese un numbero valido de telefono."
+            },
+            message: {
+              required: "Introduzca un mensaje.",
+              minlength: "El mensaje debe tener al menos 10 letras"
+            },
+            terms: "Por favor, acepte los Terminos y Condiciones; y la Politica de Privacidad."
+          },
+          submitHandler: ($form, event) => {
+            // Calls the "onSubmit" function
+            onSubmit(event);
+          }
+        });
+      });
+
+      $.validator.addMethod("phone", function(value, element) {
+        regex = new RegExp(/^[+]{0,1}[0-9]{0,3}[-\s]{0,1}[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s/0-9]*$/g)
+        return regex.test(value);
+      });
+    });
+
+    /* ------------------------------------------------------------ */
+    /* ------------------ CONTACT FORM SUBMISSION ----------------- */
+    /* ------------------------------------------------------------ */
+
+    // Call after reCaptcha validation
+    function onSubmit(e) {
+      e.preventDefault();
+
+      // Data collection
+      let $contactForm = document.getElementById("contactForm")
+
+      let formData = new FormData($contactForm)
+      let name = formData.get('name');
+      let email = formData.get('email');
+      let phone = formData.get('phone');
+      let message = formData.get('message');
+      let terms = formData.get('terms');
+      let newsletter = formData.get('newsletter');
+      
+      // Organization of data
+      let data = JSON.stringify({
+        "cards": [
+          {
+            "sections": [
+              {
+                "widgets": [
+                  {
+                    "keyValue": {
+                      "icon": "PERSON",
+                      "topLabel": "Name",
+                      "content": name
+                    }
+                  },
+                  {
+                    "keyValue": {
+                      "icon": "EMAIL",
+                      "topLabel": "Email",
+                      "content": email,
+                      "onClick": {
+                        "openLink": {
+                          "url": `mailto:${email}`
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "keyValue": {
+                      "icon": "PHONE",
+                      "topLabel": "Phone",
+                      "content": phone,
+                      "onClick": {
+                        "openLink": {
+                          "url": `tel:${phone}`
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "keyValue": {
+                      "icon": "DESCRIPTION",
+                      "topLabel": "Message",
+                      "content": message,
+                      "contentMultiline": "true"
+                    }
+                  },
+                  {
+                    "keyValue": {
+                      "icon": "CONFIRMATION_NUMBER_ICON",
+                      "topLabel": "Terms and Conditions",
+                      "content": terms ? 'true' : 'false'
+                    }
+                  },
+                  {
+                    "keyValue": {
+                      "icon": "MEMBERSHIP",
+                      "topLabel": "Newsletters",
+                      "content": newsletter ? 'true' : 'false'
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      });
+        
+      // Sending data
+      let webhookUrl = 'aHR0cHM6Ly9jaGF0Lmdvb2dsZWFwaXMuY29tL3YxL3NwYWNlcy9BQUFBNmNmczNtOC9tZXNzYWdlcz9rZXk9QUl6YVN5RGRJMGhDWnRFNnZ5U2pNbS1XRWZScTNDUHpxS3Fxc0hJJnRva2VuPVM2OFMwWW5CaVFFcC15WkJpMExBOVh2YmlkMmEwYXlBZHU4WDdBWExsbjAlM0Q=';
+      
+      fetch(window.atob(webhookUrl), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: data
+      })
+      .then(res => {
+        if(res.status === 200) {
+          Swal.fire({
+            icon: 'success',
+             title: 'Mensaje Enviado!', 
+            
+            showConfirmButton: false,
+            timer: 3000
+          }).then(() => {
+            location.reload();
+          })
+        }else{
+          Swal.fire({
+            icon: 'error',
+             title: 'Error enviando mensaje!', 
+             text: 'Por favor, intente mas tarde.', 
+            showConfirmButton: false,
+            timer: 3000
+          })
+        }
+      })
+    }
+  </script>
+
+
+
+  <!-- IE Support -->
+  <script>
+    if (/MSIE \d|Trident.*rv:/.test(navigator.userAgent)) document.write('<script src="../assets/vendor/babel-polyfill/dist/polyfill.js"><\/script>');
+  </script>
+</body>
+</html>

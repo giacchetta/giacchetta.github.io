@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- Title -->
+   
+  <title>Scrum or Kanban for DevOps? - Giacchetta Networks</title>
+
+
+  <!-- Required Meta Tags Always Come First -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Custom Meta Tags -->
+  
+  <!-- Open Graph -->
+  <meta property="og:url" content="https://giacchetta.net/blog/scrum-or-kanban-for-devops.html">
+  <meta property="og:title" content="Scrum o Kanban para DevOps?">
+  <meta property="og:description" content="Cualquier empresa que pase de Developer_SysAdmin a DevOps debe evaluar el mejor marco de trabajo agil.">
+  <meta property="og:image" content="../../assets/img/900x450/img12.jpg">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://giacchetta.net/../../assets/img/900x450/img12.jpg">
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HC300E141G"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    if (location.hostname == 'localhost' || location.hostname == '127.0.0.1') {
+      gtag('config', 'G-HC300E141G', { 'send_page_view': false });
+    }else{
+      gtag('config', 'G-HC300E141G', {
+        'page_title' : location.pathname
+      });
+    }
+  </script>
+  <!-- End Google Analytics -->
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="../../favicon.ico">
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+  
+  <!-- CSS Implementing Plugins -->
+  <link rel="stylesheet" href="../../assets/css/vendor.min.css">
+
+
+  <!-- CSS Front Template -->
+  <link rel="stylesheet" href="../../assets/css/theme.min.css?v=1.0">
+</head>
+<body>
+  
+  
+<header id="header" class="header header-box-shadow-on-scroll header-white-bg-on-scroll header-abs-top header-show-hide  header-bg-transparent "
+      data-hs-header-options='{
+        "fixMoment": 1000,
+        "fixEffect": "slide"
+      }'>
+
+    <div class="header-section">
+      <!-- Topbar -->
+      <div class="container header-hide-content pt-2 px-4">
+        <div class="d-flex align-items-center">
+          <!-- Language -->
+          <div class="hs-unfold">
+            <a class="js-hs-unfold-invoker dropdown-nav-link dropdown-toggle d-flex align-items-center" href="javascript:;"
+              data-hs-unfold-options='{
+                "target": "#languageDropdown",
+                "type": "css-animation",
+                "event": "hover",
+                "hideOnScroll": "true"
+              }'>
+              
+                <span class="d-inline-block nav-link p-0">Español</span>
+              
+            </a>
+
+            <div id="languageDropdown" class="hs-unfold-content dropdown-menu">
+              
+                <a class="dropdown-item " data-lang="en" href="/">English</a>
+              
+              
+              <a class="dropdown-item  active disabled " data-lang="es" href="/es/">Español</a>
+              
+              
+            </div>
+          </div>
+          <!-- End Language -->
+        </div>
+      </div>
+      <!-- End Topbar -->
+
+      <div id="logoAndNav" class="container">
+        <!-- Nav -->
+        <nav class="js-mega-menu navbar navbar-expand-lg">
+          <!-- Logo -->
+          <a class="navbar-brand w-auto"  aria-label="" href="../../es/">
+            <img src="../../assets/svg/customs/giacchetta-networks-logo-wide.svg" style="width: 14rem;" alt="">
+          </a>
+          <!-- End Logo -->
+
+          <!-- Responsive Toggle Button -->
+          <button type="button" class="navbar-toggler btn btn-icon btn-sm rounded-circle"
+                  aria-label="Toggle navigation"
+                  aria-expanded="false"
+                  aria-controls="navBar"
+                  data-toggle="collapse"
+                  data-target="#navBar">
+            <span class="navbar-toggler-default">
+              <svg width="14" height="14" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                <path fill="currentColor" d="M17.4,6.2H0.6C0.3,6.2,0,5.9,0,5.5V4.1c0-0.4,0.3-0.7,0.6-0.7h16.9c0.3,0,0.6,0.3,0.6,0.7v1.4C18,5.9,17.7,6.2,17.4,6.2z M17.4,14.1H0.6c-0.3,0-0.6-0.3-0.6-0.7V12c0-0.4,0.3-0.7,0.6-0.7h16.9c0.3,0,0.6,0.3,0.6,0.7v1.4C18,13.7,17.7,14.1,17.4,14.1z"/>
+              </svg>
+            </span>
+            <span class="navbar-toggler-toggled">
+              <svg width="14" height="14" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                <path fill="currentColor" d="M11.5,9.5l5-5c0.2-0.2,0.2-0.6-0.1-0.9l-1-1c-0.3-0.3-0.7-0.3-0.9-0.1l-5,5l-5-5C4.3,2.3,3.9,2.4,3.6,2.6l-1,1 C2.4,3.9,2.3,4.3,2.5,4.5l5,5l-5,5c-0.2,0.2-0.2,0.6,0.1,0.9l1,1c0.3,0.3,0.7,0.3,0.9,0.1l5-5l5,5c0.2,0.2,0.6,0.2,0.9-0.1l1-1 c0.3-0.3,0.3-0.7,0.1-0.9L11.5,9.5z"/>
+              </svg>
+            </span>
+          </button>
+          <!-- End Responsive Toggle Button -->
+
+          <!-- Navigation -->
+          <div id="navBar" class="collapse navbar-collapse">
+            <div class="navbar-body header-abs-top-inner">
+              <ul class="js-scroll-nav navbar-nav">
+                
+                  <li class="navbar-nav-item">
+                    <a class="nav-link" href="../../es/#services">Servicios</a>
+                  </li>
+                
+                  <li class="navbar-nav-item">
+                    <a class="nav-link" href="../../es/#projects">Proyectos</a>
+                  </li>
+                
+                  <li class="navbar-nav-item">
+                    <a class="nav-link" href="../../es/#about">Conozcanos</a>
+                  </li>
+                
+                  <li class="navbar-nav-item">
+                    <a class="nav-link" href="#contact">Contacto</a>
+                  </li>
+                
+                  <li class="navbar-nav-item">
+                    <a class="nav-link" href="../../es/blog/">Blog</a>
+                  </li>
+                
+              </ul>
+            </div>
+          </div>
+          <!-- End Navigation -->
+        </nav>
+        <!-- End Nav -->
+      </div>
+    </div>
+</header>
+
+
+
+
+
+
+
+  <!-- ========== MAIN ========== -->
+  <main id="content" role="main">
+    <!-- Article Section -->
+    <div class="container space-top-3">
+      <div class="w-lg-60 mx-lg-auto">
+        <!-- Share -->
+        <div class="border-top border-bottom py-3">
+          <div class="d-flex justify-content-center align-items-center">
+            <span class="d-block small font-weight-bold text-cap mr-2">Compartir:</span>
+            <a href="javascript: void(0);" class="btn btn-xs btn-icon btn-soft-secondary rounded-circle ml-2 btn-share" data-platform="facebook" data-toggle="tooltip" title="Facebook">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="javascript: void(0);" class="btn btn-xs btn-icon btn-soft-secondary rounded-circle ml-2 btn-share" data-platform="twitter" data-toggle="tooltip" title="Twitter">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="javascript: void(0);" class="btn btn-xs btn-icon btn-soft-secondary rounded-circle ml-2 btn-share" data-platform="linkedin" data-toggle="tooltip" title="Linkedin">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="javascript: void(0);" class="btn btn-xs btn-icon btn-soft-secondary rounded-circle ml-2 btn-share" data-platform="clipboard" data-toggle="tooltip" title="Copy URL">
+              <i class="far fa-clipboard"></i>
+            </a>
+          </div>
+        </div>
+        <!-- End Share -->
+
+        <!-- Hero -->
+        <div class="border-bottom py-5 mb-5">
+          <h1 class="h2 mb-4">Scrum o Kanban para DevOps?</h1>
+          <img class="img-fluid rounded" src="../../assets/img/900x450/img12.jpg">
+        </div>
+        <!-- End Hero -->
+
+        <p>Al igual que con cualquier metodología de gestión de proyectos, no existe un marco que sea mejor el 100% del tiempo. Puede elegir Kanban para algunos proyectos pero desea implementar Scrum para otros o forzar Scrum directamente para todos.</p>
+<p>Considere qué nivel de cambio desea introducir en su equipo. Si va a agregar algo sobre un marco existente con pequeños cambios incrementales, Kanban es una mejor opción. Si está buscando realizar un cambio de proceso más significativo, sería mejor implementar Scrum.</p>
+<h3 id="kanban-vs-scrum-qu-pasa-si-no-puedes-elegir-">Kanban vs. Scrum: ¿Qué pasa si no puedes elegir?</h3>
+<p>Cientos de equipos están utilizando modelos híbridos influenciados tanto por Scrum como por Kanban. Aquí es donde puede adaptar ambos marcos ágiles a algo nuevo que funcione para su equipo. <strong>DevOps es una metodología completa y única que a veces es difícil de entender e incluso más, de implementar</strong>.</p>
+<p>Si está comenzando con DevOps, le sugerimos implementar un tablero Kanban y practicar ceremonias ligeras. Cuando su equipo se sienta cómodo trabajando con problemas, estimaciones, tableros, reuniones de standUp y entregue adecuadamente, puede comenzar a implementar algunas ceremonias y herramientas útiles de Scrum como Sprints, planificación y reuniones retrospectivas.</p>
+<p>Como dije inicialmente, todos quieren comenzar a implementar Scrum, pero <strong>si su equipo no tiene experiencia con este marco, terminará usando Scrum como un Kanban pero sin un flujo de implementación continuo</strong>. Al igual que con cualquier metodología de gestión de proyectos, no existe un marco que sea mejor el 100% del tiempo. Puede elegir Kanban para algunos proyectos pero desea implementar Scrum para otros o forzar Scrum directamente para todos.</p>
+<p>Considere qué nivel de cambio desea introducir en su equipo. Si va a agregar algo sobre un marco existente con pequeños cambios incrementales, Kanban es una mejor opción. Si está buscando realizar un cambio de proceso más significativo, sería mejor implementar Scrum.</p>
+
+
+        <!-- Tags -->
+        <div class="my-5">
+            
+              <button class="btn btn-xs btn-soft-secondary mb-1">DevOps</button>
+            
+              <button class="btn btn-xs btn-soft-secondary mb-1">Kanban</button>
+            
+              <button class="btn btn-xs btn-soft-secondary mb-1">Scrum</button>
+            
+              <button class="btn btn-xs btn-soft-secondary mb-1">Agile</button>
+            
+        </div>
+        <!-- End Tags -->
+      </div>
+    </div>
+    <!-- End Article Section -->
+
+    <!-- Related Articles Section -->
+    <div id="relatedArticles" class="container">
+      <div class="w-lg-75 border-top space-top-2 mx-lg-auto">
+        <div class="mb-3">
+          <h3 class="text-primary">Historias Relacionadas</h3>
+        </div>
+
+        <div id="relatedArticlesContainer" class="row">
+          
+        </div>
+      </div>
+    </div>
+    <!-- End Related Articles Section -->
+
+    <!-- Subscribe Section -->
+    <div id="subscribe" class="container space-2 space-bottom-lg-3 mt-lg-4">
+      <!-- Title -->
+      <div class="w-md-60 text-center mx-auto mb-7">
+        <h2>Mantente informado</h2>
+        <p>Obtenga los ultimos desarrollos de Giacchetta Networks.</p>
+      </div>
+      <!-- End Title -->
+
+      <div class="w-lg-40 mx-lg-auto">
+        <!-- Form -->
+        <form class="js-validate" action="https://giacchetta.us2.list-manage.com/subscribe/post?u=0dc8c5dc0ce4df6242375bedf&amp;id=fe7f50a2a1" method="post" name="mc-embedded-subscribe-form" target="_blank">
+          <div class="form-row">
+            <div class="col mb-2">
+              <div class="js-form-message">
+                <label class="sr-only" for="subscriptionFormEmail">Correo Electronico</label>
+                <div class="input-group">
+                  <input type="email" class="form-control" name="EMAIL" id="subscriptionFormEmail" placeholder="Correo Electronico" aria-label="Correo Electronico" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+            <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_0dc8c5dc0ce4df6242375bedf_fe7f50a2a1" tabindex="-1" value=""></div>
+
+            <div class="col-sm-auto">
+              <button type="submit" class="btn btn-primary btn-block" name="subscribe">Subscribase</button>
+            </div>
+          </div>
+        </form>
+        <!-- End Form -->
+      </div>
+    </div>
+    <!-- End Subscribe Section -->
+  </main>
+  <!-- ========== END MAIN ========== -->
+
+  
+<footer id="contact" class="bg-dark position-relative">
+  <div class="container space-bottom-1 position-relative z-index-2">
+    <div class="row justify-content-lg-between mb-11">
+      <!-- Contact Info -->
+      <div class="col-lg-5 space-top-2 space-top-lg-3 text-white mb-7 mb-lg-0">
+        <h2 class="h1 text-white mb-7">Estamos para ayudar</h2>
+
+        <div class="row">
+          <!-- Address -->
+          <div class="col-sm-6 mb-5">
+            <span class="icon icon-soft-light icon-circle mb-3">
+              <i class="fas fa-map-marker-alt"></i>
+            </span>
+            <h4 class="text-white mb-0">Direccion</h4>
+
+            
+            <address class="">
+              <a class="text-white-70 font-size-1" href="https://goo.gl/maps/p4uopynmjLT9bFETA" target="_blank" >
+                109 E 17th Street<br>
+Suite #5614<br>
+Cheyenne, WY 82001<br>
+USA
+
+              </a>
+            </address>
+            
+          </div>
+          <!-- End Address -->
+          
+          <!-- Phone Number -->
+          <div class="col-sm-6 mb-5">
+            <span class="icon icon-soft-light icon-circle mb-3">
+              <i class="fas fa-phone"></i>
+            </span>
+            <h4 class="text-white mb-0">Telefonos</h4>
+            
+            
+            <div>
+              <a class="text-white-70 font-size-1" href="tel:+1 (307) 369-0540" target="_blank" >
+                +1 (307) 369-0540
+              </a>
+            </div>
+            
+          </div>
+          <!-- End Phone Number -->
+        </div>
+      </div>
+      <!-- End Contact Info -->
+
+      <!-- Contact Form -->
+      <div class="col-lg-6 mt-lg-n11">
+        <form id="contactForm" class="js-validate card p-5">
+          <div class="mb-4">
+            <h3>Dejanos un mensaje</h3>
+          </div>
+
+          <div class="row mx-n2">
+            <div class="col-md-12 px-2 mb-3">
+              <!-- Input -->
+              <label class="sr-only">Nombre</label>
+
+              <div class="js-form-message">
+                <div class="input-group">
+                  <input type="text" class="form-control" name="name" placeholder="Juan Perez" aria-label="Juan Perez" required>
+                </div>
+              </div>
+              <!-- End Input -->
+            </div>
+
+            <div class="w-100"></div>
+
+            <div class="col-md-6 px-2 mb-3">
+              <!-- Input -->
+              <label class="sr-only">Direccion de Correo</label>
+
+              <div class="js-form-message">
+                <div class="input-group">
+                  <input type="text" class="form-control" name="email" placeholder="juanperez@gmail.com" aria-label="juanperez@gmail.com" required>
+                </div>
+              </div>
+              <!-- End Input -->
+            </div>
+
+            <div class="col-md-6 px-2 mb-3">
+              <!-- Input -->
+              <label class="sr-only">Numero Telefonico</label>
+
+              <div class="js-form-message">
+                <div class="input-group">
+                  <input type="text" class="form-control" name="phone" placeholder="1-800-643-4500" aria-label="1-800-643-4500" required>
+                </div>
+              </div>
+              <!-- End Input -->
+            </div>
+
+          </div>
+
+          <!-- Input -->
+          <div class="mb-5">
+            <label class="sr-only">Mensaje</label>
+
+            <div class="js-form-message input-group">
+                <textarea class="form-control" rows="4" name="message" placeholder="Hola, me gustaria..." aria-label="Hola, me gustaria..." required></textarea>
+            </div>
+          </div>
+          <!-- End Input -->
+
+          <!-- Checkbox -->
+          <div class="js-form-message mb-3">
+            <div class="custom-control custom-checkbox d-flex align-items-center text-muted">
+              <input type="checkbox" class="custom-control-input" id="terms" name="terms" required>
+              <label class="custom-control-label" for="terms">
+                <small>
+                  Acepto los <a class="link-underline" href="../../es/terms.html" target="_blank">Terminos y Condiciones</a>; y la <a class="link-underline" href="../../es/privacy.html" target="_blank">Politica de Privacidad</a>.
+
+                </small>
+              </label>
+            </div>
+          </div>
+          <!-- End Checkbox -->
+
+          <!-- Checkbox -->
+          <div class="js-form-message mb-5">
+            <div class="custom-control custom-checkbox d-flex align-items-center text-muted">
+              <input type="checkbox" class="custom-control-input" id="newsletter" name="newsletter">
+              <label class="custom-control-label" for="newsletter">
+                <small>
+                  Quiero recibir Newsletters.
+
+                </small>
+              </label>
+            </div>
+          </div>
+          <!-- End Checkbox -->
+
+          <button type="submit" class="btn btn-primary btn-pill btn-wide transition-3d-hover">Enviar Mensaje</button>
+        </form>
+      </div>
+      <!-- End Contact Form -->
+    </div>
+
+    <div class="text-center">
+      <!-- Logo -->
+      <div class="d-inline-flex align-items-center mb-2">
+        <img class="brand" style="max-width: 14rem;" src="" alt="">
+      </div>
+      <!-- End Logo -->
+
+      <p class="small text-white-70">&copy; Giacchetta Networks LLC 2021. Todos los derechos reservados.</p>
+
+      <!-- Social Networks -->
+      <ul class="list-inline mb-0">
+        <li class="list-inline-item">
+          <a class="btn btn-md btn-icon btn-soft-secondary text-white rounded-circle" href="https://twitter.com/giacchetta_net" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        </li>
+        <li class="list-inline-item">
+          <a class="btn btn-md btn-icon btn-soft-secondary text-white rounded-circle" href="https://www.linkedin.com/company/giacchetta" target="_blank">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+        </li>
+      </ul>
+      <!-- End Social Networks -->
+    </div>
+  </div>
+
+  <!-- SVG Background Shape -->
+  <figure class="w-100 position-absolute bottom-0 left-0">
+    <img class="img-fluid" src="../../assets/svg/components/isometric-squares.svg">
+  </figure>
+  <!-- End SVG Background Shape -->
+</footer>
+
+
+
+
+
+
+
+  <!-- Go to Top --> 
+<a class="js-go-to go-to position-fixed" href="#hero" style="visibility: hidden;"
+  data-hs-go-to-options='{
+    "offsetTop": 700,
+    "position": {
+      "init": {
+        "right": 15
+      },
+      "show": {
+        "bottom": 15
+      },
+      "hide": {
+        "bottom": -15
+      }
+    }
+  }'>
+  <i class="fas fa-arrow-up"></i>
+</a>
+<!-- End Go to Top -->
+
+
+
+
+
+
+
+  
+   <!-- JS Implementing Plugins -->
+  <script src="../../assets/js/vendor.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script> <!-- Footer --> 
+
+  <!-- JS Front -->
+  <script src="../../assets/js/theme.min.js"></script>
+
+  <!-- JS Plugins Init. -->
+  <script>
+    $(document).on('ready', function () {
+      // INITIALIZATION OF HEADER
+      // =======================================================
+      var header = new HSHeader($('#header')).init();
+
+      // INITIALIZATION OF MEGA MENU
+      // =======================================================
+      var megaMenu = new HSMegaMenu($('.js-mega-menu')).init();
+
+      // INITIALIZATION OF UNFOLD
+      // =======================================================
+      var unfold = new HSUnfold('.js-hs-unfold-invoker').init();
+
+      // INITIALIZATION OF GO TO
+      // =======================================================
+      $('.js-go-to').each(function () {
+        var goTo = new HSGoTo($(this)).init();
+      });
+    });
+
+    /* ------------------------------------------------------------ */
+    /* --------------------- GLOBAL VARIABLES --------------------- */
+    /* ------------------------------------------------------------ */
+
+    const $subscribeSection = document.getElementById("subscribe");
+    const $relatedArticlesSection = document.getElementById("relatedArticles");
+    const $relatedArticlesContainer = document.getElementById("relatedArticlesContainer");
+    const $shareButtons = Array.from(document.getElementsByClassName('btn-share'))
+
+    /* ------------------------------------------------------------ */
+    /* -------------- GLOBAL MANAGEMENT OF DATA LOAD -------------- */
+    /* ------------------------------------------------------------ */
+
+    const dataArticles = getArticles();
+    const currentArticle = getCurrentArticle();
+    const relatedArticles = getRelatedArticles(currentArticle);
+
+    if(relatedArticles.length >= 1){
+      relatedArticlesTemplate = createTemplateHTML(relatedArticles, $relatedArticlesContainer);
+      $relatedArticlesContainer.innerHTML = relatedArticlesTemplate;
+    }else{
+      $subscribeSection.classList.add('border-top');
+      $relatedArticlesSection.classList.add('d-none');
+    }
+
+    /* ------------------------------------------------------------ */
+    /* ---------- FUNCTIONS IN CHARGE OF DATA COLLECTION ---------- */
+    /* ------------------------------------------------------------ */
+
+    function getArticles(){
+      let articles = [{"page_config":{"file_name":"scrum-or-kanban-for-devops.html","head_title":"Scrum or Kanban for DevOps? - Giacchetta Networks"},"title":"Scrum o Kanban para DevOps?","description":"Cualquier empresa que pase de Developer_SysAdmin a DevOps debe evaluar el mejor marco de trabajo agil.","image":"../../assets/img/900x450/img12.jpg","date":"5/3/2021","tags":["DevOps","Kanban","Scrum","Agile"],"content":"Al igual que con cualquier metodología de gestión de proyectos, no existe un marco que sea mejor el 100% del tiempo. Puede elegir Kanban para algunos proyectos pero desea implementar Scrum para otros o forzar Scrum directamente para todos.\n\nConsidere qué nivel de cambio desea introducir en su equipo. Si va a agregar algo sobre un marco existente con pequeños cambios incrementales, Kanban es una mejor opción. Si está buscando realizar un cambio de proceso más significativo, sería mejor implementar Scrum.\n\n### Kanban vs. Scrum: ¿Qué pasa si no puedes elegir?\n\nCientos de equipos están utilizando modelos híbridos influenciados tanto por Scrum como por Kanban. Aquí es donde puede adaptar ambos marcos ágiles a algo nuevo que funcione para su equipo. **DevOps es una metodología completa y única que a veces es difícil de entender e incluso más, de implementar**.\n\nSi está comenzando con DevOps, le sugerimos implementar un tablero Kanban y practicar ceremonias ligeras. Cuando su equipo se sienta cómodo trabajando con problemas, estimaciones, tableros, reuniones de standUp y entregue adecuadamente, puede comenzar a implementar algunas ceremonias y herramientas útiles de Scrum como Sprints, planificación y reuniones retrospectivas.\n\nComo dije inicialmente, todos quieren comenzar a implementar Scrum, pero **si su equipo no tiene experiencia con este marco, terminará usando Scrum como un Kanban pero sin un flujo de implementación continuo**. Al igual que con cualquier metodología de gestión de proyectos, no existe un marco que sea mejor el 100% del tiempo. Puede elegir Kanban para algunos proyectos pero desea implementar Scrum para otros o forzar Scrum directamente para todos.\n\nConsidere qué nivel de cambio desea introducir en su equipo. Si va a agregar algo sobre un marco existente con pequeños cambios incrementales, Kanban es una mejor opción. Si está buscando realizar un cambio de proceso más significativo, sería mejor implementar Scrum.\n"}];
+      // Sort the articles by date (highest to lowest)
+      articles.sort((a, b) => moment(a.date, 'DDMMYYYY') <= moment(b.date, 'DDMMYYYY') ? 1 : -1)
+      return articles;
+    }
+
+    function getCurrentArticle(){
+      let article = {"page_config":{"file_name":"scrum-or-kanban-for-devops.html","head_title":"Scrum or Kanban for DevOps? - Giacchetta Networks"},"title":"Scrum o Kanban para DevOps?","description":"Cualquier empresa que pase de Developer_SysAdmin a DevOps debe evaluar el mejor marco de trabajo agil.","image":"../../assets/img/900x450/img12.jpg","date":"5/3/2021","tags":["DevOps","Kanban","Scrum","Agile"],"content":"Al igual que con cualquier metodología de gestión de proyectos, no existe un marco que sea mejor el 100% del tiempo. Puede elegir Kanban para algunos proyectos pero desea implementar Scrum para otros o forzar Scrum directamente para todos.\n\nConsidere qué nivel de cambio desea introducir en su equipo. Si va a agregar algo sobre un marco existente con pequeños cambios incrementales, Kanban es una mejor opción. Si está buscando realizar un cambio de proceso más significativo, sería mejor implementar Scrum.\n\n### Kanban vs. Scrum: ¿Qué pasa si no puedes elegir?\n\nCientos de equipos están utilizando modelos híbridos influenciados tanto por Scrum como por Kanban. Aquí es donde puede adaptar ambos marcos ágiles a algo nuevo que funcione para su equipo. **DevOps es una metodología completa y única que a veces es difícil de entender e incluso más, de implementar**.\n\nSi está comenzando con DevOps, le sugerimos implementar un tablero Kanban y practicar ceremonias ligeras. Cuando su equipo se sienta cómodo trabajando con problemas, estimaciones, tableros, reuniones de standUp y entregue adecuadamente, puede comenzar a implementar algunas ceremonias y herramientas útiles de Scrum como Sprints, planificación y reuniones retrospectivas.\n\nComo dije inicialmente, todos quieren comenzar a implementar Scrum, pero **si su equipo no tiene experiencia con este marco, terminará usando Scrum como un Kanban pero sin un flujo de implementación continuo**. Al igual que con cualquier metodología de gestión de proyectos, no existe un marco que sea mejor el 100% del tiempo. Puede elegir Kanban para algunos proyectos pero desea implementar Scrum para otros o forzar Scrum directamente para todos.\n\nConsidere qué nivel de cambio desea introducir en su equipo. Si va a agregar algo sobre un marco existente con pequeños cambios incrementales, Kanban es una mejor opción. Si está buscando realizar un cambio de proceso más significativo, sería mejor implementar Scrum.\n"};
+      return article;
+    }
+
+    function getRelatedArticles(articleToCompare){
+      let articles = [];
+      dataArticles.map(article => {
+        if (articles.length < 4 && 
+            JSON.stringify(article) != JSON.stringify(articleToCompare))
+        {
+          let includeTag = article.tags.find(tag => articleToCompare.tags.includes(tag))
+          if (includeTag) articles.push(article);
+        }
+      })
+      return articles;
+    }
+
+    /* ------------------------------------------------------------ */
+    /* --------- CREATION OF THE DIFFERENT HTML TEMPLATES --------- */
+    /* ------------------------------------------------------------ */
+  
+    function createTemplateHTML(data, $container) {
+      let templateHTML = "";
+  
+      switch ($container) {
+        // Article Template
+        case $relatedArticlesContainer:
+          data.map(article => {
+            templateHTML += `
+            <div class="col-md-6">
+              <article class="border-bottom h-100 py-5">
+                <div class="row justify-content-between">
+                  <div class="col-6 d-flex align-items-center">
+                    <h4 class="mb-0"><a class="text-inherit" href="../../es/blog/${article.page_config.file_name}">${article.title}</a></h4>
+                  </div>
+  
+                  <div class="col-6">
+                    <img class="img-fluid rounded" src="${article.image}">
+                  </div>
+                </div>
+              </article>
+            </div>`;
+          })
+        break;
+      }
+
+      return templateHTML;
+    }
+
+    /* ------------------------------------------------------------ */
+    /* -------------------- SHARE FUNCTIONALITY ------------------- */
+    /* ------------------------------------------------------------ */
+
+    $shareButtons.map($button => $button.addEventListener('click', () => share($button.dataset.platform)));
+
+    function share(platform){
+      let currentURL = window.location.href;
+
+      if(platform != 'clipboard'){
+        let platformURL = '';
+
+        switch (platform) {
+          case 'facebook':
+            platformURL = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentURL)}`;
+            break;
+          case 'twitter':
+            platformURL = `https://twitter.com/intent/tweet?url=${encodeURIComponent(currentURL)}`;
+            break;
+          case 'linkedin':
+            platformURL = `http://www.linkedin.com/shareArticle?url=${encodeURIComponent(currentURL)}`;
+            break;
+        }
+
+        window.open(platformURL,'share', 'toolbar=0, status=0, width=650, height=650');
+      }else{
+        let inputURL = document.createElement('input')
+        document.body.appendChild(inputURL);
+        inputURL.value = currentURL;
+
+        inputURL.select(); /* Select the text field */
+        inputURL.setSelectionRange(0, 99999); /* For mobile devices */
+        document.execCommand("copy"); /* Copy the text inside the input */
+
+        document.body.removeChild(inputURL);
+        alert('URL copied to clipboard')
+      }
+    }
+  </script>
+
+  
+  
+  <script>
+    var $languageLinks = Array.from(document.querySelectorAll('#languageDropdown a'))
+
+    var pathName = window.location.pathname;
+    var pathNameWithoutLang = pathName.replace('/es/', '/').replace('/pt/', '/');
+
+    $languageLinks.map($languageLink => {
+      let pathNameWithLinkLang;
+
+      if ($languageLink.dataset.lang == 'en') pathNameWithLinkLang = '' + pathNameWithoutLang;
+      if ($languageLink.dataset.lang == 'es') pathNameWithLinkLang = '/es' + pathNameWithoutLang;
+      if ($languageLink.dataset.lang == 'pt') pathNameWithLinkLang = '/pt' + pathNameWithoutLang;
+
+      $languageLink.setAttribute('href', pathNameWithLinkLang)
+      $languageLink.addEventListener('click', () => localStorage.setItem('lang', $languageLink.dataset.lang))
+    })
+  </script>
+
+
+  
+  
+  <script>
+    $(document).on('ready', function () {
+      // INITIALIZATION OF FORM VALIDATION
+      // =======================================================
+      $('#contactForm').each(function() {
+        var validation = $.HSCore.components.HSValidation.init($(this), {
+          onkeyup: false,
+          rules: {
+            name: {
+              required: true,
+              minlength: 3
+            },
+            email: {
+              required: true,
+              email: true
+            },
+            phone: {
+              required: true,
+              phone: true
+            },
+            message: {
+              required: true,
+              minlength: 10
+            }
+          },
+          messages: {
+            name: {
+              required: "Introduzca su nombre aqui",
+              minlength: "El nombre debe tener al menos 3 letras"
+            },
+            email: {
+              required: "Introduzca una direccion de correo valida.",
+              email: "Introduzca una direccion de correo valida."
+            },
+            phone: {
+              required: "Ingrese un numbero valido de telefono.",
+              phone: "Ingrese un numbero valido de telefono."
+            },
+            message: {
+              required: "Introduzca un mensaje.",
+              minlength: "El mensaje debe tener al menos 10 letras"
+            },
+            terms: "Por favor, acepte los Terminos y Condiciones; y la Politica de Privacidad."
+          },
+          submitHandler: ($form, event) => {
+            // Calls the "onSubmit" function
+            onSubmit(event);
+          }
+        });
+      });
+
+      $.validator.addMethod("phone", function(value, element) {
+        regex = new RegExp(/^[+]{0,1}[0-9]{0,3}[-\s]{0,1}[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s/0-9]*$/g)
+        return regex.test(value);
+      });
+    });
+
+    /* ------------------------------------------------------------ */
+    /* ------------------ CONTACT FORM SUBMISSION ----------------- */
+    /* ------------------------------------------------------------ */
+
+    // Call after reCaptcha validation
+    function onSubmit(e) {
+      e.preventDefault();
+
+      // Data collection
+      let $contactForm = document.getElementById("contactForm")
+
+      let formData = new FormData($contactForm)
+      let name = formData.get('name');
+      let email = formData.get('email');
+      let phone = formData.get('phone');
+      let message = formData.get('message');
+      let terms = formData.get('terms');
+      let newsletter = formData.get('newsletter');
+      
+      // Organization of data
+      let data = JSON.stringify({
+        "cards": [
+          {
+            "sections": [
+              {
+                "widgets": [
+                  {
+                    "keyValue": {
+                      "icon": "PERSON",
+                      "topLabel": "Name",
+                      "content": name
+                    }
+                  },
+                  {
+                    "keyValue": {
+                      "icon": "EMAIL",
+                      "topLabel": "Email",
+                      "content": email,
+                      "onClick": {
+                        "openLink": {
+                          "url": `mailto:${email}`
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "keyValue": {
+                      "icon": "PHONE",
+                      "topLabel": "Phone",
+                      "content": phone,
+                      "onClick": {
+                        "openLink": {
+                          "url": `tel:${phone}`
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "keyValue": {
+                      "icon": "DESCRIPTION",
+                      "topLabel": "Message",
+                      "content": message,
+                      "contentMultiline": "true"
+                    }
+                  },
+                  {
+                    "keyValue": {
+                      "icon": "CONFIRMATION_NUMBER_ICON",
+                      "topLabel": "Terms and Conditions",
+                      "content": terms ? 'true' : 'false'
+                    }
+                  },
+                  {
+                    "keyValue": {
+                      "icon": "MEMBERSHIP",
+                      "topLabel": "Newsletters",
+                      "content": newsletter ? 'true' : 'false'
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      });
+        
+      // Sending data
+      let webhookUrl = 'aHR0cHM6Ly9jaGF0Lmdvb2dsZWFwaXMuY29tL3YxL3NwYWNlcy9BQUFBNmNmczNtOC9tZXNzYWdlcz9rZXk9QUl6YVN5RGRJMGhDWnRFNnZ5U2pNbS1XRWZScTNDUHpxS3Fxc0hJJnRva2VuPVM2OFMwWW5CaVFFcC15WkJpMExBOVh2YmlkMmEwYXlBZHU4WDdBWExsbjAlM0Q=';
+      
+      fetch(window.atob(webhookUrl), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: data
+      })
+      .then(res => {
+        if(res.status === 200) {
+          Swal.fire({
+            icon: 'success',
+             title: 'Mensaje Enviado!', 
+            
+            showConfirmButton: false,
+            timer: 3000
+          }).then(() => {
+            location.reload();
+          })
+        }else{
+          Swal.fire({
+            icon: 'error',
+             title: 'Error enviando mensaje!', 
+             text: 'Por favor, intente mas tarde.', 
+            showConfirmButton: false,
+            timer: 3000
+          })
+        }
+      })
+    }
+  </script>
+
+
+
+  <!-- IE Support -->
+  <script>
+    if (/MSIE \d|Trident.*rv:/.test(navigator.userAgent)) document.write('<script src="../../assets/vendor/babel-polyfill/dist/polyfill.js"><\/script>');
+  </script>
+</body>
+</html>
