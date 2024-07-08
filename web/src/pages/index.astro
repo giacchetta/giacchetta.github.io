@@ -1,0 +1,171 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+
+import Profile from '../assets/img/profile.png';
+
+---
+
+<Layout title="Giacchetta Consulting">
+	<main>
+		<div class="container layout mt-2">
+			<h1>Giacchetta Consulting</h1>
+		</div>
+		<div class="container layout mt-2">
+			<div class="row ">
+				<div class="col-0 col-md-3 col-lg-3 col-xl-3">
+					<Image
+					class="img-thumbnail"
+					src={Profile}
+					alt="Profile Image"
+					></Image>
+				</div>
+				<div class="col-12 col-md-9 col-lg-9 col-xl-8">
+					<p class="description text-justified p-1">I have been working in the IT industry for two decades, from System Engineering and Network
+						Infrastructure Design to Cloud Architecture and DevOps Engineer in many successful
+						companies helping them to innovate with state-of-art designs based on the AWS
+						Well-Architecture framework. Those designs allow implementing a rock-solid and automated
+						integration and delivery solution that leverages an auto-scalable and self-healing container
+						ecosystem.
+					</p>
+				</div>
+			  </div>			
+		</div>
+		<div class="container layout mt-2">
+			<h2>Credentials</h2>
+			<ul>
+				<li class="list-unstyled">
+					<h3>Public Cloud</h3>
+					<table class="table">
+						<thead>
+						  <tr>
+							<th scope="col">#</th>
+							<th scope="col">Product</th>
+							<th scope="col">Type</th>
+							<th scope="col">Name</th>
+						  </tr>
+						</thead>
+						<tbody>
+						  <tr>
+							<th scope="row">1</th>
+							<td>AWS</td>
+							<td>Applied Skill</td>
+							<td></td>
+						  </tr>
+						  <tr>
+							<th scope="row">2</th>
+							<td>Azure</td>
+							<td>Certification</td>
+							<td></td>
+						  </tr>
+						</tbody>
+					</table>
+		
+				</li>
+				<li class="list-unstyled">
+					<h3>Private Cloud & NoCloud</h3>
+					<table class="table">
+						<thead>
+						  <tr>
+							<th scope="col">#</th>
+							<th scope="col">Product</th>
+							<th scope="col">Type</th>
+							<th scope="col">Name</th>
+						  </tr>
+						</thead>
+						<tbody>
+						  <tr>
+							<th scope="row">1</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						  </tr>
+						</tbody>
+					</table>
+		
+				</li>	
+				<li class="list-unstyled">
+					<h3>Development</h3>
+					<table class="table">
+						<thead>
+						  <tr>
+							<th scope="col">#</th>
+							<th scope="col">Product</th>
+							<th scope="col">Type</th>
+							<th scope="col">Name</th>
+						  </tr>
+						</thead>
+						<tbody>
+						  <tr>
+							<th scope="row">1</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						  </tr>
+						</tbody>
+					</table>
+				</li>	
+				<li class="list-unstyled">
+					<h3>Networking & Security</h3>
+					<table class="table">
+						<thead>
+						  <tr>
+							<th scope="col">#</th>
+							<th scope="col">Product</th>
+							<th scope="col">Type</th>
+							<th scope="col">Name</th>
+						  </tr>
+						</thead>
+						<tbody>
+						  <tr>
+							<th scope="row">1</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						  </tr>
+						</tbody>
+					</table>
+		
+				</li>	
+				<li class="list-unstyled">
+					<h3>Project Managment</h3>
+					<table class="table">
+						<thead>
+						  <tr>
+							<th scope="col">#</th>
+							<th scope="col">Product</th>
+							<th scope="col">Type</th>
+							<th scope="col">Name</th>
+						  </tr>
+						</thead>
+						<tbody>
+						  <tr>
+							<th scope="row">1</th>
+							<td></td>
+							<td></td>
+							<td></td>
+						  </tr>
+						</tbody>
+					</table>
+		
+				</li>																
+			</ul>
+		</div>
+		<div class="container layout mt-2">
+			<h2>Collaborations</h2>
+		</div>
+	</main>
+</Layout>
+<style>
+	@media (min-width: 992px) {
+	.layout {
+		max-width: 75%;
+		}
+	}
+
+	@media (min-width: 1400px) {
+	.layout {
+		max-width: 50%;
+		}
+	}	
+</style>
