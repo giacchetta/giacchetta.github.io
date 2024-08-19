@@ -1,8 +1,269 @@
 ---
 import { Image } from 'astro:assets';
+import shawcor from '../assets/img/shawcor.png';
+import cm from '../assets/img/cm.png';
+import payu from '../assets/img/payu.png';
+import osit from '../assets/img/osit.png';
+import clarin from '../assets/img/grupoclarin.png';
+import edrans from '../assets/img/edrans.png';
+import bimodal from '../assets/img/bimodal.png';
+import everymundo from '../assets/img/everymundo.png';
+import opster from '../assets/img/opster.png';
+import codyops from '../assets/img/codyops.png';
+import trive from '../assets/img/trive.png';
+import moegui from '../assets/img/moegui.png';
 
-import Linkedin from '../assets/img/linkedin.png'
 ---
-<div>
-    <a href=""><Image class="btn btn-sm" src={Linkedin} alt="LinkedIn Image"/></a>
+<h2>Collaborations</h2>
+<div class="container layout mt-2">
+    <div class="row">
+        <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <Image
+            class="img-thumbnail"
+            src={codyops}
+            alt="Company Image"
+            ></Image>
+        </div>
+        <div class="col-12 col-md-9 col-lg-9 col-xl-8">
+            <ul class="list-unstyled">
+                <li><h5>Senior GCP DevOps Consultant</h5></li>
+                <li>October 2023 - Present</li>
+                <li>Uruguay (Remote)</li>
+            </ul>
+        </div>
+    </div>
+    <p>
+      Started this project in GCP from scratch with the premise to only use GCP for everything. After our kick-off meeting, I designed all the infrastructure and coded with Terraform. Using Load Balancer with Backend Bucket for static content and Backend Service for dynamic content served from Google Serverless Functions. Using YouTube for video hosting, now migration to on-premise solution with an improved backend.
+    </p>
+</div>
+<div class="container layout mt-2">
+    <div class="row">
+        <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <Image
+            class="img-thumbnail"
+            src={trive}
+            alt="Company Image"
+            ></Image>
+        </div>
+        <div class="col-12 col-md-9 col-lg-9 col-xl-8">
+            <ul class="list-unstyled">
+                <li><h5>Senior GCP DevOps Consultant</h5></li>
+                <li>April 2023 - October 2023</li>
+                <li>Uruguay (Remote)</li>
+            </ul>
+        </div>
+    </div>
+    <p>
+        Review current project deployment in multiple servers and cloud providers and design a new cloud architecture for GCP with an estimated TCO. Coding all new infrastructure with Terraform and migrate current apps to GKE and CI/CD with Google Cloud Build integrated with GitHub Actions. Developers integrate the code directly to Staging and Production (after approval).
+    </p>
+</div>
+<div class="container layout mt-2">
+    <div class="row">
+        <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <Image
+            class="img-thumbnail"
+            src={opster}
+            alt="Company Image"
+            ></Image>
+        </div>
+        <div class="col-12 col-md-9 col-lg-9 col-xl-8">
+            <ul class="list-unstyled">
+                <li><h5>Senior AWS DevOps Consultant</h5></li>
+                <li>June 2021 - June 2022</li>
+                <li>Uruguay (Remote)</li>
+            </ul>
+        </div>
+    </div>
+    <p>
+        Started working with their current DevOps implementation, upgrading EKS Clusters, improving Jenkins Pipelines and Terraform. Also improving the monitoring system and the dashboard system. Designing and coding Customer&#X2019;s Stacks implementation offering our DevOps procedures to implement Elastic in their Cloud.
+    </p>
+</div>
+<div class="container layout mt-2">
+    <div class="row">
+        <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <Image
+            class="img-thumbnail"
+            src={bimodal}
+            alt="Company Image"
+            ></Image>
+        </div>
+        <div class="col-12 col-md-9 col-lg-9 col-xl-8">
+            <ul class="list-unstyled">
+                <li><h5>Senior AWS DevOps Consultant</h5></li>
+                <li>January 2020 - May 2020</li>
+                <li>Uruguay (Remote)</li>
+            </ul>
+        </div>
+    </div>
+    <p>
+        Short but intensive project, I worked with a small team of DevOps leading a massive project migration from GCP to AWS in record time. I designed and code most of Terraform modules to bring this project into AWS EKS. This migration also include CI/CD and Istio for network management.
+    </p>
+</div>
+<div class="container layout mt-2">
+    <div class="row">
+        <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <Image
+            class="img-thumbnail"
+            src={everymundo}
+            alt="Company Image"
+            ></Image>
+        </div>
+        <div class="col-12 col-md-9 col-lg-9 col-xl-8">
+            <ul class="list-unstyled">
+                <li><h5>Senior AWS DevOps Consultant</h5></li>
+                <li>May 2018 - February 2021</li>
+                <li>Uruguay (Remote)</li>
+            </ul>
+        </div>
+    </div>
+    <p>
+        Designed and implemented in AWS all new OpenShift Stacks. We used AWS CloudFormation to code all the infrastructure design and replicated this same layout to all regions where the company operates. With multiple apps running everywhere, we managed to migrate all these first to Docker, then to OpenShift. We also migrate all the manual processes to Jenkins Pipelines to fully integrated CI/CD in their building process.
+    </p>
+</div>
+<div class="container layout mt-2">
+    <div class="row">
+        <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <Image
+            class="img-thumbnail"
+            src={moegui}
+            alt="Company Image"
+            ></Image>
+        </div>
+        <div class="col-12 col-md-9 col-lg-9 col-xl-8">
+            <ul class="list-unstyled">
+                <li><h5>VP Engineering</h5></li>
+                <li>January 2018 - December 2023</li>
+                <li>Argentina - Uruguay (Remote)</li>
+            </ul>
+        </div>
+    </div>
+    <p>
+        Lead a team (50) as VP of Engineering, my focus in this new journey was more on project management and commercial. I work back to back with customers offering our best solutions for their needs and conducting a sustainable development effort in the team. This Management Role was a complete change for me and really challenging. I was able to work on many projects at same time doing focus on PKI. 
+    </p>
+</div>
+<div class="container layout mt-2">
+    <div class="row">
+        <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <Image
+            class="img-thumbnail"
+            src={edrans}
+            alt="Company Image"
+            ></Image>
+        </div>
+        <div class="col-12 col-md-9 col-lg-9 col-xl-8">
+            <ul class="list-unstyled">
+                <li><h5>Lead System Engineer</h5></li>
+                <li>November 2016 - December 2017</li>
+                <li>Argentina</li>
+            </ul>
+        </div>
+    </div>
+    <p>
+        Lead a team (10) of System Engineers for different projects sizes. I helped customers to engage their needs with our skills and build an acceptable working plan. I designed, using the latest technologies and recommended methodologies,  their infrastructure follows “Infrastructure as a Code” as a guide. Terraform for infrastructure orchestration and Ansible for everything else. We build those stacks using Docker-Compose and sometimes Kubernetes.
+    </p>
+</div>
+<div class="container layout mt-2">
+    <div class="row">
+        <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <Image
+            class="img-thumbnail"
+            src={clarin}
+            alt="Company Image"
+            ></Image>
+        </div>
+        <div class="col-12 col-md-9 col-lg-9 col-xl-8">
+            <ul class="list-unstyled">
+                <li><h5>Lead System Engineer</h5></li>
+                <li>December 2015 - October 2016</li>
+                <li>Argentina</li>
+            </ul>
+        </div>
+    </div>
+    <p>
+        Leading a small team (4), our work was migrate all current on-premise infrastructure related to verticals business like argenprop.com, deautos.com and empleos.clarin.com. Learning about all three business in record time, preparing the infrastructure in AWS using Ansible and conducted all migrations.
+    </p>
+</div>
+<div class="container layout mt-2">
+    <div class="row">
+        <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <Image
+            class="img-thumbnail"
+            src={osit}
+            alt="Company Image"
+            ></Image>
+        </div>
+        <div class="col-12 col-md-9 col-lg-9 col-xl-8">
+            <ul class="list-unstyled">
+                <li><h5>Lead System Engineer</h5></li>
+                <li>June 2011 - November 2015</li>
+                <li>Argentina</li>
+            </ul>
+        </div>
+    </div>
+    <p>
+    Leading a small team (5), our work was to ensure the infrastructure for Customer&#X2019;s solutions on Amazon Web Services and others Public Cloud Platforms. My mission was to design the new solutions built by our internal Developer Team and ensure the right provisioning of these systems to the Cloud. It was my very first contact with AWS and deployed the services without Network and Server provisioning at all.
+    </p>
+</div>
+<div class="container layout mt-2">
+    <div class="row">
+        <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <Image
+            class="img-thumbnail"
+            src={payu}
+            alt="Company Image"
+            ></Image>
+        </div>
+        <div class="col-12 col-md-9 col-lg-9 col-xl-8">
+            <ul class="list-unstyled">
+                <li><h5>Senior System Engineer</h5></li>
+                <li>April 2007 - May 2011</li>
+                <li>Argentina</li>
+            </ul>
+        </div>
+    </div>
+    <p>
+    My mission was to design and implement the whole cloud architecture. Back in this time, most companies had all servers in the same office but as we offer our service to all Latin America, we started to migrate all servers to the USA. I lead all cloud infrastructure migration and virtualization. We used Linux servers with native virtualization support to implement all our Windows and Linux machines. I designed the Network Layout with stacked switches to ensure High Availability (Cisco).
+    </p>
+</div>
+<div class="container layout mt-2">
+    <div class="row">
+        <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <Image
+            class="img-thumbnail"
+            src={cm}
+            alt="Company Image"
+            ></Image>
+        </div>
+        <div class="col-12 col-md-9 col-lg-9 col-xl-8">
+            <ul class="list-unstyled">
+                <li><h5>Middle System Engineer</h5></li>
+                <li>March 2005 - March 2007</li>
+                <li>Argentina</li>
+            </ul>
+        </div>
+    </div>
+    <p>
+    Working at Buenos Aires Department of Justice was a exited journey. Started as Windows Sysadmin, while I have applied for Linux Sysadmin. With no Windows Server experience, I managed to deploy Windows Servers (100) using Terminal Service ( Remote Desktop ) so the more 10.000 employees could use a Windows Desktop from theirs old computers with PXE support. I was also responsible to implement the Print Server, using Linux CUPS, to a multiple printers around the facilities. 
+    </p>
+</div>
+<div class="container layout mt-2">
+    <div class="row">
+        <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <Image
+            class="img-thumbnail"
+            src={shawcor}
+            alt="Company Image"
+            ></Image>
+        </div>
+        <div class="col-12 col-md-9 col-lg-9 col-xl-8">
+            <ul class="list-unstyled">
+                <li><h5>Junior System Engineer</h5></li>
+                <li>January 2001 - February 2005</li>
+                <li>Argentina</li>
+            </ul>
+        </div>
+    </div>
+    <p>
+    Started my IT career in this company as a junior System Engineer installing, configuring and giving maintenance to the current Novell Netware and UNIX Solaris Servers. After some time, I have started the migration of these servers to Linux Server. This last migrations took some years moving all Apps and Resources to the new platforms, including enhanced Cisco networking stacks.
+    </p>
 </div>
