@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import Profile from '../assets/img/profile.png';
 import Layout from '../layouts/Layout.astro';
+import Contact from '../components/Contact.astro';
 import Collaboration from '../components/Collaboration.astro';
 import Credentials from '../components/Credentials.astro';
 import Certifications from '../components/Certifications.astro';
@@ -18,37 +19,28 @@ import Certifications from '../components/Certifications.astro';
 					<Image
 					class="img-thumbnail"
 					src={Profile}
-					alt="Profile Image"
+					alt="Profile"
 					></Image>
 				</div>
 				<div class="col-12 col-md-9 col-lg-9 col-xl-8">
 					<p class="description text-justified p-1">
 						I have been working in the IT industry for two decades, from System Engineering and Network Infrastructure Design to Cloud Architecture and DevOps Engineer in many successful companies helping them to innovate with state-of-art designs based on the AWS Well-Architecture framework. Those designs allow implementing a rock-solid and automated integration and delivery solution that leverages an auto-scalable and self-healing container ecosystem.
 					</p>
+					<Contact/>
 				</div>
 			  </div>			
 		</div>
 		<div class="container layout mt-2">
 			<Credentials/>
+			<Contact/>
 		</div>
 		<div class="container layout mt-2">
 			<Collaboration/>
+			<Contact/>
 		</div>
 		<div class="container layout mt-2">
-			<!-- <Certifications/> -->
+			<!-- <Certifications/>
+			<Contact/> -->
 		</div>
 	</main>
 </Layout>
-<style>
-	@media (min-width: 992px) {
-	.layout {
-		max-width: 75%;
-		}
-	}
-
-	@media (min-width: 1400px) {
-	.layout {
-		max-width: 50%;
-		}
-	}	
-</style>
