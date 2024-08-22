@@ -5,12 +5,15 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "astro build && purgecss --css node_modules/bootstrap/dist/css/bootstrap.min.css --content src/**/*.astro --output dist/_astro/bs.css",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
     "astro": "^4.11.5",
     "bootstrap": "^5.3.3"
+  },
+  "devDependencies": {
+    "purgecss": "^6.0.0"
   }
 }
