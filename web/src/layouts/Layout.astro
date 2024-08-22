@@ -1,7 +1,5 @@
 ---
-import 'bootstrap/dist/css/bootstrap.css';
 import Favicon from '../assets/img/favicon.png';
-
 import Footer from '../components/Footer.astro';
 
 interface Props {
@@ -21,6 +19,7 @@ const { title } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<meta name="google-site-verification" content="qLfc52ow5_XRAzYc684AOcsb7LSTM9gJtLZwSFFHuP4" />
 		<meta name="msvalidate.01" content="A77EF2A041C9672BEB0B6E4DCAFD911C" />
+		{ import.meta.env.DEV ? <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.css"> : <link rel="stylesheet" href="/_astro/bs.css"> }
 		<title>{title}</title>
 	</head>
 	<body class="bg-light">
