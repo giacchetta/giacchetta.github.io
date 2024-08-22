@@ -1,39 +1,39 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import whatsapp from '../assets/img/whatsapp.png';
 import telegram from '../assets/img/telegram.png';
 import email from '../assets/img/email.png';
 ---
 <div class="row justify-content-center text-center p-3">
-    <h4>Feel free to contact me whenever</h4>
+    <p class="fs-4">Feel free to contact me whenever</p>
     <div class="col-3">
         <a href="https://wa.me/59897995367">
-            <Image
+            <Picture
             class="img-thumbnail"
             src={whatsapp}
             alt="Whatsapp"
-            height={60}
-            ></Image>
+            height={75}
+            ></Picture>
         </a>
     </div>
     <div class="col-3">
         <a href="mailto:giacchetta-consulting@outlook.com?subject=Looking%20forward%20working%20together%21">
-            <Image
+            <Picture
             class="img-thumbnail"
             src={email}
             alt="Email"
-            height={60}
-            ></Image>
+            height={75}
+            ></Picture>
           </a>
     </div>
     <div class="col-3">
         <a href="https://t.me/+59897995367">
-            <Image
+            <Picture
             class="img-thumbnail"
             src={telegram}
             alt="telegram"
-            height={60}
-            ></Image>
+            height={75}
+            ></Picture>
           </a>
     </div>						
 </div>

@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import Profile from '../assets/img/profile.png';
 import Layout from '../layouts/Layout.astro';
 import Contact from '../components/Contact.astro';
@@ -16,11 +16,12 @@ import Certifications from '../components/Certifications.astro';
 		<div class="container layout mt-2">
 			<div class="row">
 				<div class="col-0 col-md-3 col-lg-3 col-xl-3">
-					<Image
+					<Picture
 					class="img-thumbnail"
 					src={Profile}
 					alt="Profile"
-					></Image>
+					loading="eager"
+					></Picture>
 				</div>
 				<div class="col-12 col-md-9 col-lg-9 col-xl-8">
 					<p class="description text-justified p-1">
