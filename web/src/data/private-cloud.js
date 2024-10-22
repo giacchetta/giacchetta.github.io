@@ -82,5 +82,12 @@ export const privateCloud = [
       typelnk: '#',
       name: 'Prometheus & Grafana',
       namelnk: '#',
-    },    
+    }, 
+    {
+      product: 'Monitoring',
+      type: 'Applied Skill',
+      typelnk: '#',
+      name: 'DataDog | Infra & APM & Logs',
+      namelnk: '#',
+    },        
   ];
