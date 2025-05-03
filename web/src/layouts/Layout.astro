@@ -1,6 +1,7 @@
 ---
 import Favicon from '../assets/img/favicon.png';
 import Footer from '../components/Footer.astro';
+import Whatsapp from '../components/Whatsapp.astro';
 
 interface Props {
 	title: string;
@@ -24,7 +25,8 @@ const { title } = Astro.props;
 	</head>
 	<body class="bg-light">
 		<slot />
-		<Footer/>		
+		<Footer/>
+		<Whatsapp/>
 	</body>
 </html>
 <script src="bootstrap/dist/js/bootstrap.js"></script>
