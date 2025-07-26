@@ -4,7 +4,8 @@ import Profile from '../assets/img/profile.png';
 import Layout from '../layouts/Layout.astro';
 import Collaboration from '../components/Collaboration.astro';
 import Credentials from '../components/Credentials.astro';
-import Certifications from '../components/Certifications.astro';
+import Contact from '../components/Contact.astro';
+// import Certifications from '../components/Certifications.astro';
 ---
 
 <Layout title="Luciano Giacchetta | IT Consulting">
@@ -22,18 +23,27 @@ import Certifications from '../components/Certifications.astro';
 					loading="eager"
 					></Picture>
 				</div>
-				<div class="col-12 col-md-9 col-lg-9 col-xl-8">
-					<p class="description text-justified p-1">
-						I have been working in the IT industry for two decades, from System Engineering and Network Infrastructure Design to Cloud Architecture and DevOps Engineer in many successful companies helping them to innovate with state-of-art designs based on the AWS Well-Architecture framework. Those designs allow implementing a rock-solid and automated integration and delivery solution that leverages an auto-scalable and self-healing container ecosystem.
+				<div class="col-12 col-md-9 col-lg-9 col-xl-9">
+					<p style="text-align: justify;">
+						With two decades of dedicated experience in the IT industry, my career has spanned a comprehensive range of critical disciplines, evolving from foundational System Engineering and robust Network Infrastructure Design to cutting-edge Cloud Architecture and intricate DevOps Engineering. Throughout this journey, I have had the privilege of collaborating with numerous successful companies, consistently empowering them to drive innovation through the implementation of state-of-the-art designs.
 					</p>
 				</div>
-			  </div>			
+			</div>
+			<p style="text-align: justify;">
+				A cornerstone of my approach has been the meticulous application of the AWS Well-Architected Framework. This rigorous framework has served as a blueprint for crafting solutions that are not only highly performant and secure but also resilient and cost-optimized. By adhering to its principles, I have been able to engineer sophisticated system architectures that stand the test of time and scale with evolving business needs.
+			</p>
+			<p style="text-align: justify;">
+				These meticulously crafted designs have invariably facilitated the implementation of rock-solid, fully automated integration and delivery solutions. This automation is pivotal, streamlining workflows and significantly reducing the potential for human error. Furthermore, these solutions are built upon a foundation that leverages an auto-scalable and self-healing container ecosystem. This advanced infrastructure ensures that applications can dynamically adjust to fluctuating demands, automatically recovering from potential issues and maintaining uninterrupted service, thereby guaranteeing high availability and operational efficiency.
+			</p>
+			<Contact/>
 		</div>
 		<div class="container layout mt-2">
 			<Credentials/>
+			<Contact/>
 		</div>
 		<div class="container layout mt-2">
 			<Collaboration/>
+			<Contact/>
 		</div>
 		<div class="container layout mt-2">
 			<!-- <Certifications/> -->
