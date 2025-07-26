@@ -24,13 +24,12 @@ jobs:
           node-version: 22
       - name: Build Artifact
         run: |
-          cd web
-          npm install .
+          npm ci
           npm run build
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'web/dist'
+          path: 'dist'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
