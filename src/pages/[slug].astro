@@ -1,0 +1,154 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import Contact from '../components/Contact.astro';
+
+export async function getStaticPaths() {
+  // Get all MDX files from all collections
+  const credentials = await getCollection('credentials');
+  const collaborations = await getCollection('collaborations');
+  const certifications = await getCollection('certifications');
+  
+  // Combine all collections
+  const allPages = [...credentials, ...collaborations, ...certifications];
+  
+  return allPages.map((page) => ({
+    params: { slug: page.slug },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+const { Content } = await page.render();
+---
+
+<Layout title={`${page.data.title} | Luciano Giacchetta`}>
+  <main>
+    <div class="container layout mt-4">
+      <div class="row">
+        <div class="col-12">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="/" class="text-decoration-none">Home</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                {page.data.title}
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+      
+      <article class="row">
+        <div class="col-12">
+          <header class="mb-4">
+            <h1 class="display-5 fw-bold text-primary">{page.data.title}</h1>
+            {page.data.description && (
+              <p class="lead text-muted">{page.data.description}</p>
+            )}
+            <div class="meta-info mb-3">
+              {page.data.category && (
+                <span class="badge bg-secondary me-2">{page.data.category}</span>
+              )}
+              <div class="text-muted small mt-2">
+                {page.data.publishDate && (
+                  <span class="me-3">
+                    📅 Published: {new Date(page.data.publishDate).toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </span>
+                )}
+                {page.data.updateDate && page.data.updateDate !== page.data.publishDate && (
+                  <span>
+                    🔄 Updated: {new Date(page.data.updateDate).toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </span>
+                )}
+              </div>
+            </div>
+          </header>
+          
+          <div class="content">
+            <Content />
+          </div>
+        </div>
+      </article>
+      
+      <div class="row mt-5">
+        <div class="col-12">
+          <Contact />
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .content {
+    line-height: 1.7;
+  }
+  
+  .content :global(h2) {
+    color: var(--bs-primary);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+  
+  .content :global(h3) {
+    color: var(--bs-dark);
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+  }
+  
+  .content :global(p) {
+    text-align: justify;
+    margin-bottom: 1rem;
+  }
+  
+  .content :global(ul, ol) {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+  
+  .content :global(li) {
+    margin-bottom: 0.5rem;
+  }
+  
+  .content :global(blockquote) {
+    border-left: 4px solid var(--bs-primary);
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: var(--bs-secondary);
+  }
+  
+  .content :global(code) {
+    background-color: var(--bs-light);
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+  }
+  
+  .content :global(pre) {
+    background-color: var(--bs-dark);
+    color: var(--bs-light);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+  
+  .content :global(pre code) {
+    background: none;
+    padding: 0;
+    color: inherit;
+  }
+</style>

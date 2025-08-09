@@ -1,3 +1,80 @@
 ---
+import { getAllPages, getFeaturedPagesByCategory } from '../utils/content.js';
+
+// Get featured MDX content pages
+const allPages = await getAllPages();
+const featuredCertificationsPages = getFeaturedPagesByCategory(allPages, 'certifications');
+const allCertificationsPages = allPages.certifications || [];
 ---
 <h2>Certifications</h2>
+
+{featuredCertificationsPages.length > 0 && (
+  <div class="mb-4">
+    <h4 class="text-primary">Detailed Certifications</h4>
+    <div class="row">
+      {featuredCertificationsPages.map((page) => (
+        <div class="col-md-6 col-lg-4 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">
+                <a href={`/${page.slug}`} class="text-decoration-none">
+                  {page.data.title}
+                </a>
+              </h5>
+              {page.data.description && (
+                <p class="card-text text-muted small">{page.data.description}</p>
+              )}
+              <a href={`/${page.slug}`} class="btn btn-sm btn-outline-warning">
+                View Details →
+              </a>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
+{allCertificationsPages.length > 0 && (
+  <div class="mb-4">
+    <h4 class="text-primary">Certifications Overview</h4>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Certification</th>
+          <th scope="col">Provider</th>
+          <th scope="col">Level</th>
+          <th scope="col">Status</th>
+          <th scope="col">Credential</th>
+        </tr>
+      </thead>
+      <tbody>
+        {allCertificationsPages.map((page) => (
+          <tr>
+            <td>
+              <a href={`/${page.slug}`} class="text-decoration-none">
+                {page.data.title}
+              </a>
+            </td>
+            <td>{page.data.provider || 'N/A'}</td>
+            <td>{page.data.certificationLevel || 'N/A'}</td>
+            <td>
+              <span class={`badge ${page.data.status === 'Active' ? 'bg-success' : 'bg-warning'}`}>
+                {page.data.status || 'Unknown'}
+              </span>
+            </td>
+            <td>
+              {page.data.credentialUrl && page.data.credentialUrl !== '#' ? (
+                <a href={page.data.credentialUrl} target="_blank" class="btn btn-sm btn-outline-primary">
+                  View Credential →
+                </a>
+              ) : (
+                <span class="text-muted">Private</span>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}

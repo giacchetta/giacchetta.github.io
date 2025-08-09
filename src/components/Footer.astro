@@ -1,8 +1,45 @@
 ---
+import { getAllPages, getAllNonFeaturedPages } from '../utils/content.js';
+
 const date = new Date();
+
+// Get all non-featured pages for SEO purposes
+const allPages = await getAllPages();
+const nonFeaturedPages = getAllNonFeaturedPages(allPages);
+
+// Group non-featured pages by category
+const groupedNonFeatured = {
+  credentials: nonFeaturedPages.filter(page => page.data.category === 'credentials'),
+  collaborations: nonFeaturedPages.filter(page => page.data.category === 'collaborations'),
+  certifications: nonFeaturedPages.filter(page => page.data.category === 'certifications')
+};
 ---
 <footer>
 	<div class="container layout text-center">
+		{nonFeaturedPages.length > 0 && (
+			<div class="mb-4">
+				<h5 class="text-muted">Additional Resources</h5>
+				<div class="row">
+					{Object.entries(groupedNonFeatured).map(([category, pages]) => (
+						pages.length > 0 && (
+							<div class="col-md-4 mb-3">
+								<h6 class="text-capitalize text-primary">{category}</h6>
+								<ul class="list-unstyled small">
+									{pages.map((page) => (
+										<li>
+											<a href={`/${page.slug}`} class="text-decoration-none text-muted">
+												{page.data.title}
+											</a>
+										</li>
+									))}
+								</ul>
+							</div>
+						)
+					))}
+				</div>
+				<hr class="my-3" />
+			</div>
+		)}
 		<small>Last Update: {date.toDateString()}</small>
 		<p>
 			<a href="https://github.com/giacchetta">GitHub</a>
