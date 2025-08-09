@@ -13,9 +13,41 @@ import codyops from '../assets/img/codyops.png';
 import trive from '../assets/img/trive.png';
 import moegui from '../assets/img/moegui.png';
 import telnyx from '../assets/img/telnyx.png';
+import { getAllPages, getFeaturedPagesByCategory } from '../utils/content.js';
 
+// Get featured MDX content pages
+const allPages = await getAllPages();
+const featuredCollaborationsPages = getFeaturedPagesByCategory(allPages, 'collaborations');
 ---
 <h2>Collaborations</h2>
+
+{featuredCollaborationsPages.length > 0 && (
+  <div class="mb-4">
+    <h4 class="text-primary">Detailed Case Studies</h4>
+    <div class="row">
+      {featuredCollaborationsPages.map((page) => (
+        <div class="col-md-6 col-lg-4 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">
+                <a href={`/${page.slug}`} class="text-decoration-none">
+                  {page.data.title}
+                </a>
+              </h5>
+              {page.data.description && (
+                <p class="card-text text-muted small">{page.data.description}</p>
+              )}
+              <a href={`/${page.slug}`} class="btn btn-sm btn-outline-success">
+                Read Case Study →
+              </a>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
 <div class="container mt-2">
     <div class="row">
         <div class="col-0 col-md-3 col-lg-3 col-xl-3">
