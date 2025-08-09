@@ -33,6 +33,10 @@ const certificationsCollection = defineCollection({
     publishDate: z.date().optional(),
     updateDate: z.date().optional(),
     featured: z.boolean().default(false),
+    provider: z.string().optional(),
+    certificationLevel: z.string().optional(),
+    status: z.string().optional(),
+    credentialUrl: z.string().optional(),
   }),
 });
 

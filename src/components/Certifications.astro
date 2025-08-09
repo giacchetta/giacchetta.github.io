@@ -4,6 +4,7 @@ import { getAllPages, getFeaturedPagesByCategory } from '../utils/content.js';
 // Get featured MDX content pages
 const allPages = await getAllPages();
 const featuredCertificationsPages = getFeaturedPagesByCategory(allPages, 'certifications');
+const allCertificationsPages = allPages.certifications || [];
 ---
 <h2>Certifications</h2>
 
@@ -31,5 +32,49 @@ const featuredCertificationsPages = getFeaturedPagesByCategory(allPages, 'certif
         </div>
       ))}
     </div>
+  </div>
+)}
+
+{allCertificationsPages.length > 0 && (
+  <div class="mb-4">
+    <h4 class="text-primary">Certifications Overview</h4>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Certification</th>
+          <th scope="col">Provider</th>
+          <th scope="col">Level</th>
+          <th scope="col">Status</th>
+          <th scope="col">Credential</th>
+        </tr>
+      </thead>
+      <tbody>
+        {allCertificationsPages.map((page) => (
+          <tr>
+            <td>
+              <a href={`/${page.slug}`} class="text-decoration-none">
+                {page.data.title}
+              </a>
+            </td>
+            <td>{page.data.provider || 'N/A'}</td>
+            <td>{page.data.certificationLevel || 'N/A'}</td>
+            <td>
+              <span class={`badge ${page.data.status === 'Active' ? 'bg-success' : 'bg-warning'}`}>
+                {page.data.status || 'Unknown'}
+              </span>
+            </td>
+            <td>
+              {page.data.credentialUrl && page.data.credentialUrl !== '#' ? (
+                <a href={page.data.credentialUrl} target="_blank" class="btn btn-sm btn-outline-primary">
+                  View Credential →
+                </a>
+              ) : (
+                <span class="text-muted">Private</span>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   </div>
 )}
