@@ -1,6 +1,6 @@
-# giacchetta.github.io
+# Luciano Giacchetta
 
-This professional online portfolio, meticulously crafted with AstroJS v4.x, serves as a comprehensive digital representation of my career. It is designed to vividly showcase my extensive professional credentials, detailing my educational background, qualifications, and affiliations. The site provides an in-depth look at my work experience, highlighting key roles, responsibilities, and achievements across various projects and organizations. Furthermore, it features notable collaborations, underscoring my ability to work effectively in team environments and contribute to successful collective endeavors. My certifications are also prominently displayed, demonstrating my commitment to continuous learning and professional development. Beyond these core elements, the website integrates a range of other pertinent career information, offering a holistic view of my skills, expertise, and professional journey, all presented in a clean, responsive, and user-friendly interface powered by the latest version of AstroJS.
+This professional online portfolio, meticulously crafted with AstroJS v5.x, serves as a comprehensive digital representation of my career. It is designed to vividly showcase my extensive professional credentials, detailing my educational background, qualifications, and affiliations. The site provides an in-depth look at my work experience, highlighting key roles, responsibilities, and achievements across various projects and organizations. Furthermore, it features notable collaborations, underscoring my ability to work effectively in team environments and contribute to successful collective endeavors. My certifications are also prominently displayed, demonstrating my commitment to continuous learning and professional development. Beyond these core elements, the website integrates a range of other pertinent career information, offering a holistic view of my skills, expertise, and professional journey, all presented in a clean, responsive, and user-friendly interface powered by the latest version of AstroJS with MDX content support.
 
 ## 🚀 Project Structure
 
@@ -20,6 +20,11 @@ This professional online portfolio, meticulously crafted with AstroJS v4.x, serv
 │   │   ├── Credentials.astro    // Technical credentials and skills
 │   │   ├── Footer.astro         // Site footer
 │   │   └── Whatsapp.astro       // WhatsApp contact widget
+│   ├── content/
+│   │   ├── config.ts           // Content collections configuration
+│   │   ├── certifications/     // MDX certification content
+│   │   ├── collaborations/     // MDX collaboration content
+│   │   └── credentials/        // MDX credential content
 │   ├── data/
 │   │   ├── development.js       // Development credentials data
 │   │   ├── netsec.js           // Networking & security credentials
@@ -27,8 +32,11 @@ This professional online portfolio, meticulously crafted with AstroJS v4.x, serv
 │   │   └── public-cloud.js     // Public cloud credentials
 │   ├── layouts/
 │   │   └── Layout.astro        // Main page layout template
-│   └── pages/
-│       └── index.astro         // Homepage
+│   ├── pages/
+│   │   ├── [slug].astro        // Dynamic content pages for MDX content
+│   │   └── index.astro         // Homepage
+│   └── utils/
+│       └── content.js          // Content utility functions
 ├── astro.config.mjs
 ├── package.json
 └── tsconfig.json
@@ -49,11 +57,27 @@ All commands are run from the root of the project, from a terminal:
 
 ## 🛠️ Tech Stack
 
-- **Framework**: [Astro](https://astro.build) v4.16.18
+- **Framework**: [Astro](https://astro.build) v5.12.9
+- **Content**: [MDX](https://mdxjs.com) v4.3.3 with Astro Content Collections
 - **Styling**: [Bootstrap](https://getbootstrap.com) v5.3.3
 - **Build Optimization**: [PurgeCSS](https://purgecss.com) for CSS optimization
 - **Deployment**: Automated via GitHub Actions to GitHub Pages
 - **TypeScript**: Full TypeScript support with type checking
+
+## ✨ Features
+
+### Content Collections
+The site now uses Astro's Content Collections with MDX support for structured content management:
+
+- **Credentials**: Technical skills and qualifications with detailed MDX content
+- **Collaborations**: Professional work collaborations and project highlights
+- **Certifications**: Professional certifications with metadata and detailed descriptions
+
+### Dynamic Content Rendering
+- Dynamic routing via `[slug].astro` for individual content pages
+- Type-safe content schemas with Zod validation
+- SEO-friendly URLs and breadcrumb navigation
+- Responsive design with Bootstrap components
 
 ## 🚀 Deployment
 
@@ -70,5 +94,7 @@ This project is licensed under the [GNU General Public License v3.0 (GPL-3.0-onl
 ## 🔗 Links and Resources
 
 - Deployed site: [giacchetta.github.io](https://giacchetta.github.io)
-- Built with [Astro](https://astro.build) v4.x
+- Built with [Astro](https://astro.build) v5.x
 - Framework documentation: [docs.astro.build](https://docs.astro.build)
+- Content Collections: [docs.astro.build/en/guides/content-collections](https://docs.astro.build/en/guides/content-collections)
+- MDX integration: [docs.astro.build/en/guides/integrations-guide/mdx](https://docs.astro.build/en/guides/integrations-guide/mdx)
