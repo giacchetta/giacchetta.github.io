@@ -22,7 +22,7 @@ const featuredCollaborationsPages = getFeaturedPagesByCategory(allPages, 'collab
 <h2>Collaborations</h2>
 
 {featuredCollaborationsPages.length > 0 && (
-  <div class="mb-4">
+  <div id="detailed-case-studies" class="mb-4">
     <h4 class="text-primary">Detailed Case Studies</h4>
     <div class="row">
       {featuredCollaborationsPages.map((page) => (
@@ -48,14 +48,16 @@ const featuredCollaborationsPages = getFeaturedPagesByCategory(allPages, 'collab
   </div>
 )}
 
-<div class="container mt-2">
+<div id="telnyx" class="container mt-2">
     <div class="row">
         <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <a href="#telnyx">
             <Image
             class="img-thumbnail"
             src={telnyx}
             alt="Telnyx"
             ></Image>
+            </a>
         </div>
         <div class="col-12 col-md-9 col-lg-9 col-xl-8">
             <ul class="list-unstyled">
@@ -71,14 +73,16 @@ const featuredCollaborationsPages = getFeaturedPagesByCategory(allPages, 'collab
     Additionally, I collaborate closely with the Kubernetes Squad to refine our existing stack across numerous deployments in various data centers. Although I am not leading this initiative, I actively contribute to the Squad's efforts.
     </p>
 </div>
-<div class="container mt-2">
+<div id="codyops" class="container mt-2">
     <div class="row">
         <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <a href="#codyops">
             <Image
             class="img-thumbnail"
             src={codyops}
             alt="CodyOps"
             ></Image>
+            </a>
         </div>
         <div class="col-12 col-md-9 col-lg-9 col-xl-8">
             <ul class="list-unstyled">
@@ -93,14 +97,16 @@ const featuredCollaborationsPages = getFeaturedPagesByCategory(allPages, 'collab
     My responsibilities extended to collaborating on frontend deployment (TypeScript) and independently developing and deploying all backend services (NodeJS). This robust backend comprised over 60 serverless functions interconnected with SQL and NoSQL servers in a full-mesh architecture, complemented by a RabbitMQ messaging queue. For monitoring, I leveraged cloud-native Prometheus support, ensuring all cloud functions were monitored with SDK integration and alerting configured for on-call duty. Throughout these initiatives, I actively led and collaborated using agile methodologies.
     </p>
 </div>
-<div class="container mt-2">
+<div id="trive" class="container mt-2">
     <div class="row">
         <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <a href="#trive">
             <Image
             class="img-thumbnail"
             src={trive}
             alt="Trive"
             ></Image>
+            </a>
         </div>
         <div class="col-12 col-md-9 col-lg-9 col-xl-8">
             <ul class="list-unstyled">
@@ -114,14 +120,16 @@ const featuredCollaborationsPages = getFeaturedPagesByCategory(allPages, 'collab
     The extant project deployment spans multiple servers and cloud providers. The objective is to formulate a novel cloud architecture for GCP, inclusive of an estimated Total Cost of Ownership (TCO). This nascent infrastructure will be codified utilizing Terraform, and existing applications will be migrated to GKE. Continuous Integration/Continuous Delivery (CI/CD) will be instantiated with Google Cloud Build, integrated with GitHub Actions. Developers will directly integrate code into Staging and Production environments, with the latter mandating prior approval.
     </p>
 </div>
-<div class="container mt-2">
+<div id="opster" class="container mt-2">
     <div class="row">
         <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <a href="#opster">
             <Image
             class="img-thumbnail"
             src={opster}
             alt="Opster"
             ></Image>
+            </a>
         </div>
         <div class="col-12 col-md-9 col-lg-9 col-xl-8">
             <ul class="list-unstyled">
@@ -135,14 +143,16 @@ const featuredCollaborationsPages = getFeaturedPagesByCategory(allPages, 'collab
         My contributions to the existing DevOps implementation included upgrading EKS Clusters and enhancing Jenkins Pipelines and Terraform configurations. Additionally, I improved the monitoring and dashboard systems. My responsibilities also encompassed designing and coding customer stack implementations, integrating Elastic into their cloud environments through the application of our DevOps procedures.
     </p>
 </div>
-<div class="container mt-2">
+<div id="bimodal" class="container mt-2">
     <div class="row">
         <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <a href="#bimodal">
             <Image
             class="img-thumbnail"
             src={bimodal}
             alt="Bimodal"
             ></Image>
+            </a>
         </div>
         <div class="col-12 col-md-9 col-lg-9 col-xl-8">
             <ul class="list-unstyled">
@@ -156,14 +166,16 @@ const featuredCollaborationsPages = getFeaturedPagesByCategory(allPages, 'collab
         In a brief yet intensive project, I collaborated with a small team of DevOps professionals to lead a significant project migration from GCP to AWS, completed in record time. My responsibilities included designing and coding the majority of Terraform modules essential for deploying this project on AWS EKS. This migration also encompassed the integration of CI/CD pipelines and Istio for comprehensive network management.
     </p>
 </div>
-<div class="container mt-2">
+<div id="everymundo" class="container mt-2">
     <div class="row">
         <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <a href="#everymundo">
             <Image
             class="img-thumbnail"
             src={everymundo}
             alt="Everymundo"
             ></Image>
+            </a>
         </div>
         <div class="col-12 col-md-9 col-lg-9 col-xl-8">
             <ul class="list-unstyled">
@@ -177,14 +189,16 @@ const featuredCollaborationsPages = getFeaturedPagesByCategory(allPages, 'collab
         Architected and deployed OpenShift Stacks within AWS, utilizing CloudFormation for infrastructure as code to ensure consistent replication across all operational regions. Orchestrated the migration of numerous applications, transitioning them initially to Docker and subsequently to OpenShift. Furthermore, automated manual processes through Jenkins Pipelines, establishing a comprehensive CI/CD framework for the build process.
     </p>
 </div>
-<div class="container mt-2">
+<div id="moegui" class="container mt-2">
     <div class="row">
         <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <a href="#moegui">
             <Image
             class="img-thumbnail"
             src={moegui}
             alt="Moegui"
             ></Image>
+            </a>
         </div>
         <div class="col-12 col-md-9 col-lg-9 col-xl-8">
             <ul class="list-unstyled">
@@ -198,15 +212,17 @@ const featuredCollaborationsPages = getFeaturedPagesByCategory(allPages, 'collab
         As VP of Engineering, I led a team of 50, with a renewed focus on project management and commercial endeavors. I collaborated directly with clients, providing optimal solutions tailored to their requirements while guiding the team in sustainable development efforts. This management role presented a significant and challenging transition, allowing me to concurrently manage multiple projects with a particular emphasis on KPIs.
     </p>
 </div>
-<div class="container mt-2">
+<div id="edrans" class="container mt-2">
     <div class="row">
         <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <a href="#edrans">
             <Image
             class="img-thumbnail"
             src={edrans}
             alt="Edrans"
             height={40}
             ></Image>
+            </a>
         </div>
         <div class="col-12 col-md-9 col-lg-9 col-xl-8">
             <ul class="list-unstyled">
@@ -220,14 +236,16 @@ const featuredCollaborationsPages = getFeaturedPagesByCategory(allPages, 'collab
         Directed a team of 10 System Engineers across diverse project scopes. Facilitated client engagement by aligning their requirements with our technical capabilities and developing comprehensive project plans. Designed infrastructure solutions leveraging cutting-edge technologies and best practices, adhering to "Infrastructure as Code" principles. Utilized Terraform for infrastructure orchestration and Ansible for configuration management. Constructed these environments using Docker-Compose and occasionally Kubernetes.
     </p>
 </div>
-<div class="container mt-2">
+<div id="clarin" class="container mt-2">
     <div class="row">
         <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <a href="#clarin">
             <Image
             class="img-thumbnail"
             src={clarin}
             alt="Clarin"
             ></Image>
+            </a>
         </div>
         <div class="col-12 col-md-9 col-lg-9 col-xl-8">
             <ul class="list-unstyled">
@@ -241,14 +259,16 @@ const featuredCollaborationsPages = getFeaturedPagesByCategory(allPages, 'collab
         As a team leader for a group of four, my responsibilities included migrating all existing on-premise infrastructure associated with vertical businesses such as argenprop.com, deautos.com, and empleos.clarin.com. This involved rapidly acquiring knowledge of all three businesses, preparing the AWS infrastructure using Ansible, and overseeing all migrations.
     </p>
 </div>
-<div class="container mt-2">
+<div id="osit" class="container mt-2">
     <div class="row">
         <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <a href="#osit">
             <Image
             class="img-thumbnail"
             src={osit}
             alt="Osit"
             ></Image>
+            </a>
         </div>
         <div class="col-12 col-md-9 col-lg-9 col-xl-8">
             <ul class="list-unstyled">
@@ -262,14 +282,16 @@ const featuredCollaborationsPages = getFeaturedPagesByCategory(allPages, 'collab
         Our team of five was responsible for the infrastructure of customer solutions across Amazon Web Services and other public cloud platforms. My primary objective was to design new solutions developed by our internal Developer Team and oversee the precise provisioning of these systems to the Cloud. This marked my initial exposure to AWS, where I deployed services without prior network and server provisioning.
     </p>
 </div>
-<div class="container mt-2">
+<div id="payu" class="container mt-2">
     <div class="row">
         <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <a href="#payu">
             <Image
             class="img-thumbnail"
             src={payu}
             alt="PayU"
             ></Image>
+            </a>
         </div>
         <div class="col-12 col-md-9 col-lg-9 col-xl-8">
             <ul class="list-unstyled">
@@ -283,14 +305,16 @@ const featuredCollaborationsPages = getFeaturedPagesByCategory(allPages, 'collab
         My primary responsibility involved the design and implementation of the entire cloud architecture. During that period, while most companies maintained on-premise servers, our service delivery across Latin America necessitated the migration of all servers to the United States. I spearheaded the complete cloud infrastructure migration and virtualization efforts. We leveraged Linux servers with native virtualization capabilities to host both our Windows and Linux machines. Furthermore, I engineered the network using stacked Cisco switches to guarantee high availability.
     </p>
 </div>
-<div class="container mt-2">
+<div id="doj" class="container mt-2">
     <div class="row">
         <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <a href="#doj">
             <Image
             class="img-thumbnail"
             src={cm}
             alt="DoJ"
             ></Image>
+            </a>
         </div>
         <div class="col-12 col-md-9 col-lg-9 col-xl-8">
             <ul class="list-unstyled">
@@ -304,14 +328,16 @@ const featuredCollaborationsPages = getFeaturedPagesByCategory(allPages, 'collab
         My tenure at the Buenos Aires Department of Justice was an impactful experience. Initially serving as a Windows System Administrator, I simultaneously pursued a role as a Linux System Administrator. Despite lacking prior Windows Server experience, I successfully deployed approximately 100 Windows Servers utilizing Terminal Services (Remote Desktop), enabling over 10,000 employees to access a Windows Desktop from their legacy computers with PXE support. Additionally, I was responsible for implementing the Print Server, leveraging Linux CUPS, to manage numerous printers across the facilities.
     </p>
 </div>
-<div class="container mt-2">
+<div id="shawcor" class="container mt-2">
     <div class="row">
         <div class="col-0 col-md-3 col-lg-3 col-xl-3">
+            <a href="#shawcor">
             <Image
             class="img-thumbnail"
             src={shawcor}
             alt="Shawcor"
             ></Image>
+            </a>
         </div>
         <div class="col-12 col-md-9 col-lg-9 col-xl-8">
             <ul class="list-unstyled">
