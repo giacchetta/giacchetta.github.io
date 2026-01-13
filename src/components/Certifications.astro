@@ -17,14 +17,14 @@ const allCertificationsPages = allPages.certifications || [];
           <div class="card h-100">
             <div class="card-body">
               <h5 class="card-title">
-                <a href={`/${page.slug}`} class="text-decoration-none">
+                <a href={`/${page.slug}/`} class="text-decoration-none">
                   {page.data.title}
                 </a>
               </h5>
               {page.data.description && (
                 <p class="card-text text-muted small">{page.data.description}</p>
               )}
-              <a href={`/${page.slug}`} class="btn btn-sm btn-outline-warning">
+              <a href={`/${page.slug}/`} class="btn btn-sm btn-outline-warning">
                 View Details →
               </a>
             </div>
@@ -52,7 +52,7 @@ const allCertificationsPages = allPages.certifications || [];
         {allCertificationsPages.map((page) => (
           <tr>
             <td>
-              <a href={`/${page.slug}`} class="text-decoration-none">
+              <a href={`/${page.slug}/`} class="text-decoration-none">
                 {page.data.title}
               </a>
             </td>

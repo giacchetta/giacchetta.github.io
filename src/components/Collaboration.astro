@@ -30,14 +30,14 @@ const featuredCollaborationsPages = getFeaturedPagesByCategory(allPages, 'collab
           <div class="card h-100">
             <div class="card-body">
               <h5 class="card-title">
-                <a href={`/${page.slug}`} class="text-decoration-none">
+                <a href={`/${page.slug}/`} class="text-decoration-none">
                   {page.data.title}
                 </a>
               </h5>
               {page.data.description && (
                 <p class="card-text text-muted small">{page.data.description}</p>
               )}
-              <a href={`/${page.slug}`} class="btn btn-sm btn-outline-success">
+              <a href={`/${page.slug}/`} class="btn btn-sm btn-outline-success">
                 Read Case Study →
               </a>
             </div>
