@@ -10,11 +10,11 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.3",
-    "astro": "^5.12.9",
-    "bootstrap": "^5.3.3"
+    "@astrojs/mdx": "^4.3.13",
+    "astro": "^5.17.1",
+    "bootstrap": "^5.3.8"
   },
   "devDependencies": {
-    "purgecss": "^6.0.0"
+    "purgecss": "^8.0.0"
   }
 }
