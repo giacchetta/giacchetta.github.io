@@ -1,39 +1,96 @@
 ---
 import { Picture } from 'astro:assets';
-import whatsapp from '../assets/img/whatsapp.png';
 import email from '../assets/img/email.png';
-import signal from '../assets/img/signal.png';
 ---
-<div class="row justify-content-center text-center p-3">
-    <p class="fs-4">Don't hesitate to reach out</p>
-    <div class="col-3">
-        <a href="https://wa.me/59897995367">
-            <Picture
-            class="img-thumbnail"
-            src={whatsapp}
-            alt="Whatsapp"
-            height={75}
-            ></Picture>
-        </a>
-    </div>
-    <div class="col-3">
-        <a href="mailto:giacchetta-consulting@outlook.com?subject=Looking%20forward%20working%20together%21">
-            <Picture
-            class="img-thumbnail"
-            src={email}
-            alt="Email"
-            height={75}
-            ></Picture>
-          </a>
-    </div>
-    <div class="col-3">
-        <a href="https://signal.me/#p/+59897995367">
-            <Picture
-            class="img-thumbnail"
-            src={signal}
-            alt="signal"
-            height={75}
-            ></Picture>
-          </a>
-    </div>						
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
+    <button type="button" class="btn p-0 border-0" data-bs-toggle="modal" data-bs-target="#contactModal">
+        <Picture
+        class="img-thumbnail rounded-circle"
+        src={email}
+        alt="Email"
+        height={75}
+        ></Picture>
+    </button>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="contactModalLabel">Contact Me</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <canvas id="emailCanvas" height="60"></canvas>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="copyEmailBtn">Copy Email</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const email = 'hello@lucianogiacchetta.com';
+
+  // Wait for the modal to be shown to draw the canvas, or draw immediately.
+  // Drawing immediately is fine as long as the element exists.
+  function drawEmail() {
+    const canvas = document.getElementById('emailCanvas');
+    if (canvas instanceof HTMLCanvasElement) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.font = '24px Arial';
+        const textMetrics = ctx.measureText(email);
+        const width = textMetrics.width + 20;
+        
+        // Set canvas dimensions
+        canvas.width = width;
+        canvas.height = 60; // Keep height fixed or dynamic
+        
+        // Clear and redraw background (optional, default is transparent)
+        // ctx.fillStyle = 'white';
+        // ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw text
+        ctx.font = '24px Arial'; // Reset font after resize
+        ctx.fillStyle = '#212529'; // Bootstrap dark color
+        ctx.textBaseline = 'middle';
+        ctx.fillText(email, 10, 30);
+      }
+    }
+  }
+
+  // Draw on load
+  drawEmail();
+
+  // Also redraw when modal is shown, just in case (Bootstrap event)
+  const contactModal = document.getElementById('contactModal');
+  if (contactModal) {
+    contactModal.addEventListener('shown.bs.modal', drawEmail);
+  }
+
+  // Copy to clipboard functionality
+  const copyBtn = document.getElementById('copyEmailBtn');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(email).then(() => {
+        // Feedback
+        const originalText = copyBtn.innerText;
+        copyBtn.innerText = 'Copied!';
+        copyBtn.classList.remove('btn-primary');
+        copyBtn.classList.add('btn-success');
+        
+        setTimeout(() => {
+          copyBtn.innerText = originalText;
+          copyBtn.classList.remove('btn-success');
+          copyBtn.classList.add('btn-primary');
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+      });
+    });
+  }
+</script>
