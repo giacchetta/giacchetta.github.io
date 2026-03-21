@@ -47,16 +47,6 @@ const isCollaboration = page.collection === 'collaborations';
           {isCollaboration && (page.data.role || page.data.logo) ? (
             <header class="mb-4">
               <div class="row align-items-center mb-3">
-                {page.data.logo && (
-                  <div class="col-auto">
-                    <Image
-                      class="img-thumbnail"
-                      src={page.data.logo}
-                      alt={page.data.title}
-                      style="max-height: 80px; width: auto;"
-                    />
-                  </div>
-                )}
                 <div class="col">
                   <h1 class="display-5 fw-bold text-primary mb-0">{page.data.title}</h1>
                 </div>

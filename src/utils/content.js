@@ -41,7 +41,9 @@ export function getNonFeaturedPagesByCategory(pages, category) {
 export function getAllNonFeaturedPages(pages) {
   const allNonFeatured = [];
   Object.values(pages).forEach(categoryPages => {
-    const nonFeatured = categoryPages.filter(page => page.data.featured !== true);
+    const nonFeatured = categoryPages.filter(
+      page => page.data.featured !== true && page.data.type !== 'company'
+    );
     allNonFeatured.push(...nonFeatured);
   });
   return allNonFeatured;

@@ -27,6 +27,7 @@ const collaborationsCollection = defineCollection({
     summary: z.string().optional(),
     logo: image().optional(),
     order: z.number().optional(),
+    type: z.enum(['company', 'article']).optional(),
   }),
 });
 
