@@ -14,13 +14,19 @@ const credentialsCollection = defineCollection({
 
 const collaborationsCollection = defineCollection({
   type: 'content',
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string().optional(),
     category: z.string().default('collaborations'),
     publishDate: z.date().optional(),
     updateDate: z.date().optional(),
     featured: z.boolean().default(false),
+    role: z.string().optional(),
+    period: z.string().optional(),
+    location: z.string().optional(),
+    summary: z.string().optional(),
+    logo: image().optional(),
+    order: z.number().optional(),
   }),
 });
 
