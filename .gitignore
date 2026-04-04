@@ -24,4 +24,5 @@ pnpm-debug.log*
 .idea/
 
 # generated styles
-src/styles/bootstrap.css
+src/styles/bootstrap.min.css
+src/styles/bootstrap.min.css.map
