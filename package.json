@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "mkdir -p src/styles && cp node_modules/bootstrap/dist/css/bootstrap.min.css src/styles/bootstrap.min.css && cp node_modules/bootstrap/dist/css/bootstrap.min.css.map src/styles/bootstrap.min.css.map && astro dev",
     "start": "npm run dev",
-    "build": "mkdir -p src/styles && purgecss --css node_modules/bootstrap/dist/css/bootstrap.min.css --content src/**/*.astro --output src/styles/bootstrap.min.css && astro build",
+    "translate": "node scripts/translate.mjs",
+    "build": "mkdir -p src/styles && purgecss --css node_modules/bootstrap/dist/css/bootstrap.min.css --content src/**/*.astro --output src/styles/bootstrap.min.css && node scripts/translate.mjs && astro build",
+    "build:no-translate": "mkdir -p src/styles && purgecss --css node_modules/bootstrap/dist/css/bootstrap.min.css --content src/**/*.astro --output src/styles/bootstrap.min.css && astro build",
+    "dev:i18n": "node scripts/translate.mjs && npm run dev",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -15,6 +18,7 @@
     "bootstrap": "^5.3.8"
   },
   "devDependencies": {
+    "openai": "^6.33.0",
     "purgecss": "^8.0.0"
   }
 }

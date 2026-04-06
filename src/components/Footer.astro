@@ -1,13 +1,14 @@
 ---
-import { getAllPages, getAllNonFeaturedPages } from '../utils/content.js';
+import { getAllPages, getAllNonFeaturedPages, cleanSlug } from '../utils/content.js';
+import { useTranslations, localePath } from '../i18n/utils';
 
+const locale = Astro.currentLocale ?? 'en';
+const t = useTranslations(locale);
 const date = new Date();
 
-// Get all non-featured pages for SEO purposes
-const allPages = await getAllPages();
+const allPages = await getAllPages(locale);
 const nonFeaturedPages = getAllNonFeaturedPages(allPages);
 
-// Group non-featured pages by category
 const groupedNonFeatured = {
   credentials: nonFeaturedPages.filter(page => page.data.category === 'credentials'),
   collaborations: nonFeaturedPages.filter(page => page.data.category === 'collaborations'),
@@ -18,7 +19,7 @@ const groupedNonFeatured = {
 	<div class="container layout text-center">
 		{nonFeaturedPages.length > 0 && (
 			<div class="mb-4">
-				<h5 class="text-muted">Additional Resources</h5>
+				<h5 class="text-muted">{t('footer.additionalResources')}</h5>
 				<div class="row">
 					{Object.entries(groupedNonFeatured).map(([category, pages]) => (
 						pages.length > 0 && (
@@ -27,7 +28,7 @@ const groupedNonFeatured = {
 								<ul class="list-unstyled small">
 									{pages.map((page) => (
 										<li>
-											<a href={`/${page.slug}/`} class="text-decoration-none text-muted">
+											<a href={localePath(`/${cleanSlug(page)}/`, locale)} class="text-decoration-none text-muted">
 												{page.data.title}
 											</a>
 										</li>
@@ -40,7 +41,7 @@ const groupedNonFeatured = {
 				<hr class="my-3" />
 			</div>
 		)}
-		<small>Last Update: {date.toDateString()}</small>
+		<small>{t('footer.lastUpdate')} {date.toDateString()}</small>
 		<p>
 			<a href="https://github.com/giacchetta">GitHub</a>
 			<a href="https://gianet.us/giacchetta">GiaNet</a>

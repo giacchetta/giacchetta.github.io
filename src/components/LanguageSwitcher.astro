@@ -1,0 +1,34 @@
+---
+import { locales } from '../i18n/utils';
+import flagEn from '../assets/img/flag-en.png';
+import flagAr from '../assets/img/flag-ar.png';
+import flagUy from '../assets/img/flag-uy.png';
+
+const currentLocale = Astro.currentLocale ?? 'en';
+const path = Astro.url.pathname;
+
+function getLocalePath(targetLocale: string): string {
+  const cleanPath = path.replace(/^\/(es-ar|es-uy)/, '') || '/';
+  if (targetLocale === 'en') return cleanPath;
+  return `/${targetLocale}${cleanPath}`;
+}
+
+const flagMap: Record<string, string> = {
+  'en': flagEn.src,
+  'es-ar': flagAr.src,
+  'es-uy': flagUy.src,
+};
+---
+<nav class="navbar navbar-light bg-white border-bottom sticky-top shadow-sm py-1">
+  <div class="container-fluid justify-content-end gap-2">
+    {locales.map((l) => (
+      l.code === currentLocale
+        ? <span class="nav-link px-1 active" aria-current="true">
+            <img src={flagMap[l.code]} alt={l.label} width="28" height="28" class="rounded-1 border border-primary border-2" title={l.label} />
+          </span>
+        : <a href={getLocalePath(l.code)} class="nav-link px-1">
+            <img src={flagMap[l.code]} alt={l.label} width="28" height="28" class="rounded-1 opacity-50" title={l.label} />
+          </a>
+    ))}
+  </div>
+</nav>

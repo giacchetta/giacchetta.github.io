@@ -1,0 +1,76 @@
+---
+import { Picture } from 'astro:assets';
+import Profile from '../assets/img/profile.png';
+import Layout from '../layouts/Layout.astro';
+import Collaboration from './Collaboration.astro';
+import Credentials from './Credentials.astro';
+import Contact from './Contact.astro';
+import Certifications from './Certifications.astro';
+import { useTranslations } from '../i18n/utils';
+
+const locale = Astro.currentLocale ?? 'en';
+const t = useTranslations(locale);
+---
+
+<Layout title={t('site.title')}>
+	<main>
+		<div id="title" class="container layout mt-2">
+			<h1 class="display-4">{t('bio.name')}</h1>
+		</div>
+		<div id="description" class="container layout mt-2 clearfix">
+			<Picture
+				class="img-thumbnail float-start me-3 mb-2"
+				style="max-width: 180px; width: 100%;"
+				src={Profile}
+				alt="Profile"
+				loading="eager"
+				fetchpriority="high"
+			></Picture>
+			<p style="text-align: justify;">
+				{t('bio.paragraph1')} <button
+					class="btn btn-link p-0 align-baseline"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target="#moreInfo"
+					aria-expanded="false"
+					aria-controls="moreInfo"
+					data-read-more={t('bio.readMore')}
+					data-read-less={t('bio.readLess')}
+				>{t('bio.readMore')}</button>
+			</p>
+			<div class="collapse" id="moreInfo">
+				<p style="text-align: justify;">
+					{t('bio.paragraph2')}
+				</p>
+				<p style="text-align: justify;">
+					{t('bio.paragraph3')}
+				</p>
+			</div>
+		</div>
+		<div class="container layout mt-2">
+			<Credentials/>
+		</div>
+		<div class="container layout mt-2">
+			<Collaboration/>
+		</div>
+		<div class="container layout mt-2">
+			<Certifications/>
+			<Contact/>
+		</div>
+	</main>
+</Layout>
+
+<script>
+	const moreInfoEl = document.getElementById('moreInfo');
+	const toggleBtn = document.querySelector('[data-bs-target="#moreInfo"]');
+	if (moreInfoEl && toggleBtn) {
+		const readMore = toggleBtn.getAttribute('data-read-more') || 'Read more';
+		const readLess = toggleBtn.getAttribute('data-read-less') || 'Read less';
+		moreInfoEl.addEventListener('show.bs.collapse', () => {
+			toggleBtn.textContent = readLess;
+		});
+		moreInfoEl.addEventListener('hide.bs.collapse', () => {
+			toggleBtn.textContent = readMore;
+		});
+	}
+</script>

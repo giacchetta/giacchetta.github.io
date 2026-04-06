@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import SlugPage from '../../components/SlugPage.astro';
+
+export async function getStaticPaths() {
+  const credentials = await getCollection('credentials');
+  const collaborations = await getCollection('collaborations');
+  const certifications = await getCollection('certifications');
+
+  const allPages = [...credentials, ...collaborations, ...certifications];
+
+  // Derive clean slug from id: "name.es-uy.mdx" → "name", "name.mdx" → "name"
+  const toSlug = (id) => id.replace(/\.(es-ar|es-uy)\.\w+$/, '').replace(/\.\w+$/, '');
+
+  const localePages = allPages.filter((p) => /\.es-uy\.\w+$/.test(p.id));
+  const translatedBaseIds = new Set(localePages.map((p) => toSlug(p.id)));
+
+  const fallbacks = allPages.filter(
+    (p) => !/\.(es-ar|es-uy)\.\w+$/.test(p.id) && !translatedBaseIds.has(toSlug(p.id))
+  );
+
+  return [...localePages, ...fallbacks].map((page) => ({
+    params: { slug: toSlug(page.id) },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+---
+<SlugPage page={page} />
