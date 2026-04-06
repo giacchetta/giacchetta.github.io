@@ -36,30 +36,45 @@ const collaborationPages = getNonFeaturedPagesByCategory(allPages, 'collaboratio
   </div>
 )}
 
-{collaborationPages.map((page) => (
-  <div id={page.slug} class="container mt-2">
-    <div class="row">
-      <div class="col-0 col-md-3 col-lg-3 col-xl-3">
-        <a href={`/${page.slug}/`}>
-          {page.data.logo && (
-            <Image
-              class="img-thumbnail"
-              src={page.data.logo}
-              alt={page.data.title}
-            />
+<div class="row">
+  {collaborationPages.map((page) => (
+    <div class="col-12 col-sm-6 col-lg-4 mb-3">
+      <div class="card shadow-sm h-100">
+        {page.data.logo && (
+          <div class="d-flex justify-content-center align-items-center p-3" style="height: 100px;">
+            <a href={`/${page.slug}/`}>
+              <Image
+                src={page.data.logo}
+                alt={page.data.title}
+                style="max-height: 80px; max-width: 100%; object-fit: contain;"
+              />
+            </a>
+          </div>
+        )}
+        <div class="card-body d-flex flex-column p-3">
+          <h6 class="card-title mb-1">
+            <a href={`/${page.slug}/`} class="text-decoration-none">
+              {page.data.title}
+            </a>
+          </h6>
+          {page.data.role && (
+            <span class="badge bg-primary-subtle text-primary mb-1">{page.data.role}</span>
           )}
-        </a>
-      </div>
-      <div class="col-12 col-md-9 col-lg-9 col-xl-8">
-        <ul class="list-unstyled">
-          {page.data.role && <li><b>{page.data.role}</b></li>}
-          {page.data.period && <li>{page.data.period}</li>}
-          {page.data.location && <li>{page.data.location}</li>}
-        </ul>
+          {page.data.period && (
+            <small class="text-muted">{page.data.period}</small>
+          )}
+          {page.data.summary && (
+            <p class="card-text small mt-2 mb-2" style="text-align: justify;">
+              {page.data.summary.length > 250
+                ? page.data.summary.substring(0, 250) + '...'
+                : page.data.summary}
+            </p>
+          )}
+          <a href={`/${page.slug}/`} class="btn btn-sm btn-outline-primary mt-auto">
+            Read more →
+          </a>
+        </div>
       </div>
     </div>
-    {page.data.summary && (
-      <p style="text-align: justify;">{page.data.summary}</p>
-    )}
-  </div>
-))}
+  ))}
+</div>
