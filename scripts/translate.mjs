@@ -178,7 +178,7 @@ ${JSON.stringify(input, null, 2)}`;
     const escapedValue = value.replace(/"/g, '\\"');
     // Handle multiline values (summary with |)
     if (parsed[key] && parsed[key].includes('\n')) {
-      const regex = new RegExp(`(${key}:\\s*\\|\\n)([\\s\\S]*?)(?=\\n\\w+:|$)`, 'm');
+      const regex = new RegExp(`(${key}:\\s*\\|\\n)([\\s\\S]*?)(?=\\n\\w+:|$)`);
       const indentedValue = value.split('\n').map(l => `  ${l}`).join('\n');
       newFrontmatter = newFrontmatter.replace(regex, `$1${indentedValue}\n`);
     } else {

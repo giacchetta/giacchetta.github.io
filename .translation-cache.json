@@ -36,13 +36,6 @@
         "es-uy"
       ]
     },
-    "src/content/collaborations/codyops.mdx": {
-      "hash": "315a486a0f09e333b3e3d11025e20426314c3c4edf03d0a60f9b9add260c5551",
-      "locales": [
-        "es-ar",
-        "es-uy"
-      ]
-    },
     "src/content/collaborations/doj.mdx": {
       "hash": "a68fc1e6b2bc3856b2bf4d57d503126984a08f8781f12449e6ea7c399164a14d",
       "locales": [
@@ -122,6 +115,13 @@
     },
     "src/content/credentials/github-actions.mdx": {
       "hash": "3fee9a3f6bf2490e9e93816d9c37e6a01832d37eca9445b48140e067db1367b3",
+      "locales": [
+        "es-ar",
+        "es-uy"
+      ]
+    },
+    "src/content/collaborations/codyops.mdx": {
+      "hash": "315a486a0f09e333b3e3d11025e20426314c3c4edf03d0a60f9b9add260c5551",
       "locales": [
         "es-ar",
         "es-uy"
