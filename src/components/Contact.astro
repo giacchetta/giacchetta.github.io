@@ -1,6 +1,10 @@
 ---
 import { Picture } from 'astro:assets';
 import email from '../assets/img/email.png';
+import { useTranslations } from '../i18n/utils';
+
+const locale = Astro.currentLocale ?? 'en';
+const t = useTranslations(locale);
 ---
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
     <button type="button" class="btn p-0 border-0" data-bs-toggle="modal" data-bs-target="#contactModal">
@@ -18,15 +22,15 @@ import email from '../assets/img/email.png';
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="contactModalLabel">Contact Me</h5>
+        <h5 class="modal-title" id="contactModalLabel">{t('contact.title')}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body text-center">
         <canvas id="emailCanvas" height="60"></canvas>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="copyEmailBtn">Copy Email</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="copyEmailBtn" data-copy-label={t('contact.copyEmail')}>{t('contact.copyEmail')}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{t('contact.close')}</button>
       </div>
     </div>
   </div>
@@ -35,8 +39,6 @@ import email from '../assets/img/email.png';
 <script>
   const email = 'hello@lucianogiacchetta.com';
 
-  // Wait for the modal to be shown to draw the canvas, or draw immediately.
-  // Drawing immediately is fine as long as the element exists.
   function drawEmail() {
     const canvas = document.getElementById('emailCanvas');
     if (canvas instanceof HTMLCanvasElement) {
@@ -45,46 +47,35 @@ import email from '../assets/img/email.png';
         ctx.font = '24px Arial';
         const textMetrics = ctx.measureText(email);
         const width = textMetrics.width + 20;
-        
-        // Set canvas dimensions
         canvas.width = width;
-        canvas.height = 60; // Keep height fixed or dynamic
-        
-        // Clear and redraw background (optional, default is transparent)
-        // ctx.fillStyle = 'white';
-        // ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Draw text
-        ctx.font = '24px Arial'; // Reset font after resize
-        ctx.fillStyle = '#212529'; // Bootstrap dark color
+        canvas.height = 60;
+        ctx.font = '24px Arial';
+        ctx.fillStyle = '#212529';
         ctx.textBaseline = 'middle';
         ctx.fillText(email, 10, 30);
       }
     }
   }
 
-  // Draw on load
   drawEmail();
 
-  // Also redraw when modal is shown, just in case (Bootstrap event)
   const contactModal = document.getElementById('contactModal');
   if (contactModal) {
     contactModal.addEventListener('shown.bs.modal', drawEmail);
   }
 
-  // Copy to clipboard functionality
   const copyBtn = document.getElementById('copyEmailBtn');
   if (copyBtn) {
+    const copyLabel = copyBtn.getAttribute('data-copy-label') || 'Copy Email';
     copyBtn.addEventListener('click', () => {
       navigator.clipboard.writeText(email).then(() => {
-        // Feedback
         const originalText = copyBtn.innerText;
         copyBtn.innerText = 'Copied!';
         copyBtn.classList.remove('btn-primary');
         copyBtn.classList.add('btn-success');
-        
+
         setTimeout(() => {
-          copyBtn.innerText = originalText;
+          copyBtn.innerText = copyLabel;
           copyBtn.classList.remove('btn-success');
           copyBtn.classList.add('btn-primary');
         }, 2000);
