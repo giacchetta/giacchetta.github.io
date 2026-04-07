@@ -28,7 +28,7 @@ jobs:
       - name: Build Artifact
         run: |
           npm ci
-          npm run build
+          npm run build:no-translate
       - name: Upload Artifact
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v7

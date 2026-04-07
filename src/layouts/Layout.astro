@@ -18,6 +18,11 @@ const htmlLang = langMap[locale] ?? 'en';
 
 const path = Astro.url.pathname;
 const cleanPath = path.replace(/^\/(es-ar|es-uy)/, '') || '/';
+
+const siteBase = 'https://lucianogiacchetta.com';
+const canonicalURL = `${siteBase}${path}`;
+const ogLocaleMap: Record<string, string> = { 'en': 'en_US', 'es-ar': 'es_AR', 'es-uy': 'es_UY' };
+const ogLocale = ogLocaleMap[locale] ?? 'en_US';
 ---
 
 <!doctype html>
@@ -28,10 +33,16 @@ const cleanPath = path.replace(/^\/(es-ar|es-uy)/, '') || '/';
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="icon" type="image/png" href={Favicon.src} />
 		<meta name="generator" content={Astro.generator} />
-		<link rel="alternate" hreflang="en" href={cleanPath} />
-		<link rel="alternate" hreflang="es-AR" href={`/es-ar${cleanPath}`} />
-		<link rel="alternate" hreflang="es-UY" href={`/es-uy${cleanPath}`} />
-		<link rel="alternate" hreflang="x-default" href={cleanPath} />
+		<link rel="canonical" href={canonicalURL} />
+		<link rel="alternate" hreflang="en" href={`${siteBase}${cleanPath}`} />
+		<link rel="alternate" hreflang="es-AR" href={`${siteBase}/es-ar${cleanPath}`} />
+		<link rel="alternate" hreflang="es-UY" href={`${siteBase}/es-uy${cleanPath}`} />
+		<link rel="alternate" hreflang="x-default" href={`${siteBase}${cleanPath}`} />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={t('meta.description')} />
+		<meta property="og:locale" content={ogLocale} />
 		<title>{title}</title>
 	</head>
 	<body class="bg-light">

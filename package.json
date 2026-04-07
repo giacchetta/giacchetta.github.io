@@ -18,6 +18,7 @@
     "bootstrap": "^5.3.8"
   },
   "devDependencies": {
+    "@astrojs/sitemap": "^3.7.2",
     "openai": "^6.33.0",
     "purgecss": "^8.0.0"
   }
