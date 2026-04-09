@@ -23,5 +23,6 @@
   "contact.copyEmail": "Copy Email",
   "contact.close": "Close",
   "footer.additionalResources": "Additional Resources",
-  "footer.lastUpdate": "Last Update:"
+  "footer.lastUpdate": "Last Update:",
+  "nav.ctaLabel": "Service Down?"
 }

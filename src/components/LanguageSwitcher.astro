@@ -1,11 +1,12 @@
 ---
-import { locales } from '../i18n/utils';
+import { locales, useTranslations } from '../i18n/utils';
 import flagEn from '../assets/img/flag-en.png';
 import flagAr from '../assets/img/flag-ar.png';
 import flagUy from '../assets/img/flag-uy.png';
 
 const currentLocale = Astro.currentLocale ?? 'en';
 const path = Astro.url.pathname;
+const t = useTranslations(currentLocale);
 
 function getLocalePath(targetLocale: string): string {
   const cleanPath = path.replace(/^\/(es-ar|es-uy)/, '') || '/';
@@ -20,7 +21,13 @@ const flagMap: Record<string, string> = {
 };
 ---
 <nav class="navbar navbar-light bg-white border-bottom sticky-top shadow-sm py-1">
-  <div class="container-fluid justify-content-end gap-2">
+  <div class="container-fluid justify-content-end align-items-center gap-2">
+    <div class="d-flex d-md-none me-auto">
+      <button id="phoneCtaBtn" type="button" class="btn btn-sm btn-danger d-flex align-items-center gap-1">
+        <span class="small fw-semibold">{t('nav.ctaLabel')}</span>
+        <canvas id="phoneCanvas" height="16"></canvas>
+      </button>
+    </div>
     {locales.map((l) => (
       l.code === currentLocale
         ? <span class="nav-link px-1 active" aria-current="true">
@@ -32,3 +39,32 @@ const flagMap: Record<string, string> = {
     ))}
   </div>
 </nav>
+
+<script>
+  function drawPhone() {
+    const canvas = document.getElementById('phoneCanvas');
+    if (canvas instanceof HTMLCanvasElement) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        const phone = '(307) 346.2797';
+        ctx.font = '13px Arial';
+        const metrics = ctx.measureText(phone);
+        canvas.width = metrics.width + 4;
+        canvas.height = 16;
+        ctx.font = '13px Arial';
+        ctx.fillStyle = '#ffffff';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(phone, 2, 8);
+      }
+    }
+  }
+
+  drawPhone();
+
+  const phoneBtn = document.getElementById('phoneCtaBtn');
+  if (phoneBtn) {
+    phoneBtn.addEventListener('click', () => {
+      window.location.href = 'tel:+13073462797';
+    });
+  }
+</script>
