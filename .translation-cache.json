@@ -2,7 +2,7 @@
   "version": 1,
   "entries": {
     "src/i18n/en.json": {
-      "hash": "4016ce83a7622772d5d8469d2a3b813f4c3fd84b9d385791b98426683b2ff51e",
+      "hash": "25d474dcdd3ce44b04fc20379b8ea4197ffdcc13ecf0c7f76150d43a29aacf15",
       "locales": [
         "es-ar",
         "es-uy"
@@ -58,7 +58,7 @@
       ]
     },
     "src/content/collaborations/jenkins-migration-github-argocd.mdx": {
-      "hash": "d6f4f5aaaeb3629851dc09e8d47c1295258b33f95b23774bcfa3f57805619776",
+      "hash": "dd444dce77ffbca4d46ce27f6e1cea33702082514e22ca6835475d99dd6b97a4",
       "locales": [
         "es-ar",
         "es-uy"

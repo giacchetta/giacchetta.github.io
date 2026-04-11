@@ -1,51 +1,34 @@
 ---
-import { getAllPages, getAllNonFeaturedPages, cleanSlug } from '../utils/content.js';
-import { useTranslations, localePath } from '../i18n/utils';
+import { Image } from 'astro:assets';
+import Contact from './Contact.astro';
+import emailIcon from '../assets/img/email.png';
+import githubIcon from '../assets/img/github-icon.png';
+import gianetIcon from '../assets/img/gianet.png';
+import linkedinIcon from '../assets/img/linkedin-icon.png';
+import { useTranslations } from '../i18n/utils';
 
 const locale = Astro.currentLocale ?? 'en';
 const t = useTranslations(locale);
 const date = new Date();
-
-const allPages = await getAllPages(locale);
-const nonFeaturedPages = getAllNonFeaturedPages(allPages);
-
-const groupedNonFeatured = {
-  credentials: nonFeaturedPages.filter(page => page.data.category === 'credentials'),
-  collaborations: nonFeaturedPages.filter(page => page.data.category === 'collaborations'),
-  certifications: nonFeaturedPages.filter(page => page.data.category === 'certifications')
-};
 ---
-<footer>
-	<div class="container layout text-center">
-		{nonFeaturedPages.length > 0 && (
-			<div class="mb-4">
-				<h5 class="text-muted">{t('footer.additionalResources')}</h5>
-				<div class="row">
-					{Object.entries(groupedNonFeatured).map(([category, pages]) => (
-						pages.length > 0 && (
-							<div class="col-md-4 mb-3">
-								<h6 class="text-capitalize text-primary">{category}</h6>
-								<ul class="list-unstyled small">
-									{pages.map((page) => (
-										<li>
-											<a href={localePath(`/${cleanSlug(page)}/`, locale)} class="text-decoration-none text-muted">
-												{page.data.title}
-											</a>
-										</li>
-									))}
-								</ul>
-							</div>
-						)
-					))}
-				</div>
-				<hr class="my-3" />
-			</div>
-		)}
-		<small>{t('footer.lastUpdate')} {date.toDateString()}</small>
-		<p>
-			<a href="https://github.com/giacchetta">GitHub</a>
-			<a href="https://gianet.us/giacchetta">GiaNet</a>
-			<a href="https://www.linkedin.com/in/giacchetta/">LinkedIn</a>
-		</p>
-	</div>
+<footer class="text-center py-1">
+	<small class="text-muted">{t('footer.lastUpdate')} {date.toDateString()}</small>
 </footer>
+<nav class="navbar fixed-bottom bg-light border-top py-1 px-3">
+	<div class="d-flex align-items-center gap-3 ms-auto">
+		<a href="https://github.com/giacchetta" aria-label="GitHub">
+			<Image src={githubIcon} alt="GitHub" height={32} class="rounded-circle" />
+		</a>
+		<a href="https://gianet.us/giacchetta" aria-label="GiaNet">
+			<Image src={gianetIcon} alt="GiaNet" height={32} class="rounded-circle" />
+		</a>
+		<a href="https://www.linkedin.com/in/giacchetta/" aria-label="LinkedIn">
+			<Image src={linkedinIcon} alt="LinkedIn" height={32} class="rounded-circle" />
+		</a>
+		<button type="button" class="btn p-0 border-0" data-bs-toggle="modal" data-bs-target="#contactModal">
+			<Image src={emailIcon} alt="Email" height={36} class="rounded-circle" />
+		</button>
+	</div>
+</nav>
+<!-- Modal rendered outside the fixed navbar to avoid stacking context issues -->
+<Contact />

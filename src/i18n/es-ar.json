@@ -1,10 +1,10 @@
 {
   "site.title": "Luciano Giacchetta | Consultoría | Ingeniero DevOps | Ingeniero de Sistemas | Arquitecto Cloud AWS & GCP | Ingeniero de Software",
-  "meta.description": "Luciano Giacchetta es un consultor de TI con experiencia. Especializado en DevOps, Cloud y Desarrollo. Disponible para contratos por hora.",
+  "meta.description": "Luciano Giacchetta es un consultor de TI experimentado. Especializado en DevOps, Cloud y Desarrollo. Disponible para contratos por hora.",
   "bio.name": "Luciano Giacchetta",
-  "bio.paragraph1": "Con dos décadas de experiencia dedicada en la industria de la tecnología, mi carrera ha abarcado un amplio espectro de disciplinas críticas, evolucionando desde la Ingeniería de Sistemas fundamental y el diseño robusto de infraestructura de red hasta la Arquitectura Cloud de punta y la Ingeniería DevOps compleja. A lo largo de este recorrido, tuve el privilegio de colaborar con numerosas empresas exitosas, potenciando consistentemente su capacidad para impulsar la innovación mediante la implementación de diseños de última generación.",
-  "bio.paragraph2": "Un pilar fundamental de mi enfoque ha sido la aplicación meticulosa del Marco Bien Arreglado de AWS. Este riguroso marco ha servido como hoja de ruta para crear soluciones que no solo sean altamente performantes y seguras, sino también resilientes y optimizadas en costos. Al adherirme a sus principios, he logrado diseñar arquitecturas de sistemas sofisticadas que resisten el paso del tiempo y escalan con las necesidades cambiantes del negocio.",
-  "bio.paragraph3": "Estos diseños minuciosamente elaborados han facilitado invariablemente la implementación de soluciones de integración y entrega totalmente automatizadas y de roca sólida. Esta automatización es clave, optimizando los flujos de trabajo y reduciendo significativamente la posibilidad de errores humanos. Además, estas soluciones se basan en una infraestructura que aprovecha un ecosistema de contenedores autoescalable y autorreparable. Esta infraestructura avanzada garantiza que las aplicaciones puedan ajustarse dinámicamente a las demandas fluctuantes, recuperarse automáticamente de posibles problemas y mantener un servicio ininterrumpido, asegurando así alta disponibilidad y eficiencia operativa.",
+  "bio.paragraph1": "Con dos décadas de experiencia dedicada en el rubro de TI, mi carrera ha abarcado un rango completo de disciplinas críticas, evolucionando desde el ingeniería de sistemas fundamental y el diseño robusto de infraestructuras de red hasta la arquitectura cloud de punta de lanza y la ingeniería DevOps intrincada. A lo largo de este recorrido, tuve el privilegio de colaborar con numerosas empresas exitosas, potenciándolas consistentemente para impulsar la innovación mediante la implementación de diseños de última generación.",
+  "bio.paragraph2": "Un pilar fundamental de mi enfoque ha sido la aplicación meticulosa del Marco de Arquitectura Bien Diseñada de AWS. Este riguroso marco ha servido como hoja de ruta para crear soluciones que no solo sean altamente performantes y seguras, sino también resilientes y optimizadas en costos. Al adherirme a sus principios, he logrado diseñar arquitecturas de sistemas sofisticadas que resisten la prueba del tiempo y escalan con las necesidades comerciales en evolución.",
+  "bio.paragraph3": "Estos diseños minuciosamente elaborados han facilitado invariablemente la implementación de soluciones de integración y entrega totalmente automatizadas y de roca sólida. Esta automatización es clave, optimizando los flujos de trabajo y reduciendo significativamente el potencial de error humano. Además, estas soluciones se basan en un fundamento que aprovecha un ecosistema de contenedores autoescalable y autorreparable. Esta infraestructura avanzada garantiza que las aplicaciones puedan ajustarse dinámicamente a las demandas fluctuantes, recuperándose automáticamente de posibles problemas y manteniendo un servicio ininterrumpido, asegurando así alta disponibilidad y eficiencia operativa.",
   "bio.readMore": "Leer más",
   "bio.readLess": "Leer menos",
   "nav.home": "Inicio",
@@ -16,6 +16,8 @@
   "collaborations.caseStudies": "Estudios de Caso Detallados",
   "collaborations.readCaseStudy": "Leer Estudio de Caso",
   "collaborations.readMore": "Leer más",
+  "collaborations.partOfWorkAt": "Parte del trabajo en",
+  "collaborations.relatedArticles": "Estudios de Caso Relacionados",
   "credentials.heading": "Credenciales",
   "credentials.detailed": "Credenciales Detalladas",
   "credentials.learnMore": "Saber Más",
@@ -24,5 +26,5 @@
   "contact.close": "Cerrar",
   "footer.additionalResources": "Recursos Adicionales",
   "footer.lastUpdate": "Última Actualización:",
-  "nav.ctaLabel": "¿Servicio caído?"
+  "nav.ctaLabel": "¿Servicio Caído?"
 }

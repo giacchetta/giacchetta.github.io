@@ -8,7 +8,7 @@ function stripLocaleFromId(id) {
   return id.replace(/\.(es-ar|es-uy)(\.\w+)$/, '$2');
 }
 
-function filterByLocale(entries, locale) {
+export function filterByLocale(entries, locale) {
   if (!locale || locale === 'en') {
     return entries.filter(e => !localeIdPattern.test(e.id));
   }
