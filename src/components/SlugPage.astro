@@ -2,7 +2,9 @@
 import Layout from '../layouts/Layout.astro';
 import { Image } from 'astro:assets';
 import Contact from './Contact.astro';
+import { getCollection } from 'astro:content';
 import { useTranslations, localePath, getLocaleForDate } from '../i18n/utils';
+import { cleanSlug, filterByLocale } from '../utils/content.js';
 
 interface Props {
   page: any;
@@ -12,10 +14,32 @@ const { page } = Astro.props;
 const { Content } = await page.render();
 const isCollaboration = page.collection === 'collaborations';
 const isCompanyCollaboration = isCollaboration && page.data.type === 'company';
+const isArticleCollaboration = isCollaboration && page.data.type === 'article';
 
 const locale = Astro.currentLocale ?? 'en';
 const t = useTranslations(locale);
 const dateLocale = getLocaleForDate(locale);
+
+let companyEntry: any = null;
+let linkedArticles: any[] = [];
+
+if (isCollaboration) {
+  const allCollaborations = await getCollection('collaborations');
+  const localeCollabs = filterByLocale(allCollaborations, locale);
+
+  if (isArticleCollaboration && page.data.company) {
+    companyEntry = localeCollabs.find(
+      (e: any) => e.data.type === 'company' && cleanSlug(e) === page.data.company
+    ) ?? null;
+  }
+
+  if (isCompanyCollaboration) {
+    const currentSlug = cleanSlug(page);
+    linkedArticles = localeCollabs.filter(
+      (e: any) => e.data.type === 'article' && e.data.company === currentSlug
+    );
+  }
+}
 ---
 
 <Layout title={`${page.data.title} | Luciano Giacchetta`}>
@@ -107,12 +131,50 @@ const dateLocale = getLocaleForDate(locale);
                   )}
                 </div>
               </div>
+              {companyEntry && (
+                <div class="mt-2">
+                  <span class="text-muted small me-1">{t('collaborations.partOfWorkAt')}</span>
+                  <a
+                    href={localePath(`/${cleanSlug(companyEntry)}/`, locale)}
+                    class="badge bg-primary-subtle text-primary text-decoration-none"
+                  >
+                    {companyEntry.data.logo && (
+                      <Image
+                        src={companyEntry.data.logo}
+                        alt={companyEntry.data.title}
+                        style="height: 16px; width: auto; vertical-align: middle;"
+                        class="me-1"
+                      />
+                    )}
+                    {companyEntry.data.title}
+                  </a>
+                </div>
+              )}
             </header>
           )}
 
           <div class="content">
             <Content />
           </div>
+
+          {linkedArticles.length > 0 && (
+            <div class="mt-5">
+              <h2 class="h4 fw-semibold text-primary mb-3">{t('collaborations.relatedArticles')}</h2>
+              <div class="list-group">
+                {linkedArticles.map((article: any) => (
+                  <a
+                    href={localePath(`/${cleanSlug(article)}/`, locale)}
+                    class="list-group-item list-group-item-action"
+                  >
+                    <div class="fw-semibold">{article.data.title}</div>
+                    {article.data.description && (
+                      <div class="text-muted small">{article.data.description}</div>
+                    )}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </article>
 

@@ -1,9 +1,45 @@
 ---
-title: "Jenkins CI a GitHub Actions CI y ArgoCD"
-description: "Estudio de caso de una migración exitosa desde Jenkins CI a GitHub Actions CI y ArgoCD"
+title: "De Jenkins CI a GitHub Actions CI"
+description: "Estudio de caso: Migración empresarial de CI/CD desde Jenkins a GitHub Actions"
 category: "collaborations"
 publishDate: 2025-08-09
-updateDate: 2025-08-09
+updateDate: 2026-04-11
 featured: true
 type: "article"
+company: "telnyx"
 ---
+## Resumen Ejecutivo
+Este documento detalla la migración exitosa de un pipeline complejo y de alto consumo de recursos de integración y despliegue continuo (CI/CD) desde una arquitectura centralizada de Jenkins Kubernetes hacia un entorno distribuido e híbrido auto-alojado de GitHub Actions.
+
+---
+
+## 1. La Infraestructura Legada: Jenkins
+El entorno original de CI/CD era altamente capaz, pero dependía de una arquitectura monolítica y fuertemente provisionada.
+
+* **Infraestructura y Cómputo:** Alojado en Kubernetes, impulsado por un clúster robusto provisionado con **128GB de RAM, 32 CPUs y un SSD de 1 TB**.
+* **Modelo de Ejecución:** Los agentes de Jenkins operaban en Pods efímeros. Para manejar cargas pesadas, los trabajos individuales se configuraban para desencadenar dinámicamente múltiples Pods concurrentes.
+* **Gestión de Configuración:** Operaba estrictamente bajo la filosofía de "Jenkins como Código", utilizando pipelines de Groovy profundamente definidos para acomodar escenarios de construcción/despliegue diversos y complejos.
+* **Capacidades del Pipeline:** Los pipelines ejecutaban un ciclo de vida completo: Análisis de Código, Seguridad del Código, Inspección de Secretos, Construcción de Imágenes, Escaneo de Seguridad de Imágenes, Pruebas E2E de Imágenes, Despliegues, Validaciones Post-Despliegue y notificaciones automáticas al equipo.
+* **Ecosistema:** Mantenía integraciones estrechas con una amplia variedad de servicios en la nube externos y sistemas propietarios internos.
+
+---
+
+## 2. La Solución: GitHub Actions
+Para modernizar la experiencia del desarrollador y distribuir la carga de trabajo, el equipo de ingeniería diseñó un movimiento hacia GitHub Actions.
+
+### Arquitectura Híbrida Distribuida
+El clúster monolítico de Kubernetes fue reemplazado por una **infraestructura de runners auto-alojados híbridos** desplegada en **4 sitios distintos**. Este enfoque multi-sitio garantizó alta disponibilidad, redujo la latencia geográfica y mantuvo de forma segura el acceso a los recursos de red interna protegidos.
+
+### Traducción de Flujos de Trabajo y Pipelines
+El equipo migró exitosamente todos los pipelines heredados de Groovy a Workflows de GitHub Actions declarativos. Estos nuevos workflows basados en YAML soportan exactamente los mismos escenarios de construcción y despliegue que el sistema heredado, pero ofrecen mayor visibilidad y facilidad de mantenimiento para el equipo de desarrollo más amplio.
+
+### Acciones Personalizadas de TypeScript
+Para mantener un control estricto y fiabilidad sobre las tareas del pipeline, el equipo evitó armar scripts de terceros no verificados. En su lugar, **todos los pasos de Jenkins heredados fueron reconstruidos como Acciones personalizadas de TypeScript**. Para garantizar la paridad y la estabilidad, cada nueva Acción de TypeScript se desplegó con su propia suite completa de pruebas E2E.
+
+### Ingeniería de Paralelismo Personalizado
+Un obstáculo técnico mayor fue cerrar la brecha en el manejo de concurrencia. Dado que GitHub Actions no soporta nativamente la escalabilidad dinámica multi-Pod exacta que se utilizaba anteriormente en Jenkins, el equipo diseñó una **configuración personalizada para forzar el paralelismo a nivel de trabajo** dentro de GitHub Actions. Esta replicación aseguró que los nuevos pipelines mantuvieran el alto rendimiento y la velocidad del sistema heredado sin comprometer la arquitectura modernizada.
+
+---
+
+## 3. Conclusión
+La migración modernizó exitosamente el ecosistema de CI/CD. Al reemplazar los pipelines de Groovy con workflows declarativos y Acciones personalizadas de TypeScript completamente probadas, la organización logró mejor mantenibilidad y autonomía del desarrollador. Además, la implementación de paralelismo personalizado aseguró que no hubiera degradación en las velocidades de construcción, demostrando que la orquestación compleja heredada puede mapearse efectivamente a infraestructura moderna y distribuida de GitHub Actions.

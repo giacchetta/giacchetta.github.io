@@ -1,9 +1,45 @@
 ---
-title: "Jenkins CI to GitHub Actions CI & ArgoCD"
-description: "Case study of a successful migration from Jenkins CI to GitHub Actions CI & ArgoCD"
+title: "Jenkins CI to GitHub Actions CI"
+description: "Case Study: Enterprise CI/CD Migration from Jenkins to GitHub Actions"
 category: "collaborations"
 publishDate: 2025-08-09
-updateDate: 2025-08-09
+updateDate: 2026-04-11
 featured: true
 type: "article"
+company: "telnyx"
 ---
+## Executive Summary
+This document outlines the successful migration of a complex, resource-intensive continuous integration and deployment (CI/CD) pipeline from a centralized Jenkins Kubernetes architecture to a distributed, hybrid self-hosted GitHub Actions environment. 
+
+---
+
+## 1. The Legacy Infrastructure: Jenkins
+The original CI/CD environment was highly capable but relied on a monolithic, heavily provisioned architecture.
+
+* **Infrastructure & Compute:** Hosted on Kubernetes, powered by a robust cluster provisioned with **128GB RAM, 32 CPUs, and a 1 TB SSD**.
+* **Execution Model:** Jenkins Agents operated on ephemeral Pods. To handle heavy workloads, individual jobs were configured to dynamically trigger multiple concurrent Pods.
+* **Configuration Management:** Operated strictly under a "Jenkins as Code" philosophy, utilizing deeply defined Groovy pipelines to accommodate diverse and complex build/deploy scenarios.
+* **Pipeline Capabilities:** Pipelines executed a comprehensive lifecycle: Code Analysis, Code Security, Secrets Inspection, Image Building, Image Security Scanning, E2E Image Testing, Deployments, Post-Deployment Validations, and automated Team Notifications.
+* **Ecosystem:** Maintained tight integrations with a wide variety of both external cloud services and internal proprietary systems.
+
+---
+
+## 2. The Solution: GitHub Actions
+To modernize the developer experience and distribute the workload, the engineering team architected a move to GitHub Actions.
+
+### Hybrid Distributed Architecture
+The monolithic Kubernetes cluster was replaced with a **hybrid self-hosted runner infrastructure** deployed across **4 distinct sites**. This multi-site approach ensured high availability, reduced geographic latency, and securely maintained access to protected internal network resources.
+
+### Workflow & Pipeline Translation
+The team successfully migrated all legacy Groovy pipelines into declarative GitHub Actions Workflows. These new YAML-based workflows support the exact same build and deploy scenarios as the legacy system, but offer greater visibility and easier maintenance for the broader development team.
+
+### Custom TypeScript Actions
+To maintain strict control and reliability over pipeline tasks, the team avoided cobbling together unverified third-party scripts. Instead, **all legacy Jenkins Steps were rebuilt as custom TypeScript Actions**. To guarantee parity and stability, every new TypeScript Action was deployed with its own comprehensive E2E testing suite.
+
+### Engineering Custom Parallelism
+A major technical hurdle was bridging the gap in concurrency handling. Because GitHub Actions does not natively support the exact multi-Pod dynamic scaling previously utilized in Jenkins, the team engineered a **custom configuration to force job-level parallelism** within GitHub Actions. This replication ensured that the new pipelines maintained the high throughput and speed of the legacy system without compromising the modernized architecture.
+
+---
+
+## 3. Conclusion
+The migration successfully modernized the CI/CD ecosystem. By replacing Groovy pipelines with declarative workflows and custom, fully tested TypeScript Actions, the organization achieved better maintainability and developer autonomy. Furthermore, the custom parallelism implementation ensured no degradation in build speeds, proving that complex legacy orchestration can be effectively mapped to modern, distributed GitHub Actions infrastructure.
