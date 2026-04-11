@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import { locales, useTranslations } from '../i18n/utils';
 import flagEn from '../assets/img/flag-en.png';
 import flagAr from '../assets/img/flag-ar.png';
@@ -14,10 +15,10 @@ function getLocalePath(targetLocale: string): string {
   return `/${targetLocale}${cleanPath}`;
 }
 
-const flagMap: Record<string, string> = {
-  'en': flagEn.src,
-  'es-ar': flagAr.src,
-  'es-uy': flagUy.src,
+const flagMap: Record<string, ImageMetadata> = {
+  'en': flagEn,
+  'es-ar': flagAr,
+  'es-uy': flagUy,
 };
 
 ---
@@ -36,10 +37,10 @@ const flagMap: Record<string, string> = {
     {locales.map((l) => (
       l.code === currentLocale
         ? <span class="nav-link px-1 active" aria-current="true">
-            <img src={flagMap[l.code]} alt={l.label} width="28" height="28" class="rounded-1 border border-primary border-2" title={l.label} />
+            <Image src={flagMap[l.code]} alt={l.label} width={28} height={28} class="rounded-1 border border-primary border-2" title={l.label} />
           </span>
         : <a href={getLocalePath(l.code)} class="nav-link px-1">
-            <img src={flagMap[l.code]} alt={l.label} width="28" height="28" class="rounded-1 opacity-50" title={l.label} />
+            <Image src={flagMap[l.code]} alt={l.label} width={28} height={28} class="rounded-1 opacity-50" title={l.label} />
           </a>
     ))}
   </div>

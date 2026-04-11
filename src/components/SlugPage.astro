@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { Image } from 'astro:assets';
-import Contact from './Contact.astro';
 import { getCollection } from 'astro:content';
 import { useTranslations, localePath, getLocaleForDate } from '../i18n/utils';
 import { cleanSlug, filterByLocale } from '../utils/content.js';
@@ -178,7 +177,6 @@ if (isCollaboration) {
         </div>
       </article>
 
-      <Contact />
     </div>
   </main>
 </Layout>

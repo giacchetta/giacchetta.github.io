@@ -6,17 +6,6 @@ import { useTranslations } from '../i18n/utils';
 const locale = Astro.currentLocale ?? 'en';
 const t = useTranslations(locale);
 ---
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
-    <button type="button" class="btn p-0 border-0" data-bs-toggle="modal" data-bs-target="#contactModal">
-        <Picture
-        class="img-thumbnail rounded-circle"
-        src={email}
-        alt="Email"
-        height={75}
-        ></Picture>
-    </button>
-</div>
-
 <!-- Modal -->
 <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
