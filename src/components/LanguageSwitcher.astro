@@ -28,9 +28,6 @@ const flagMap: Record<string, ImageMetadata> = {
       <button id="phoneCtaBtn" type="button" class="btn btn-sm btn-danger d-flex align-items-center gap-1"
         data-locale={currentLocale}>
         <span class="small fw-semibold">{t('nav.ctaLabel')}</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-          <path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.6 17.6 0 0 0 4.168 6.608 17.6 17.6 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328z"/>
-        </svg>
         <canvas id="phoneCanvas" height="16"></canvas>
       </button>
     </div>
@@ -49,9 +46,9 @@ const flagMap: Record<string, ImageMetadata> = {
 <script>
   const r = (s: string) => s.split('').reverse().join('');
   const phones: Record<string, { d: string; t: string }> = {
-    'en':    { d: r('307 346 2797'),    t: r('+13073462797')    },
-    'es-ar': { d: r('11 2532 5404'),    t: r('+5491125325404')  },
-    'es-uy': { d: r('097 995 367'),     t: r('+59897995367')    },
+    'en':    { d: r('307-346-2797'),    t: r('+13073462797')    },
+    'es-ar': { d: r('11-2532-5404'),    t: r('+5491125325404')  },
+    'es-uy': { d: r('097-995-367'),     t: r('+59897995367')    },
   };
 
   const phoneBtn = document.getElementById('phoneCtaBtn');
