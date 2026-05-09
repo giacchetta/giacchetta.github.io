@@ -19,6 +19,8 @@ const locale = Astro.currentLocale ?? 'en';
 const t = useTranslations(locale);
 const dateLocale = getLocaleForDate(locale);
 
+const pageDescription = page.data.description || page.data.summary || '';
+
 let companyEntry: any = null;
 let linkedArticles: any[] = [];
 
@@ -41,7 +43,7 @@ if (isCollaboration) {
 }
 ---
 
-<Layout title={`${page.data.title} | Luciano Giacchetta`}>
+<Layout title={`${page.data.title} | Luciano Giacchetta`} description={pageDescription}>
   <main>
     <div class="container layout mt-4">
       <div class="row">
