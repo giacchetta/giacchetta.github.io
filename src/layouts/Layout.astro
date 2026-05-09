@@ -7,9 +7,10 @@ import '../styles/bootstrap.min.css';
 
 interface Props {
 	title: string;
+	description?: string;
 }
 
-const { title } = Astro.props;
+const { title, description } = Astro.props;
 const locale = Astro.currentLocale ?? 'en';
 const t = useTranslations(locale);
 
@@ -23,13 +24,15 @@ const siteBase = 'https://lucianogiacchetta.com';
 const canonicalURL = `${siteBase}${path}`;
 const ogLocaleMap: Record<string, string> = { 'en': 'en_US', 'es-ar': 'es_AR', 'es-uy': 'es_UY' };
 const ogLocale = ogLocaleMap[locale] ?? 'en_US';
+
+const metaDescription = description || t('meta.description');
 ---
 
 <!doctype html>
 <html lang={htmlLang}>
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content={t('meta.description')} />
+		<meta name="description" content={metaDescription} />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="icon" type="image/png" href={Favicon.src} />
 		<meta name="generator" content={Astro.generator} />
@@ -41,7 +44,7 @@ const ogLocale = ogLocaleMap[locale] ?? 'en_US';
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content={canonicalURL} />
 		<meta property="og:title" content={title} />
-		<meta property="og:description" content={t('meta.description')} />
+		<meta property="og:description" content={metaDescription} />
 		<meta property="og:locale" content={ogLocale} />
 		<title>{title}</title>
 	</head>
