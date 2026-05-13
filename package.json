@@ -13,8 +13,8 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.13",
-    "astro": "^5.18.1",
+    "@astrojs/mdx": "^5.0.5",
+    "astro": "^6.3.2",
     "bootstrap": "^5.3.8"
   },
   "devDependencies": {
