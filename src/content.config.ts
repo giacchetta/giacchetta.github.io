@@ -1,7 +1,8 @@
 import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
 
 const credentialsCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/credentials' }),
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
@@ -13,7 +14,7 @@ const credentialsCollection = defineCollection({
 });
 
 const collaborationsCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/collaborations' }),
   schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string().optional(),
@@ -33,7 +34,7 @@ const collaborationsCollection = defineCollection({
 });
 
 const certificationsCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/certifications' }),
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
@@ -49,7 +50,7 @@ const certificationsCollection = defineCollection({
 });
 
 export const collections = {
-  'credentials': credentialsCollection,
-  'collaborations': collaborationsCollection,
-  'certifications': certificationsCollection,
+  credentials: credentialsCollection,
+  collaborations: collaborationsCollection,
+  certifications: certificationsCollection,
 };

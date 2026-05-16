@@ -1,11 +1,10 @@
 import { getCollection } from 'astro:content';
 
-// Astro v5 ids include the file extension (e.g. "telnyx.es-ar.mdx")
-const localeIdPattern = /\.(es-ar|es-uy)\.\w+$/;
-// Astro v5 slugs have dots removed (e.g. "telnyxes-ar"), so we derive clean slugs from id
+// Astro v6 glob loader ids remove dots from filenames without extensions (e.g. "github-actionses-ar" or "github-actions")
+const localeIdPattern = /(es-ar|es-uy)$/;
 
 function stripLocaleFromId(id) {
-  return id.replace(/\.(es-ar|es-uy)(\.\w+)$/, '$2');
+  return id.replace(/(es-ar|es-uy)$/, '');
 }
 
 export function filterByLocale(entries, locale) {
@@ -63,7 +62,7 @@ export function getAllNonFeaturedPages(pages) {
   return allNonFeatured;
 }
 
-/** Derive a clean slug from the entry's id (strips locale suffix and extension) */
+/** Derive a clean slug from the entry's id (strips locale suffix) */
 export function cleanSlug(entry) {
-  return entry.id.replace(/\.(es-ar|es-uy)\.\w+$/, '').replace(/\.\w+$/, '');
+  return entry.id.replace(/(es-ar|es-uy)$/, '');
 }

@@ -9,11 +9,11 @@ export async function getStaticPaths() {
 
   const allPages = [...credentials, ...collaborations, ...certifications];
 
-  // English pages only (no locale suffix in id like "telnyx.es-ar.mdx")
+  // English pages only (no locale suffix in id like "github-actionses-ar")
   return allPages
-    .filter((page) => !/\.(es-ar|es-uy)\.\w+$/.test(page.id))
+    .filter((page) => !/(es-ar|es-uy)$/.test(page.id))
     .map((page) => ({
-      params: { slug: page.slug },
+      params: { slug: page.id },
       props: { page },
     }));
 }
