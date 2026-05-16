@@ -9,14 +9,14 @@ export async function getStaticPaths() {
 
   const allPages = [...credentials, ...collaborations, ...certifications];
 
-  // Derive clean slug from id: "name.es-ar.mdx" → "name", "name.mdx" → "name"
-  const toSlug = (id) => id.replace(/\.(es-ar|es-uy)\.\w+$/, '').replace(/\.\w+$/, '');
+  // Derive clean slug from id: "name-es-ar" → "name", "name" → "name"
+  const toSlug = (id) => id.replace(/(es-ar|es-uy)$/, '');
 
-  const localePages = allPages.filter((p) => /\.es-ar\.\w+$/.test(p.id));
+  const localePages = allPages.filter((p) => /es-ar$/.test(p.id));
   const translatedBaseIds = new Set(localePages.map((p) => toSlug(p.id)));
 
   const fallbacks = allPages.filter(
-    (p) => !/\.(es-ar|es-uy)\.\w+$/.test(p.id) && !translatedBaseIds.has(toSlug(p.id))
+    (p) => !/(es-ar|es-uy)$/.test(p.id) && !translatedBaseIds.has(toSlug(p.id))
   );
 
   return [...localePages, ...fallbacks].map((page) => ({

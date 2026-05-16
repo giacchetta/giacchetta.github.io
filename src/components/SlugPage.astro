@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { Image } from 'astro:assets';
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import { useTranslations, localePath, getLocaleForDate } from '../i18n/utils';
 import { cleanSlug, filterByLocale } from '../utils/content.js';
 
@@ -10,7 +10,7 @@ interface Props {
 }
 
 const { page } = Astro.props;
-const { Content } = await page.render();
+const { Content } = await render(page);
 const isCollaboration = page.collection === 'collaborations';
 const isCompanyCollaboration = isCollaboration && page.data.type === 'company';
 const isArticleCollaboration = isCollaboration && page.data.type === 'article';
