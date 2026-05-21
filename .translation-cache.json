@@ -2,7 +2,7 @@
   "version": 1,
   "entries": {
     "src/i18n/en.json": {
-      "hash": "25d474dcdd3ce44b04fc20379b8ea4197ffdcc13ecf0c7f76150d43a29aacf15",
+      "hash": "878ea3a37b89055a5800078a28c412120986ce143b64ad7be403ac0f8cd69b71",
       "locales": [
         "es-ar",
         "es-uy"
@@ -72,14 +72,14 @@
       ]
     },
     "src/content/collaborations/opster.mdx": {
-      "hash": "cad64799f5ae8d9ec81cd487f6b440c2230a17f9b5e93d703af06a4e9773daaf",
+      "hash": "3c55e1b71cfd3192e34836543bd0e17beb659d518d07dc600fb5f4cd015f7585",
       "locales": [
         "es-ar",
         "es-uy"
       ]
     },
     "src/content/collaborations/osit.mdx": {
-      "hash": "e7876a30a10db7cc08666df83509300d30f72368b24251066008bd8ac82849d9",
+      "hash": "73c946c4f3138c0273580017315d4eb86dc91ad88fcdd89e0cfc701b164b498e",
       "locales": [
         "es-ar",
         "es-uy"

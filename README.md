@@ -1,6 +1,6 @@
 # Luciano Giacchetta — Professional Portfolio
 
-A multilingual professional portfolio built with **Astro 6**, showcasing career history, technical credentials, certifications, and detailed case studies. Available in English, Argentine Spanish, and Uruguayan Spanish.
+A multilingual professional portfolio built with **Astro 6**, featuring a modern Bento UI dashboard homepage. Showcases career history, technical credentials, certifications, and detailed case studies. Available in English, Argentine Spanish, and Uruguayan Spanish.
 
 **Live site**: https://lucianogiacchetta.com
 
@@ -52,11 +52,17 @@ A multilingual professional portfolio built with **Astro 6**, showcasing career 
 │   │   └── utils.ts                # useTranslations(), localePath(), locales[]
 │   ├── layouts/Layout.astro        # Base HTML: SEO head, hreflangs, navbar, footer
 │   ├── pages/
-│   │   ├── index.astro             # /  (English home)
+│   │   ├── index.astro             # /  (English home — Bento dashboard)
+│   │   ├── experience.astro        # /experience/  (full roles listing)
+│   │   ├── credentials.astro       # /credentials/  (full skills matrix)
 │   │   ├── [slug].astro            # /[slug]  (English content pages)
 │   │   ├── es-ar/index.astro       # /es-ar/
+│   │   ├── es-ar/experience.astro  # /es-ar/experience/
+│   │   ├── es-ar/credentials.astro # /es-ar/credentials/
 │   │   ├── es-ar/[slug].astro      # /es-ar/[slug]
 │   │   ├── es-uy/index.astro       # /es-uy/
+│   │   ├── es-uy/experience.astro  # /es-uy/experience/
+│   │   ├── es-uy/credentials.astro # /es-uy/credentials/
 │   │   └── es-uy/[slug].astro      # /es-uy/[slug]
 │   ├── styles/bootstrap.min.css    # PurgeCSS output — do not edit manually
 │   └── utils/content.js            # filterByLocale(), getAllPages(), cleanSlug()
