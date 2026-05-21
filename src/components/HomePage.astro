@@ -202,17 +202,23 @@ const techStack = [
     const display = r(d);
     const tel = r(t);
 
+    const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+    const fontSize  = isDesktop ? '24px' : '14px';
+    const canvasH   = isDesktop ? 36 : 20;
+    const textY     = isDesktop ? 18 : 10;
+
     const canvas = document.getElementById('bentoPhoneCanvas');
     if (canvas instanceof HTMLCanvasElement) {
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        ctx.font = '14px Arial';
+        ctx.font = `${fontSize} Arial`;
         const metrics = ctx.measureText(display);
         canvas.width = metrics.width + 4;
-        canvas.height = 20;
+        canvas.height = canvasH;
+        ctx.font = `${fontSize} Arial`;
         ctx.fillStyle = '#212529';
         ctx.textBaseline = 'middle';
-        ctx.fillText(display, 2, 10);
+        ctx.fillText(display, 2, textY);
       }
     }
 
