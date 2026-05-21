@@ -29,7 +29,7 @@ const metaDescription = description || t('meta.description');
 ---
 
 <!doctype html>
-<html lang={htmlLang}>
+<html lang={htmlLang} data-bs-theme="dark">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="description" content={metaDescription} />
@@ -48,7 +48,7 @@ const metaDescription = description || t('meta.description');
 		<meta property="og:locale" content={ogLocale} />
 		<title>{title}</title>
 	</head>
-	<body class="bg-light">
+	<body>
 		<LanguageSwitcher />
 		<slot />
 		<Footer />
