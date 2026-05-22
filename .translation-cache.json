@@ -2,7 +2,7 @@
   "version": 1,
   "entries": {
     "src/i18n/en.json": {
-      "hash": "878ea3a37b89055a5800078a28c412120986ce143b64ad7be403ac0f8cd69b71",
+      "hash": "c7037e676e8dbf4cca5517b3783f4925a9d47d5dafb85af337446c0c3802600c",
       "locales": [
         "es-ar",
         "es-uy"

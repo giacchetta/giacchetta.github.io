@@ -41,26 +41,22 @@ if (isCollaboration) {
     );
   }
 }
+
+const breadcrumbs = [
+  { label: t('nav.home'), href: localePath('/', locale) },
+  ...(isCollaboration
+    ? [{ label: t('nav.experience'), href: localePath('/experience/', locale) }]
+    : [{ label: t('nav.credentials'), href: localePath('/credentials/', locale) }]),
+  ...(isArticleCollaboration && companyEntry
+    ? [{ label: companyEntry.data.title, href: localePath(`/experience/${cleanSlug(companyEntry)}/`, locale) }]
+    : []),
+  { label: page.data.title },
+];
 ---
 
-<Layout title={`${page.data.title} | Luciano Giacchetta`} description={pageDescription}>
+<Layout title={`${page.data.title} | Luciano Giacchetta`} description={pageDescription} breadcrumbs={breadcrumbs}>
   <main>
     <div class="container layout mt-4">
-      <div class="row">
-        <div class="col-12">
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item">
-                <a href={localePath('/', locale)} class="text-decoration-none">{t('nav.home')}</a>
-              </li>
-              <li class="breadcrumb-item active" aria-current="page">
-                {page.data.title}
-              </li>
-            </ol>
-          </nav>
-        </div>
-      </div>
-
       <article class="row">
         <div class="col-12">
           {isCompanyCollaboration ? (
@@ -136,7 +132,7 @@ if (isCollaboration) {
                 <div class="mt-2">
                   <span class="text-muted small me-1">{t('collaborations.partOfWorkAt')}</span>
                   <a
-                    href={localePath(`/${cleanSlug(companyEntry)}/`, locale)}
+                    href={localePath(`/experience/${cleanSlug(companyEntry)}/`, locale)}
                     class="badge bg-primary-subtle text-primary text-decoration-none"
                   >
                     {companyEntry.data.logo && (
@@ -164,7 +160,7 @@ if (isCollaboration) {
               <div class="list-group">
                 {linkedArticles.map((article: any) => (
                   <a
-                    href={localePath(`/${cleanSlug(article)}/`, locale)}
+                    href={localePath(`/experience/${cleanSlug(article)}/`, locale)}
                     class="list-group-item list-group-item-action"
                   >
                     <div class="fw-semibold">{article.data.title}</div>

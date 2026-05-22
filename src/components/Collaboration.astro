@@ -22,14 +22,14 @@ const collaborationPages = getNonFeaturedPagesByCategory(allPages, 'collaboratio
           <div class="card h-100">
             <div class="card-body">
               <h5 class="card-title">
-                <a href={localePath(`/${cleanSlug(page)}/`, locale)} class="text-decoration-none">
+                <a href={localePath(`/experience/${cleanSlug(page)}/`, locale)} class="text-decoration-none">
                   {page.data.title}
                 </a>
               </h5>
               {page.data.description && (
                 <p class="card-text text-muted small">{page.data.description}</p>
               )}
-              <a href={localePath(`/${cleanSlug(page)}/`, locale)} class="btn btn-sm btn-outline-success">
+              <a href={localePath(`/experience/${cleanSlug(page)}/`, locale)} class="btn btn-sm btn-outline-success">
                 {t('collaborations.readCaseStudy')} &rarr;
               </a>
             </div>
@@ -46,7 +46,7 @@ const collaborationPages = getNonFeaturedPagesByCategory(allPages, 'collaboratio
       <div class="card shadow-sm h-100">
         {page.data.logo && (
           <div class="d-flex justify-content-center align-items-center p-3" style="height: 100px;">
-            <a href={localePath(`/${cleanSlug(page)}/`, locale)}>
+            <a href={localePath(`/experience/${cleanSlug(page)}/`, locale)}>
               <Image
                 src={page.data.logo}
                 alt={page.data.title}
@@ -57,7 +57,7 @@ const collaborationPages = getNonFeaturedPagesByCategory(allPages, 'collaboratio
         )}
         <div class="card-body d-flex flex-column p-3">
           <h6 class="card-title mb-1">
-            <a href={localePath(`/${cleanSlug(page)}/`, locale)} class="text-decoration-none">
+            <a href={localePath(`/experience/${cleanSlug(page)}/`, locale)} class="text-decoration-none">
               {page.data.title}
             </a>
           </h6>
@@ -74,7 +74,7 @@ const collaborationPages = getNonFeaturedPagesByCategory(allPages, 'collaboratio
                 : page.data.summary}
             </p>
           )}
-          <a href={localePath(`/${cleanSlug(page)}/`, locale)} class="btn btn-sm btn-outline-primary mt-auto">
+          <a href={localePath(`/experience/${cleanSlug(page)}/`, locale)} class="btn btn-sm btn-outline-primary mt-auto">
             {t('collaborations.readMore')} &rarr;
           </a>
         </div>

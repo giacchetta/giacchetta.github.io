@@ -14,21 +14,5 @@ const date = new Date();
 <footer class="text-center py-1">
 	<small class="text-muted">{t('footer.lastUpdate')} {date.toDateString()}</small>
 </footer>
-<nav class="navbar fixed-bottom bg-body-tertiary border-top border-dark py-1 px-3">
-	<div class="d-flex align-items-center gap-3 ms-auto">
-		<a href="https://github.com/giacchetta" aria-label="GitHub">
-			<Image src={githubIcon} alt="GitHub" height={32} class="rounded-circle" />
-		</a>
-		<a href="https://gianet.us/giacchetta" aria-label="GiaNet">
-			<Image src={gianetIcon} alt="GiaNet" height={32} class="rounded-circle" />
-		</a>
-		<a href="https://www.linkedin.com/in/giacchetta/" aria-label="LinkedIn">
-			<Image src={linkedinIcon} alt="LinkedIn" height={32} class="rounded-circle" />
-		</a>
-		<button type="button" class="btn p-0 border-0" data-bs-toggle="modal" data-bs-target="#contactModal">
-			<Image src={emailIcon} alt="Email" height={36} class="rounded-circle" />
-		</button>
-	</div>
-</nav>
 <!-- Modal rendered outside the fixed navbar to avoid stacking context issues -->
 <Contact />

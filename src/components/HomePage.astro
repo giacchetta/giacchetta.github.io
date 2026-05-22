@@ -10,6 +10,8 @@ const locale = Astro.currentLocale ?? 'en';
 const t = useTranslations(locale);
 const pages = await getAllPages(locale);
 
+const breadcrumbs = [{ label: t('nav.home') }];
+
 const featuredCaseStudy = getFeaturedPagesByCategory(pages, 'collaborations')[0];
 
 const recentRoles = pages.collaborations
@@ -34,7 +36,7 @@ const techStack = [
 ].map((name, i) => ({ name, style: badgeStyles[i % badgeStyles.length] }));
 ---
 
-<Layout title={t('site.title')}>
+<Layout title={t('site.title')} breadcrumbs={breadcrumbs}>
   <main class="container layout mt-3 mb-5">
     <div class="row g-4">
 
@@ -63,7 +65,7 @@ const techStack = [
             {t('bio.availability')}
           </span>
           <a
-            href={localePath('/aws-solutions-architect-professional/', locale)}
+            href={localePath('/credentials/aws-solutions-architect-professional/', locale)}
             class="badge bg-warning-subtle text-warning-emphasis rounded-pill px-3 py-2 text-decoration-none border"
           >
             🏆 AWS Solutions Architect Pro
@@ -116,7 +118,7 @@ const techStack = [
             <h2 class="h5 fw-bold mb-2">{featuredCaseStudy.data.title}</h2>
             <p class="text-muted small mb-3 flex-grow-1">{featuredCaseStudy.data.description}</p>
             <a
-              href={localePath(`/${cleanSlug(featuredCaseStudy)}/`, locale)}
+              href={localePath(`/experience/${cleanSlug(featuredCaseStudy)}/`, locale)}
               class="btn btn-primary mt-auto"
             >
               {t('collaborations.readCaseStudy')} &rarr;
@@ -132,7 +134,7 @@ const techStack = [
           <div class="d-flex flex-column gap-3 flex-grow-1">
             {recentRoles.map((role) => (
               <a
-                href={localePath(`/${cleanSlug(role)}/`, locale)}
+                href={localePath(`/experience/${cleanSlug(role)}/`, locale)}
                 class="d-flex align-items-center gap-3 text-decoration-none text-body p-2 rounded-3 role-row"
               >
                 {role.data.logo && (

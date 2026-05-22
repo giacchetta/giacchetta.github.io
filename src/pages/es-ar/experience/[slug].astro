@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import SlugPage from '../../../components/SlugPage.astro';
+
+export async function getStaticPaths() {
+  const collaborations = await getCollection('collaborations');
+
+  // Derive clean slug from id: "name-es-ar" → "name", "name" → "name"
+  const toSlug = (id) => id.replace(/(es-ar|es-uy)$/, '');
+
+  const localePages = collaborations.filter((p) => /es-ar$/.test(p.id));
+  const translatedBaseIds = new Set(localePages.map((p) => toSlug(p.id)));
+
+  const fallbacks = collaborations.filter(
+    (p) => !/(es-ar|es-uy)$/.test(p.id) && !translatedBaseIds.has(toSlug(p.id))
+  );
+
+  return [...localePages, ...fallbacks].map((page) => ({
+    params: { slug: toSlug(page.id) },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+---
+<SlugPage page={page} />
