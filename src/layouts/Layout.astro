@@ -54,14 +54,16 @@ const metaDescription = description || t('meta.description');
 		<slot />
 		<Footer />
 		{breadcrumbs && (
-			<nav class="navbar fixed-bottom bg-body-tertiary border-top border-dark py-1 px-3">
-				<ol class="breadcrumb mb-0 small">
-					{breadcrumbs.map((crumb, i) => (
-						i < breadcrumbs.length - 1
-							? <li class="breadcrumb-item"><a href={crumb.href}>{crumb.label}</a></li>
-							: <li class="breadcrumb-item active" aria-current="page">{crumb.label}</li>
-					))}
-				</ol>
+			<nav class="navbar fixed-bottom bg-body-tertiary border-top border-dark py-1">
+				<div class="container layout">
+					<ol class="breadcrumb mb-0 small">
+						{breadcrumbs.map((crumb, i) => (
+							i < breadcrumbs.length - 1
+								? <li class="breadcrumb-item"><a href={crumb.href}>{crumb.label}</a></li>
+								: <li class="breadcrumb-item active" aria-current="page">{crumb.label}</li>
+						))}
+					</ol>
+				</div>
 			</nav>
 		)}
 	</body>
