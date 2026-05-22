@@ -1,0 +1,19 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Collaboration from '../../components/Collaboration.astro';
+import { useTranslations, localePath } from '../../i18n/utils';
+
+const locale = Astro.currentLocale ?? 'es-ar';
+const t = useTranslations(locale);
+
+const breadcrumbs = [
+  { label: t('nav.home'), href: localePath('/', locale) },
+  { label: t('nav.experience') }
+];
+---
+<Layout title={`${t('experience.pageTitle')} | ${t('bio.name')}`} breadcrumbs={breadcrumbs}>
+  <main class="container layout mt-3 mb-5">
+    <h1 class="display-5 fw-bold mb-4">{t('experience.pageTitle')}</h1>
+    <Collaboration/>
+  </main>
+</Layout>

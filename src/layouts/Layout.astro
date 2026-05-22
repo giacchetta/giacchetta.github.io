@@ -8,9 +8,10 @@ import '../styles/bootstrap.min.css';
 interface Props {
 	title: string;
 	description?: string;
+	breadcrumbs?: { label: string; href?: string }[];
 }
 
-const { title, description } = Astro.props;
+const { title, description, breadcrumbs } = Astro.props;
 const locale = Astro.currentLocale ?? 'en';
 const t = useTranslations(locale);
 
@@ -29,7 +30,7 @@ const metaDescription = description || t('meta.description');
 ---
 
 <!doctype html>
-<html lang={htmlLang}>
+<html lang={htmlLang} data-bs-theme="dark">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="description" content={metaDescription} />
@@ -48,10 +49,23 @@ const metaDescription = description || t('meta.description');
 		<meta property="og:locale" content={ogLocale} />
 		<title>{title}</title>
 	</head>
-	<body class="bg-light">
+	<body>
 		<LanguageSwitcher />
 		<slot />
 		<Footer />
+		{breadcrumbs && (
+			<nav class="navbar fixed-bottom bg-body-tertiary border-top border-dark py-1">
+				<div class="container layout">
+					<ol class="breadcrumb mb-0 small">
+						{breadcrumbs.map((crumb, i) => (
+							i < breadcrumbs.length - 1
+								? <li class="breadcrumb-item"><a href={crumb.href}>{crumb.label}</a></li>
+								: <li class="breadcrumb-item active" aria-current="page">{crumb.label}</li>
+						))}
+					</ol>
+				</div>
+			</nav>
+		)}
 	</body>
 </html>
 <script>

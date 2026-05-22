@@ -1,6 +1,6 @@
 # AGENTS.md
 
-> **Mandatory**: After every change to the project (features added, removed, or modified), update this file (AGENTS.md) and README.md to reflect the current state. Do not leave either file stale.
+> **Mandatory**: After every change to the project (features added, removed, or modified), update this file (AGENTS.md) and README.md to reflect the current state. Do not leave either file stale. Do not commit code.
 
 ---
 
@@ -15,7 +15,7 @@ A professional portfolio site for Luciano Giacchetta, a DevOps/Cloud/Systems Eng
 | Layer | Technology |
 |---|---|
 | Framework | Astro 6.x with MDX integration |
-| Styling | Bootstrap 5.3 only (no Tailwind, no custom CSS frameworks) |
+| Styling | Bootstrap 5.3 - Keep custom CSS to an absolute minimum |
 | CSS Optimization | PurgeCSS (strips unused Bootstrap at build time) |
 | Content | Astro Content Collections with Zod schemas, MDX files |
 | i18n | Astro built-in i18n + AI-powered translation script (`scripts/translate.mjs`) |
@@ -43,11 +43,17 @@ src/
 ├── layouts/
 │   └── Layout.astro         # Base HTML shell: SEO head, navbar, footer slot
 ├── pages/
-│   ├── index.astro          # English home /
+│   ├── index.astro          # English home / (Bento dashboard)
+│   ├── experience.astro     # English /experience/ (full roles listing)
+│   ├── credentials.astro    # English /credentials/ (full skills matrix)
 │   ├── [slug].astro         # English dynamic content pages /[slug]
 │   ├── es-ar/index.astro    # /es-ar/
+│   ├── es-ar/experience.astro  # /es-ar/experience/
+│   ├── es-ar/credentials.astro # /es-ar/credentials/
 │   ├── es-ar/[slug].astro   # /es-ar/[slug]
 │   ├── es-uy/index.astro    # /es-uy/
+│   ├── es-uy/experience.astro  # /es-uy/experience/
+│   ├── es-uy/credentials.astro # /es-uy/credentials/
 │   └── es-uy/[slug].astro   # /es-uy/[slug]
 ├── styles/
 │   └── bootstrap.min.css    # PurgeCSS output — generated at build, do not edit manually
@@ -62,10 +68,16 @@ scripts/
 
 ```
 Layout.astro (HTML shell, SEO, hreflangs)
-└── pages/index.astro → HomePage.astro
-    ├── Credentials.astro   (reads credentials.{locale}.json + content/credentials/)
-    ├── Collaboration.astro (reads content/collaborations/)
-    └── Certifications.astro (reads content/certifications/)
+└── pages/index.astro → HomePage.astro (Bento dashboard — 6 tiles)
+    ├── Tile 1: Hero (greeting + tagline)
+    ├── Tile 2: Profile & Status (profile pic, availability badge, AWS SA Pro badge)
+    ├── Tile 3: Emergency CTA — desktop only (canvas-obfuscated phone, d-none d-md-flex)
+    ├── Tile 4: Tech Stack Matrix (9 curated badges + View Full Stack → /credentials/)
+    ├── Tile 5: Featured Case Study (jenkins-migration-github-argocd)
+    └── Tile 6: Recent Experience (top 3 roles + View Full Experience → /experience/)
+
+pages/experience.astro → Collaboration.astro (full roles + case studies listing)
+pages/credentials.astro → Credentials.astro (full skills matrix listing)
 
 pages/[slug].astro → SlugPage.astro
     └── Renders MDX content with layout that adapts to entry type (company / article / credential / certification)

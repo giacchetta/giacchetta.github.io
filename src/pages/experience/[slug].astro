@@ -1,0 +1,19 @@
+---
+import { getCollection } from 'astro:content';
+import SlugPage from '../../components/SlugPage.astro';
+
+export async function getStaticPaths() {
+  const collaborations = await getCollection('collaborations');
+
+  // English pages only (no locale suffix in id like "edranses-ar")
+  return collaborations
+    .filter((page) => !/(es-ar|es-uy)$/.test(page.id))
+    .map((page) => ({
+      params: { slug: page.id },
+      props: { page },
+    }));
+}
+
+const { page } = Astro.props;
+---
+<SlugPage page={page} />

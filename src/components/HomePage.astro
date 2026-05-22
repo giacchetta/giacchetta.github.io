@@ -1,74 +1,236 @@
 ---
-import { Picture } from 'astro:assets';
+import { Picture, Image } from 'astro:assets';
 import Profile from '../assets/img/profile.png';
 import Layout from '../layouts/Layout.astro';
-import Collaboration from './Collaboration.astro';
-import Credentials from './Credentials.astro';
-import Certifications from './Certifications.astro';
-import { useTranslations } from '../i18n/utils';
+import { getAllPages, getFeaturedPagesByCategory, cleanSlug } from '../utils/content.js';
+import { useTranslations, localePath } from '../i18n/utils';
+import credentialsRaw from '../data/credentials.json';
 
 const locale = Astro.currentLocale ?? 'en';
 const t = useTranslations(locale);
+const pages = await getAllPages(locale);
+
+const breadcrumbs = [{ label: t('nav.home') }];
+
+const featuredCaseStudy = getFeaturedPagesByCategory(pages, 'collaborations')[0];
+
+const recentRoles = pages.collaborations
+  .filter(p => p.data.type === 'company')
+  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99))
+  .slice(0, 3);
+
+const badgeStyles = [
+  'bg-warning-subtle text-warning-emphasis border',
+  'bg-primary-subtle text-primary border',
+  'bg-info-subtle text-info-emphasis border',
+  'bg-secondary-subtle text-secondary-emphasis border',
+  'bg-success-subtle text-success border',
+  'bg-danger-subtle text-danger border',
+  'bg-dark text-white',
+];
+
+const techStack = [
+  ...new Set(
+    Object.values(credentialsRaw).flat().map((item) => item.product)
+  ),
+].map((name, i) => ({ name, style: badgeStyles[i % badgeStyles.length] }));
 ---
 
-<Layout title={t('site.title')}>
-	<main>
-		<div id="title" class="container layout mt-2">
-			<h1 class="display-4">{t('bio.name')}</h1>
-		</div>
-		<div id="description" class="container layout mt-2 clearfix">
-			<Picture
-				class="img-thumbnail float-start me-3 mb-2"
-				style="max-width: 180px; width: 100%;"
-				src={Profile}
-				alt="Profile"
-				loading="eager"
-				fetchpriority="high"
-			></Picture>
-			<p style="text-align: justify;">
-				{t('bio.paragraph1')} <button
-					class="btn btn-link p-0 align-baseline"
-					type="button"
-					data-bs-toggle="collapse"
-					data-bs-target="#moreInfo"
-					aria-expanded="false"
-					aria-controls="moreInfo"
-					data-read-more={t('bio.readMore')}
-					data-read-less={t('bio.readLess')}
-				>{t('bio.readMore')}</button>
-			</p>
-			<div class="collapse" id="moreInfo">
-				<p style="text-align: justify;">
-					{t('bio.paragraph2')}
-				</p>
-				<p style="text-align: justify;">
-					{t('bio.paragraph3')}
-				</p>
-			</div>
-		</div>
-		<div class="container layout mt-2">
-			<Credentials/>
-		</div>
-		<div class="container layout mt-2">
-			<Collaboration/>
-		</div>
-		<div class="container layout mt-2">
-			<Certifications/>
-		</div>
-	</main>
+<Layout title={t('site.title')} breadcrumbs={breadcrumbs}>
+  <main class="container layout mt-3 mb-5">
+    <div class="row g-4">
+
+      <!-- Tile 1: Hero -->
+      <div class="col-12 col-md-8">
+        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 p-md-5 h-100 d-flex flex-column justify-content-center">
+          <h1 class="display-5 fw-bold mb-3">{t('bio.greeting')}</h1>
+          <p class="lead text-muted mb-0">{t('bio.tagline')}</p>
+        </div>
+      </div>
+
+      <!-- Tile 2: Profile & Status -->
+      <div class="col-12 col-md-4">
+        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 d-flex flex-column align-items-center justify-content-center text-center gap-3">
+          <Picture
+            src={Profile}
+            alt="Luciano Giacchetta"
+            width={140}
+            height={140}
+            class="rounded-circle shadow-sm"
+            loading="eager"
+            fetchpriority="high"
+          />
+          <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2 d-inline-flex align-items-center gap-2">
+            <span class="pulse-dot"></span>
+            {t('bio.availability')}
+          </span>
+          <a
+            href={localePath('/credentials/aws-solutions-architect-professional/', locale)}
+            class="badge bg-warning-subtle text-warning-emphasis rounded-pill px-3 py-2 text-decoration-none border"
+          >
+            🏆 AWS Solutions Architect Pro
+          </a>
+        </div>
+      </div>
+
+      <!-- Tile 3: Emergency CTA — desktop only -->
+      <div class="col-md-4 d-none d-md-flex">
+        <div class="bento-tile bg-danger text-white rounded-5 shadow-sm p-4 h-100 d-flex flex-column justify-content-between w-100">
+          <div>
+            <div class="fs-1 mb-2">⚠️</div>
+            <h2 class="h4 fw-bold mb-2">{t('nav.ctaLabel')}</h2>
+            <p class="mb-3 opacity-75 small">{t('hero.serviceDownBody')}</p>
+          </div>
+          <button
+            id="bentoPhoneBtn"
+            type="button"
+            class="btn btn-light btn-lg d-flex align-items-center justify-content-center gap-2 fw-semibold"
+            data-locale={locale}
+          >
+            <span>📞</span>
+            <canvas id="bentoPhoneCanvas" height="20"></canvas>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tile 4: Tech Stack Matrix -->
+      <div class="col-12 col-md-8">
+        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 d-flex flex-column">
+          <h2 class="h5 fw-bold text-muted mb-3">{t('hero.techStack')}</h2>
+          <div class="d-flex flex-wrap gap-2 flex-grow-1 align-content-start">
+            {techStack.map((skill) => (
+              <span class={`badge rounded-pill px-3 py-2 ${skill.style}`}>{skill.name}</span>
+            ))}
+          </div>
+          <div class="text-end mt-3">
+            <a href={localePath('/credentials/', locale)} class="text-decoration-none small text-primary">
+              {t('hero.viewFullStack')} &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tile 5: Featured Case Study -->
+      {featuredCaseStudy && (
+        <div class="col-12 col-md-4">
+          <div class="bento-tile bg-primary-subtle rounded-5 shadow-sm p-4 h-100 d-flex flex-column">
+            <span class="badge bg-primary text-white rounded-pill mb-3 align-self-start">{t('hero.featuredCaseStudy')}</span>
+            <h2 class="h5 fw-bold mb-2">{featuredCaseStudy.data.title}</h2>
+            <p class="text-muted small mb-3 flex-grow-1">{featuredCaseStudy.data.description}</p>
+            <a
+              href={localePath(`/experience/${cleanSlug(featuredCaseStudy)}/`, locale)}
+              class="btn btn-primary mt-auto"
+            >
+              {t('collaborations.readCaseStudy')} &rarr;
+            </a>
+          </div>
+        </div>
+      )}
+
+      <!-- Tile 6: Recent Experience -->
+      <div class="col-12 col-md-8">
+        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 d-flex flex-column">
+          <h2 class="h5 fw-bold text-muted mb-3">{t('hero.recentRoles')}</h2>
+          <div class="d-flex flex-column gap-3 flex-grow-1">
+            {recentRoles.map((role) => (
+              <a
+                href={localePath(`/experience/${cleanSlug(role)}/`, locale)}
+                class="d-flex align-items-center gap-3 text-decoration-none text-body p-2 rounded-3 role-row"
+              >
+                {role.data.logo && (
+                  <Image
+                    src={role.data.logo}
+                    alt={role.data.title}
+                    style="max-height: 48px; max-width: 64px; object-fit: contain;"
+                    class="rounded-2 flex-shrink-0"
+                  />
+                )}
+                <div class="flex-grow-1 min-w-0">
+                  <div class="fw-semibold text-truncate">{role.data.title}</div>
+                  <small class="text-muted">{role.data.role} · {role.data.period}</small>
+                </div>
+              </a>
+            ))}
+          </div>
+          <div class="text-end mt-3">
+            <a href={localePath('/experience/', locale)} class="btn btn-outline-secondary btn-sm">
+              {t('hero.viewFullExperience')}
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
 </Layout>
 
+<style>
+  .bento-tile {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .bento-tile:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.12) !important;
+  }
+  .pulse-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: var(--bs-success);
+    border-radius: 50%;
+    animation: bento-pulse 1.5s infinite;
+    flex-shrink: 0;
+  }
+  @keyframes bento-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7); }
+    70%  { box-shadow: 0 0 0 8px rgba(25, 135, 84, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(25, 135, 84, 0); }
+  }
+  .role-row {
+    transition: background-color 0.2s ease;
+  }
+  .role-row:hover {
+    background-color: var(--bs-tertiary-bg);
+  }
+</style>
+
 <script>
-	const moreInfoEl = document.getElementById('moreInfo');
-	const toggleBtn = document.querySelector('[data-bs-target="#moreInfo"]');
-	if (moreInfoEl && toggleBtn) {
-		const readMore = toggleBtn.getAttribute('data-read-more') || 'Read more';
-		const readLess = toggleBtn.getAttribute('data-read-less') || 'Read less';
-		moreInfoEl.addEventListener('show.bs.collapse', () => {
-			toggleBtn.textContent = readLess;
-		});
-		moreInfoEl.addEventListener('hide.bs.collapse', () => {
-			toggleBtn.textContent = readMore;
-		});
-	}
+  const r = (s: string) => s.split('').reverse().join('');
+  const phones: Record<string, { d: string; t: string }> = {
+    'en':    { d: r('307-346-2797'),  t: r('+13073462797')   },
+    'es-ar': { d: r('11-2532-5404'),  t: r('+5491125325404') },
+    'es-uy': { d: r('097-995-367'),   t: r('+59897995367')   },
+  };
+
+  const bentoBtn = document.getElementById('bentoPhoneBtn');
+  if (bentoBtn) {
+    const locale = bentoBtn.getAttribute('data-locale') ?? 'en';
+    const { d, t } = phones[locale] ?? phones['en'];
+    const display = r(d);
+    const tel = r(t);
+
+    const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+    const fontSize  = isDesktop ? '24px' : '14px';
+    const canvasH   = isDesktop ? 36 : 20;
+    const textY     = isDesktop ? 18 : 10;
+
+    const canvas = document.getElementById('bentoPhoneCanvas');
+    if (canvas instanceof HTMLCanvasElement) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.font = `${fontSize} Arial`;
+        const metrics = ctx.measureText(display);
+        canvas.width = metrics.width + 4;
+        canvas.height = canvasH;
+        ctx.font = `${fontSize} Arial`;
+        ctx.fillStyle = '#212529';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(display, 2, textY);
+      }
+    }
+
+    bentoBtn.addEventListener('click', () => {
+      window.location.href = 'tel:' + tel;
+    });
+  }
 </script>
