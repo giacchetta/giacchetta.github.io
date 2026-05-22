@@ -4,6 +4,7 @@ import Profile from '../assets/img/profile.png';
 import Layout from '../layouts/Layout.astro';
 import { getAllPages, getFeaturedPagesByCategory, cleanSlug } from '../utils/content.js';
 import { useTranslations, localePath } from '../i18n/utils';
+import credentialsRaw from '../data/credentials.json';
 
 const locale = Astro.currentLocale ?? 'en';
 const t = useTranslations(locale);
@@ -16,17 +17,21 @@ const recentRoles = pages.collaborations
   .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99))
   .slice(0, 3);
 
-const techStack = [
-  { name: 'AWS',            style: 'bg-warning-subtle text-warning-emphasis border' },
-  { name: 'GCP',            style: 'bg-primary-subtle text-primary border' },
-  { name: 'Kubernetes',     style: 'bg-info-subtle text-info-emphasis border' },
-  { name: 'Terraform',      style: 'bg-secondary-subtle text-secondary-emphasis border' },
-  { name: 'GitHub Actions', style: 'bg-dark text-white' },
-  { name: 'Docker',         style: 'bg-primary-subtle text-primary border' },
-  { name: 'OpenShift',      style: 'bg-danger-subtle text-danger border' },
-  { name: 'Python',         style: 'bg-warning-subtle text-warning-emphasis border' },
-  { name: 'Node.js',        style: 'bg-success-subtle text-success border' },
+const badgeStyles = [
+  'bg-warning-subtle text-warning-emphasis border',
+  'bg-primary-subtle text-primary border',
+  'bg-info-subtle text-info-emphasis border',
+  'bg-secondary-subtle text-secondary-emphasis border',
+  'bg-success-subtle text-success border',
+  'bg-danger-subtle text-danger border',
+  'bg-dark text-white',
 ];
+
+const techStack = [
+  ...new Set(
+    Object.values(credentialsRaw).flat().map((item) => item.product)
+  ),
+].map((name, i) => ({ name, style: badgeStyles[i % badgeStyles.length] }));
 ---
 
 <Layout title={t('site.title')}>
