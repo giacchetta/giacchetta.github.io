@@ -20,6 +20,7 @@ A professional portfolio site for Luciano Giacchetta, a DevOps/Cloud/Systems Eng
 | Content | Astro Content Collections with Zod schemas, MDX files |
 | i18n | Astro built-in i18n + AI-powered translation script (`scripts/translate.mjs`) |
 | Sitemap | `@astrojs/sitemap` with i18n support |
+| Agent/LLM access | `astro-llms-md` — per-page `.md` files + `/llms.txt` + `/llms-full.txt` |
 | Deployment | GitHub Actions → GitHub Pages |
 
 **CSS Rule**: Only use Bootstrap 5.3 classes. Do not introduce any other CSS framework or large custom stylesheets.
@@ -233,6 +234,25 @@ The CI/CD workflow (`.github/workflows/static.yaml`) runs `npm run build:no-tran
 4. Add locale instructions to `scripts/translate.mjs`
 5. Add locale data files: `src/data/credentials.[locale].json`
 6. Run `npm run translate`
+
+---
+
+## Agent / LLM Access
+
+The site exposes machine-readable content via the `astro-llms-md` integration, which runs post-build and converts every HTML page to a clean `.md` file.
+
+**Generated files (in `dist/` and served live):**
+- `/llms.txt` — discovery index linking all `.md` files, grouped by section
+- `/llms-full.txt` — all page content concatenated in a single file
+- Per-page markdown at the same path as the HTML page: e.g., `/experience.md`, `/experience/telnyx.md`, `/es-ar/experience.md`
+
+**Configuration** (in `astro.config.mjs`):
+- `contentSelector: 'main'` — extracts only the `<main>` element, excluding nav/footer/breadcrumbs
+- `excludeSelectors: [...DEFAULT_NOISE_SELECTORS]` — strips `nav`, `aside`, `footer`, `form`, hidden elements
+
+**Phone obfuscation**: The Emergency CTA tile in `HomePage.astro` has `data-llms-ignore` on its wrapper `div`, so the phone canvas is excluded from all markdown output. Canvas elements produce no text by nature, but the attribute makes the exclusion explicit.
+
+**No manual maintenance**: The markdown files are regenerated automatically on every build. Do not commit files from `dist/`.
 
 ---
 
