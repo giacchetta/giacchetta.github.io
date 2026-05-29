@@ -14,6 +14,7 @@ A multilingual professional portfolio built with **Astro 6**, featuring a modern
 - **CSS Optimization**: [PurgeCSS](https://purgecss.com) — removes unused Bootstrap at build time
 - **i18n**: Astro built-in i18n routing + AI-powered translation script
 - **Sitemap**: `@astrojs/sitemap` with locale support
+- **Agent/LLM access**: `astro-llms-md` — generates per-page `.md` files, `/llms.txt`, and `/llms-full.txt` at build time
 - **Deployment**: GitHub Actions → GitHub Pages
 
 ---
