@@ -1,0 +1,69 @@
+---
+title: "Villa Pinedo GCP Migration"
+description: "Case Study: Modernizing Infrastructure for Villa Pinedo – A Journey to Google Cloud"
+category: "collaborations"
+publishDate: 2023-11-09
+updateDate: 2023-11-09
+featured: true
+type: "article"
+company: "trive"
+tech_stack: ["GCP", "Terraform", "GKE", "Docker", "Kubernetes", "GitLab CI/CD", "Traefik", "ElasticSearch", "PHP", "Drupal", "WordPress", "Next.js"]
+---
+## Executive Summary
+As a consultant at Trive, I was tasked with leading a comprehensive infrastructure migration for **Villa Pinedo**, a Dutch non-profit organization dedicated to supporting children of divorced parents. They were operating on a fragmented, legacy hosting environment that struggled to keep up with their growing ecosystem of web applications, volunteer portals, and their core "MyBuddy" platform. 
+
+I architected and executed a full migration to Google Cloud Platform (GCP), utilizing Kubernetes (GKE) and Infrastructure as Code (Terraform) to deliver a highly available, secure, and automated environment.
+
+## 1. The Client & The Challenge
+Villa Pinedo’s digital footprint was incredibly diverse. Over the years, their platform had grown organically into a complex web of loosely coupled applications, including:
+* Multiple **WordPress** sites (Main site, Webshop, Training portal, Volunteer portal).
+* A **Drupal**-based Backoffice.
+* A headless backend API running on **Directus** (Node.js).
+* A custom PHP backend for their flagship **MyBuddy App** (which matched children with buddies, featuring cron-driven email reminders, SendBird chat integration, and complex taxonomy matching).
+* A modern **Next.js** frontend.
+
+**The pain points of their legacy hosting were clear:**
+* **Lack of Scalability:** Legacy VMs and shared hosting couldn't dynamically scale during traffic spikes.
+* **Inconsistent Deployments:** Deployments were manual and error-prone.
+* **Fragmented Security:** Managing SSL certificates and restricting access to internal staging/admin environments was a massive headache.
+* **High Operational Overhead:** Managing databases, stateful file uploads, and routing across so many different frameworks was becoming a bottleneck for their development team.
+
+## 2. Deep Dive: Infrastructure as Code with Terraform
+To ensure the environment was reproducible, scalable, and self-documenting, I bootstrapped the entire GCP foundation using **Terraform**. While the application logic lived in Kubernetes, Terraform was responsible for the heavy lifting of the cloud primitives.
+
+I structured the Terraform codebase into modular components to manage the following:
+
+* **VPC & Networking:** I provisioned a custom VPC with isolated private subnets for the GKE nodes and databases. To ensure internal pods could reach the internet securely without public IPs, I deployed Cloud NAT and Cloud Routers. 
+* **Global Load Balancing Assets:** Terraform reserved the static global IP (`vp-gke-ew4a-ingress`) that would later be attached to the K8s Ingress Controller.
+* **Google Kubernetes Engine (GKE):** I defined a regional GKE cluster with two distinct Node Pools:
+  * **General Pool:** Standard, highly available instances for production workloads (Next.js, Production APIs, ElasticSearch).
+  * **Spot Instance Pool:** To aggressively optimize costs for this non-profit, I created a dedicated node pool utilizing GCP Spot Instances (preemptible VMs). I labeled this pool via Terraform (`cloud.google.com/gke-spot: 'true'`), allowing Kubernetes to automatically schedule all staging and non-critical workloads onto these heavily discounted machines.
+* **Cloud SQL (MySQL 8.0):** I migrated their legacy local databases to fully managed Cloud SQL instances. Terraform handled the provisioning, automated daily backups, and high-availability configuration.
+* **Cloud Storage (GCS):** Created dedicated buckets (e.g., `vp-pro-website-api`, `vp-stg-website-api`) for media offloading, allowing the Directus API and CMS platforms to store user uploads statelessly.
+* **IAM & Service Accounts:** Terraform established the principle of least privilege. It generated the dedicated Service Accounts for GitLab CI/CD (`gitlab@...`) with strict IAM bindings, allowing the CI pipeline to authenticate and deploy to GKE without possessing overly broad project permissions.
+
+## 3. Kubernetes Orchestration & Application Migration
+With the Terraform foundation laid, I tackled the containerization and orchestration of the applications.
+
+* **Containerization:** I wrote custom `Dockerfiles` and `docker-compose` setups to standardize the local development environment for the team, ensuring that "it works on my machine" translated perfectly to production.
+* **StatefulSets for Legacy CMS:** Migrating stateful apps like Drupal and WordPress to Kubernetes is notoriously tricky due to plugin and media storage needs. I solved this by configuring `StatefulSets` instead of standard Deployments, backing them with dynamically provisioned `PersistentVolumeClaims` (PVCs) using GCP's `standard-rwo` storage classes.
+* **Centralized Search:** To power complex searches across the Drupal backoffice and buddy matching system, I deployed a robust **ElasticSearch** cluster inside GKE using Helm. I automated the generation of internal TLS certificates using a custom Docker init container to ensure data-in-transit remained encrypted.
+* **Automated CronJobs:** The MyBuddy app relied heavily on scheduled tasks (e.g., email reminders, hiding inactive conversations). I translated these legacy Linux crontabs into native Kubernetes `CronJob` resources, ensuring they ran reliably in isolated, ephemeral containers.
+
+## 4. Advanced Traffic Management & Security
+
+Routing traffic accurately among 10+ different services (Webshop, Backoffice, APIs, Staging environments) required a sophisticated Ingress setup. 
+
+* **Automated SSL:** I implemented Google’s `ManagedCertificate` K8s resources. By tying these to the Ingress, we completely offloaded the burden of SSL certificate generation and auto-renewal to GCP.
+* **HTTP to HTTPS Redirects:** Enforced globally at the load balancer level via GKE `FrontendConfig` Custom Resource Definitions (CRDs).
+* **Zero-Trust Security with Identity-Aware Proxy (IAP):** One of the most critical requirements was securing the staging environments and administrative tools (like phpMyAdmin and the Drupal Backoffice). Instead of relying on clunky VPNs or easily spoofed IP whitelists, I integrated **Google Identity-Aware Proxy (IAP)** directly into the Kubernetes `BackendConfig`. This ensured that only authorized Trive and Villa Pinedo staff with the correct Google Workspace credentials could even reach the login screens of sensitive endpoints.
+
+## 5. The Outcome
+The migration was a resounding success, completely transforming how Villa Pinedo delivered their digital services. 
+
+* **Stability & Scale:** The GKE cluster seamlessly handled traffic spikes, ensuring the MyBuddy app remained online and responsive so vulnerable children could always reach their assigned buddies.
+* **Developer Velocity:** The GitLab CI/CD pipelines reduced deployment times from hours to minutes. Developers could safely test on Spot-instance-backed staging environments and push to production with confidence.
+* **Cost Efficiency:** By utilizing Terraform to dynamically provision Spot instance node pools for staging environments, we maximized the value of their cloud budget.
+* **Enhanced Security:** Managed certificates, private GKE nodes, and Google IAP brought enterprise-grade, zero-trust security to a non-profit organization.
+
+Looking back, this project stands out as a perfect example of how modern DevOps practices—anchored by Terraform and Kubernetes—can directly empower an organization doing incredibly meaningful work in the community.
