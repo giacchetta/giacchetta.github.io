@@ -126,6 +126,13 @@
         "es-ar",
         "es-uy"
       ]
+    },
+    "src/content/collaborations/villa-pinedo-gcp-migration.mdx": {
+      "hash": "3e6731ec4f9a1fca984bd4e4c6df3b6c252b8d5392902c66d8264e0f7f37771c",
+      "locales": [
+        "es-ar",
+        "es-uy"
+      ]
     }
   }
 }
