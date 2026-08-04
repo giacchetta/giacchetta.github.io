@@ -10,6 +10,7 @@ const credentialsCollection = defineCollection({
     publishDate: z.date().optional(),
     updateDate: z.date().optional(),
     featured: z.boolean().default(false),
+    draft: z.boolean().default(false),
   }),
 });
 
@@ -22,6 +23,7 @@ const collaborationsCollection = defineCollection({
     publishDate: z.date().optional(),
     updateDate: z.date().optional(),
     featured: z.boolean().default(false),
+    draft: z.boolean().default(false),
     role: z.string().optional(),
     period: z.string().optional(),
     location: z.string().optional(),
@@ -42,6 +44,7 @@ const certificationsCollection = defineCollection({
     publishDate: z.date().optional(),
     updateDate: z.date().optional(),
     featured: z.boolean().default(false),
+    draft: z.boolean().default(false),
     provider: z.string().optional(),
     certificationLevel: z.string().optional(),
     status: z.string().optional(),

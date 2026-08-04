@@ -14,7 +14,6 @@ export default defineConfig({
       excludeSelectors: [...DEFAULT_NOISE_SELECTORS],
       exclude: [
         // Legacy SEO redirect stubs — canonical content lives under /experience/ and /credentials/
-        'aws-solutions-architect-professional',
         'github-actions',
         'bimodal',
         'codyops',
@@ -23,8 +22,6 @@ export default defineConfig({
     }),
   ],
   redirects: {
-   '/aws-solutions-architect-professional/': '/credentials/aws-solutions-architect-professional/',
-
    '/github-actions/': '/credentials/github-actions/',
 
    '/bimodal/': '/experience/bimodal/',

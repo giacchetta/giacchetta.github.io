@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import SlugPage from '../../components/SlugPage.astro';
 
 export async function getStaticPaths() {
-  const collaborations = await getCollection('collaborations');
+  const collaborations = (await getCollection('collaborations')).filter(p => !p.data.draft);
   return collaborations.map((page) => ({
     params: { slug: page.id },
     props: { page },
