@@ -67,7 +67,7 @@ Layout.astro (HTML shell, SEO, canonical link, footer slot — no navbar)
     ├── Tile 2: Profile (profile pic, name, Email button → opens #contactModal)
     ├── Tile 3: Empty placeholder (future use; full-width on mobile, 1/3 column on desktop)
     ├── Tile 4: Tech Stack Matrix (9 curated badges + View Full Stack → /credentials/)
-    ├── Tile 5: Featured Case Study (jenkins-migration-github-argocd)
+    ├── Tile 5: Case Studies (2 most recent `type: "article"` entries by publishDate, each row clickable, + View All link to /experience/#detailed-case-studies)
     └── Tile 6: Recent Experience (top 3 roles + View Full Experience → /experience/)
 
 pages/experience.astro → Collaboration.astro (full roles + case studies listing, in-page breadcrumb)

@@ -11,7 +11,10 @@ const pages = await getAllPages();
 
 const breadcrumbs = [{ label: t('nav.home') }];
 
-const featuredCaseStudy = getFeaturedPagesByCategory(pages, 'collaborations')[0];
+const featuredCaseStudies = getFeaturedPagesByCategory(pages, 'collaborations')
+  .filter(p => p.data.type === 'article')
+  .sort((a, b) => new Date(b.data.publishDate ?? 0) - new Date(a.data.publishDate ?? 0))
+  .slice(0, 2);
 
 const recentRoles = pages.collaborations
   .filter(p => p.data.type === 'company')
@@ -94,19 +97,31 @@ const techStack = [
         </div>
       </div>
 
-      <!-- Tile 5: Featured Case Study -->
-      {featuredCaseStudy && (
+      <!-- Tile 5: Case Studies -->
+      {featuredCaseStudies.length > 0 && (
         <div class="col-12 col-md-4">
           <div class="bento-tile bg-primary-subtle rounded-5 shadow-sm p-4 h-100 d-flex flex-column">
-            <span class="badge bg-primary text-white rounded-pill mb-3 align-self-start">{t('hero.featuredCaseStudy')}</span>
-            <h2 class="h5 fw-bold mb-2">{featuredCaseStudy.data.title}</h2>
-            <p class="text-muted small mb-3 flex-grow-1">{featuredCaseStudy.data.description}</p>
-            <a
-              href={`/experience/${cleanSlug(featuredCaseStudy)}/`}
-              class="btn btn-primary mt-auto"
-            >
-              {t('collaborations.readCaseStudy')} &rarr;
-            </a>
+            <span class="badge bg-primary text-white rounded-pill mb-3 align-self-start">{t('hero.featuredCaseStudies')}</span>
+            <div class="d-flex flex-column gap-2 flex-grow-1">
+              {featuredCaseStudies.map((study) => (
+                <a
+                  href={`/experience/${cleanSlug(study)}/`}
+                  class="text-decoration-none text-body p-2 rounded-3 tile-row"
+                >
+                  <div class="fw-semibold">{study.data.title}</div>
+                  {study.data.description && (
+                    <small class="text-muted case-study-desc">
+                      {study.data.description.replace(/^Case Study:\s*/i, '')}
+                    </small>
+                  )}
+                </a>
+              ))}
+            </div>
+            <div class="text-end mt-3">
+              <a href="/experience/#detailed-case-studies" class="text-decoration-none small text-primary">
+                {t('hero.viewAllCaseStudies')} &rarr;
+              </a>
+            </div>
           </div>
         </div>
       )}
@@ -119,7 +134,7 @@ const techStack = [
             {recentRoles.map((role) => (
               <a
                 href={`/experience/${cleanSlug(role)}/`}
-                class="d-flex align-items-center gap-3 text-decoration-none text-body p-2 rounded-3 role-row"
+                class="d-flex align-items-center gap-3 text-decoration-none text-body p-2 rounded-3 tile-row"
               >
                 {role.data.logo && (
                   <Image
@@ -156,11 +171,17 @@ const techStack = [
     transform: scale(1.02);
     box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.12) !important;
   }
-  .role-row {
+  .tile-row {
     transition: background-color 0.2s ease;
   }
-  .role-row:hover {
+  .tile-row:hover {
     background-color: var(--bs-tertiary-bg);
+  }
+  .case-study-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 </style>
 
