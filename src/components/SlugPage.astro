@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import { Image } from 'astro:assets';
 import { getCollection, render } from 'astro:content';
-import { useTranslations, localePath, getLocaleForDate } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
 import { cleanSlug, filterByLocale } from '../utils/content.js';
 
 interface Props {
@@ -15,9 +15,8 @@ const isCollaboration = page.collection === 'collaborations';
 const isCompanyCollaboration = isCollaboration && page.data.type === 'company';
 const isArticleCollaboration = isCollaboration && page.data.type === 'article';
 
-const locale = Astro.currentLocale ?? 'en';
-const t = useTranslations(locale);
-const dateLocale = getLocaleForDate(locale);
+const t = useTranslations();
+const dateLocale = 'en-US';
 
 const pageDescription = page.data.description || page.data.summary || '';
 
@@ -26,7 +25,7 @@ let linkedArticles: any[] = [];
 
 if (isCollaboration) {
   const allCollaborations = await getCollection('collaborations');
-  const localeCollabs = filterByLocale(allCollaborations, locale);
+  const localeCollabs = filterByLocale(allCollaborations);
 
   if (isArticleCollaboration && page.data.company) {
     companyEntry = localeCollabs.find(
@@ -43,20 +42,29 @@ if (isCollaboration) {
 }
 
 const breadcrumbs = [
-  { label: t('nav.home'), href: localePath('/', locale) },
+  { label: t('nav.home'), href: '/' },
   ...(isCollaboration
-    ? [{ label: t('nav.experience'), href: localePath('/experience/', locale) }]
-    : [{ label: t('nav.credentials'), href: localePath('/credentials/', locale) }]),
+    ? [{ label: t('nav.experience'), href: '/experience/' }]
+    : [{ label: t('nav.credentials'), href: '/credentials/' }]),
   ...(isArticleCollaboration && companyEntry
-    ? [{ label: companyEntry.data.title, href: localePath(`/experience/${cleanSlug(companyEntry)}/`, locale) }]
+    ? [{ label: companyEntry.data.title, href: `/experience/${cleanSlug(companyEntry)}/` }]
     : []),
   { label: page.data.title },
 ];
 ---
 
-<Layout title={`${page.data.title} | Luciano Giacchetta`} description={pageDescription} breadcrumbs={breadcrumbs}>
+<Layout title={`${page.data.title} | Luciano Giacchetta`} description={pageDescription}>
   <main>
     <div class="container layout mt-4">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          {breadcrumbs.map((crumb, i) => (
+            i < breadcrumbs.length - 1
+              ? <li class="breadcrumb-item"><a href={crumb.href}>{crumb.label}</a></li>
+              : <li class="breadcrumb-item active" aria-current="page">{crumb.label}</li>
+          ))}
+        </ol>
+      </nav>
       <article class="row">
         <div class="col-12">
           {isCompanyCollaboration ? (
@@ -132,7 +140,7 @@ const breadcrumbs = [
                 <div class="mt-2">
                   <span class="text-muted small me-1">{t('collaborations.partOfWorkAt')}</span>
                   <a
-                    href={localePath(`/experience/${cleanSlug(companyEntry)}/`, locale)}
+                    href={`/experience/${cleanSlug(companyEntry)}/`}
                     class="badge bg-primary-subtle text-primary text-decoration-none"
                   >
                     {companyEntry.data.logo && (
@@ -160,7 +168,7 @@ const breadcrumbs = [
               <div class="list-group">
                 {linkedArticles.map((article: any) => (
                   <a
-                    href={localePath(`/experience/${cleanSlug(article)}/`, locale)}
+                    href={`/experience/${cleanSlug(article)}/`}
                     class="list-group-item list-group-item-action"
                   >
                     <div class="fw-semibold">{article.data.title}</div>

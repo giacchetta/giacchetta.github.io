@@ -1,12 +1,11 @@
 ---
 import { Image } from 'astro:assets';
 import { getAllPages, getFeaturedPagesByCategory, getNonFeaturedPagesByCategory, cleanSlug } from '../utils/content.js';
-import { useTranslations, localePath } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
 
-const locale = Astro.currentLocale ?? 'en';
-const t = useTranslations(locale);
+const t = useTranslations();
 
-const allPages = await getAllPages(locale);
+const allPages = await getAllPages();
 const featuredCollaborationsPages = getFeaturedPagesByCategory(allPages, 'collaborations');
 const collaborationPages = getNonFeaturedPagesByCategory(allPages, 'collaborations')
   .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
@@ -22,14 +21,14 @@ const collaborationPages = getNonFeaturedPagesByCategory(allPages, 'collaboratio
           <div class="card h-100">
             <div class="card-body">
               <h5 class="card-title">
-                <a href={localePath(`/experience/${cleanSlug(page)}/`, locale)} class="text-decoration-none">
+                <a href={`/experience/${cleanSlug(page)}/`} class="text-decoration-none">
                   {page.data.title}
                 </a>
               </h5>
               {page.data.description && (
                 <p class="card-text text-muted small">{page.data.description}</p>
               )}
-              <a href={localePath(`/experience/${cleanSlug(page)}/`, locale)} class="btn btn-sm btn-outline-success">
+              <a href={`/experience/${cleanSlug(page)}/`} class="btn btn-sm btn-outline-success">
                 {t('collaborations.readCaseStudy')} &rarr;
               </a>
             </div>
@@ -46,7 +45,7 @@ const collaborationPages = getNonFeaturedPagesByCategory(allPages, 'collaboratio
       <div class="card shadow-sm h-100">
         {page.data.logo && (
           <div class="d-flex justify-content-center align-items-center p-3" style="height: 100px;">
-            <a href={localePath(`/experience/${cleanSlug(page)}/`, locale)}>
+            <a href={`/experience/${cleanSlug(page)}/`}>
               <Image
                 src={page.data.logo}
                 alt={page.data.title}
@@ -57,7 +56,7 @@ const collaborationPages = getNonFeaturedPagesByCategory(allPages, 'collaboratio
         )}
         <div class="card-body d-flex flex-column p-3">
           <h6 class="card-title mb-1">
-            <a href={localePath(`/experience/${cleanSlug(page)}/`, locale)} class="text-decoration-none">
+            <a href={`/experience/${cleanSlug(page)}/`} class="text-decoration-none">
               {page.data.title}
             </a>
           </h6>
@@ -74,7 +73,7 @@ const collaborationPages = getNonFeaturedPagesByCategory(allPages, 'collaboratio
                 : page.data.summary}
             </p>
           )}
-          <a href={localePath(`/experience/${cleanSlug(page)}/`, locale)} class="btn btn-sm btn-outline-primary mt-auto">
+          <a href={`/experience/${cleanSlug(page)}/`} class="btn btn-sm btn-outline-primary mt-auto">
             {t('collaborations.readMore')} &rarr;
           </a>
         </div>

@@ -1,10 +1,7 @@
 ---
-import { Picture } from 'astro:assets';
-import email from '../assets/img/email.png';
 import { useTranslations } from '../i18n/utils';
 
-const locale = Astro.currentLocale ?? 'en';
-const t = useTranslations(locale);
+const t = useTranslations();
 ---
 <!-- Modal -->
 <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
@@ -26,7 +23,7 @@ const t = useTranslations(locale);
 </div>
 
 <script>
-  const email = 'hello@lucianogiacchetta.com';
+  const email = 'ldgiacchetta@gmail.com';
 
   function drawEmail() {
     const canvas = document.getElementById('emailCanvas');

@@ -1,6 +1,9 @@
 {
   "site.title": "Luciano Giacchetta | Consulting | DevOps Engineer | System Engineer | AWS & GCP Cloud Architect | Software Engineer",
   "meta.description": "Luciano Giacchetta is an experienced IT consultant. Specialized in DevOps, Cloud, and Development. Available for hourly contracts.",
+  "meta.descriptionHome": "Luciano Giacchetta's portfolio: DevOps, Cloud, and Systems Engineer. Featured case study, recent roles, and a curated tech stack across AWS, GCP, Kubernetes, and CI/CD.",
+  "meta.descriptionExperience": "Full experience history of Luciano Giacchetta: DevOps, Cloud, and Systems Engineering roles across AWS, GCP, Kubernetes, Terraform, and CI/CD migrations, with detailed case studies.",
+  "meta.descriptionCredentials": "Full skills matrix of Luciano Giacchetta: applied skills across Public Cloud (AWS, GCP), Private Cloud, Development, and Networking & Security, with deep-dive credential pages.",
   "bio.name": "Luciano Giacchetta",
   "bio.greeting": "Hi, I'm Luciano Giacchetta.",
   "bio.tagline": "Architecting Resilient Cloud Solutions & Automating DevOps at Enterprise Scale.",
@@ -11,6 +14,7 @@
   "hero.recentRoles": "Recent Experience",
   "hero.viewFullExperience": "View Full Experience",
   "hero.serviceDownBody": "Production incident? Tap to call now.",
+  "hero.emailCta": "Email me",
   "experience.pageTitle": "Full Experience",
   "credentials.pageTitle": "Full Skills Matrix",
   "nav.home": "Home",

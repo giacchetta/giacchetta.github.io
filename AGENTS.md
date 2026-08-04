@@ -6,7 +6,7 @@
 
 ## What this project is
 
-A professional portfolio site for Luciano Giacchetta, a DevOps/Cloud/Systems Engineer. It is a statically generated, multilingual (English, Argentine Spanish, Uruguayan Spanish) site built with **Astro 6** and deployed to GitHub Pages.
+A professional portfolio site for Luciano Giacchetta, a DevOps/Cloud/Systems Engineer. It is a statically generated, **English-only** site built with **Astro 7** and deployed to GitHub Pages.
 
 ---
 
@@ -14,12 +14,12 @@ A professional portfolio site for Luciano Giacchetta, a DevOps/Cloud/Systems Eng
 
 | Layer | Technology |
 |---|---|
-| Framework | Astro 6.x with MDX integration |
+| Framework | Astro 7.x with MDX integration |
 | Styling | Bootstrap 5.3 - Keep custom CSS to an absolute minimum |
 | CSS Optimization | PurgeCSS (strips unused Bootstrap at build time) |
 | Content | Astro Content Collections with Zod schemas, MDX files |
-| i18n | Astro built-in i18n + AI-powered translation script (`scripts/translate.mjs`) |
-| Sitemap | `@astrojs/sitemap` with i18n support |
+| UI strings | `src/i18n/en.json` (single English dictionary) |
+| Sitemap | `@astrojs/sitemap` |
 | Agent/LLM access | `astro-llms-md` — per-page `.md` files + `/llms.txt` + `/llms-full.txt` |
 | Deployment | GitHub Actions → GitHub Pages |
 
@@ -39,50 +39,45 @@ src/
 │   ├── certifications/      # Certification entries
 │   ├── collaborations/      # Company and article entries
 │   └── credentials/         # Technical skill deep-dives
-├── data/                    # credentials.json + localized variants (auto-generated)
-├── i18n/                    # en.json (source) + auto-generated es-ar.json, es-uy.json
+├── data/                    # credentials.json (skills grid data)
+├── i18n/
+│   ├── en.json              # UI strings (single English dictionary)
+│   └── utils.ts             # useTranslations() helper
 ├── layouts/
-│   └── Layout.astro         # Base HTML shell: SEO head, navbar, footer slot
+│   └── Layout.astro         # Base HTML shell: SEO head, footer slot (no navbar)
 ├── pages/
-│   ├── index.astro          # English home / (Bento dashboard)
-│   ├── experience.astro     # English /experience/ (full roles listing)
-│   ├── credentials.astro    # English /credentials/ (full skills matrix)
-│   ├── [slug].astro         # English dynamic content pages /[slug]
-│   ├── es-ar/index.astro    # /es-ar/
-│   ├── es-ar/experience.astro  # /es-ar/experience/
-│   ├── es-ar/credentials.astro # /es-ar/credentials/
-│   ├── es-ar/[slug].astro   # /es-ar/[slug]
-│   ├── es-uy/index.astro    # /es-uy/
-│   ├── es-uy/experience.astro  # /es-uy/experience/
-│   ├── es-uy/credentials.astro # /es-uy/credentials/
-│   └── es-uy/[slug].astro   # /es-uy/[slug]
+│   ├── index.astro          # Home / (Bento dashboard)
+│   ├── experience.astro     # /experience/ (full roles listing)
+│   ├── credentials.astro    # /credentials/ (full skills matrix)
+│   ├── experience/[slug].astro  # /experience/[slug] (dynamic content pages)
+│   └── credentials/[slug].astro  # /credentials/[slug] (dynamic content pages)
 ├── styles/
 │   └── bootstrap.min.css    # PurgeCSS output — generated at build, do not edit manually
 ├── utils/
 │   └── content.js           # Collection helpers: filterByLocale, getAllPages, cleanSlug
 └── content.config.ts        # Zod schemas for all 3 collections
-scripts/
-└── translate.mjs            # AI-powered i18n: translates MDX + JSON to es-ar / es-uy
 ```
 
 ### Page Rendering Flow
 
 ```
-Layout.astro (HTML shell, SEO, hreflangs)
+Layout.astro (HTML shell, SEO, canonical link, footer slot — no navbar)
 └── pages/index.astro → HomePage.astro (Bento dashboard — 6 tiles)
     ├── Tile 1: Hero (greeting + tagline)
     ├── Tile 2: Profile & Status (profile pic, availability badge, AWS SA Pro badge)
-    ├── Tile 3: Emergency CTA — desktop only (canvas-obfuscated phone, d-none d-md-flex)
+    ├── Tile 3: Email CTA — all viewports (opens #contactModal; full-width on mobile, 1/3 column on desktop)
     ├── Tile 4: Tech Stack Matrix (9 curated badges + View Full Stack → /credentials/)
     ├── Tile 5: Featured Case Study (jenkins-migration-github-argocd)
     └── Tile 6: Recent Experience (top 3 roles + View Full Experience → /experience/)
 
-pages/experience.astro → Collaboration.astro (full roles + case studies listing)
-pages/credentials.astro → Credentials.astro (full skills matrix listing)
+pages/experience.astro → Collaboration.astro (full roles + case studies listing, in-page breadcrumb)
+pages/credentials.astro → Credentials.astro (full skills matrix listing, in-page breadcrumb)
 
-pages/[slug].astro → SlugPage.astro
-    └── Renders MDX content with layout that adapts to entry type (company / article / credential / certification)
+pages/{experience,credentials}/[slug].astro → SlugPage.astro
+    └── Renders MDX content with in-page breadcrumb; layout adapts to entry type (company / article / credential / certification)
 ```
+
+**Navigation**: There is no top navbar and no fixed bottom breadcrumb bar. Bootstrap breadcrumbs render **in-page** at the top of every non-Home page (Home has none). The only email entry point is the Home/Bento Tile 3 Email CTA, which opens the `#contactModal` (rendered by `Footer.astro` → `Contact.astro`).
 
 ---
 
@@ -124,27 +119,11 @@ Professional certifications. Frontmatter fields:
 
 ---
 
-## i18n System
+## UI Strings
 
-### Locales
-- `en` — English (default, no URL prefix — `/`, `/[slug]`)
-- `es-ar` — Argentine Spanish (`/es-ar/`, `/es-ar/[slug]`)
-- `es-uy` — Uruguayan Spanish (`/es-uy/`, `/es-uy/[slug]`)
+Source of truth: `src/i18n/en.json` (single English dictionary). `useTranslations()` (no args) in `src/i18n/utils.ts` returns a `t(key)` function that reads from this dictionary.
 
-### Content Localization Convention
-For each MDX file `example.mdx` (English base), localized variants are named:
-- `example.es-ar.mdx` — Argentine Spanish
-- `example.es-uy.mdx` — Uruguayan Spanish
-
-Files ending in `.es-ar` or `.es-uy` are automatically stripped of that suffix to produce the slug. The utility `filterByLocale()` in `src/utils/content.js` handles locale selection with English fallback.
-
-### UI Strings
-Source of truth: `src/i18n/en.json` (30 keys). Generated files `es-ar.json` and `es-uy.json` are produced by `scripts/translate.mjs`. Do not edit the generated files manually.
-
-When adding new UI strings, add the key to `en.json` only; the translation script handles the rest.
-
-### Data Localization
-`src/data/credentials.json` is the English source. `credentials.es-ar.json` and `credentials.es-uy.json` are auto-generated by the translation script.
+When adding new UI strings, add the key/value to `src/i18n/en.json` and use `const t = useTranslations();` then `t("your.key")` in the component.
 
 ---
 
@@ -153,27 +132,22 @@ When adding new UI strings, add the key to `en.json` only; the translation scrip
 ### New Collaboration (Company)
 1. Create `src/content/collaborations/[slug].mdx` with required frontmatter (`type: "company"`, `order`, `logo`, etc.)
 2. Add a logo image to `src/assets/img/`
-3. Run `npm run translate` to generate localized versions (or write them manually as `[slug].es-ar.mdx` / `[slug].es-uy.mdx`)
 
 ### New Case Study (Article)
 1. Create `src/content/collaborations/[slug].mdx` with `type: "article"` and `company: "[parent-company-slug]"`
 2. Write the full MDX body (case study content)
-3. Run `npm run translate`
 
 ### New Credential Deep-dive
 1. Create `src/content/credentials/[slug].mdx`
 2. Add `featured: true` if it should appear on the home page
-3. Run `npm run translate`
 
 ### New Certification
 1. Create `src/content/certifications/[slug].mdx`
 2. Fill in `provider`, `certificationLevel`, `status`, `credentialUrl`
-3. Run `npm run translate`
 
 ### New UI String
 1. Add key/value to `src/i18n/en.json`
-2. Use `const t = useTranslations(locale)` in the component, then `t("your.key")`
-3. Run `npm run translate`
+2. Use `const t = useTranslations();` in the component, then `t("your.key")`
 
 ---
 
@@ -203,37 +177,24 @@ Categories currently used: `"Public Cloud"`, `"Private Cloud"`, `"Development"`,
 
 | Command | Purpose |
 |---|---|
-| `npm run dev` | Dev server at `localhost:4321` (copies Bootstrap CSS, no translation) |
-| `npm run build` | Full production build: PurgeCSS + translate + Astro build |
-| `npm run build:no-translate` | Production build without running translation (used by CI) |
-| `npm run translate` | Run AI translation script only |
-| `npm run dev:i18n` | Translate then start dev server |
+| `npm run dev` | Dev server at `localhost:4321` (copies Bootstrap CSS) |
+| `npm run build` | Full production build: PurgeCSS + Astro build |
+| `npm run preview` | Preview production build locally |
 
-The CI/CD workflow (`.github/workflows/static.yaml`) runs `npm run build:no-translate`. Translation runs locally and the generated files are committed.
+The CI/CD workflow (`.github/workflows/static.yaml`) runs `npm run build`.
 
 ---
 
 ## Key Conventions
 
-- **Slug derivation**: The content entry ID is the filename minus `.mdx` extension and locale suffix. For `telnyx.es-ar.mdx`, the slug is `telnyx`.
+- **Slug derivation**: The content entry ID is the filename minus `.mdx` extension. For `telnyx.mdx`, the slug is `telnyx`.
 - **Featured flag**: Controls prominence on the home page. Featured entries appear first and as cards; non-featured appear in compact grid.
 - **Order field**: Only meaningful for collaborations. Lower number = displayed earlier.
 - **Image imports**: Always use relative paths in MDX frontmatter (`../../assets/img/logo.png`). Astro's `Image` component handles optimization.
 - **Scoped styles**: All component styles use Astro's `<style>` (scoped by default). Bootstrap utilities handle layout/spacing.
 - **No client-side frameworks**: The site is server-rendered static HTML. JavaScript is limited to Bootstrap's bundle (modals/collapse) and small inline scripts for canvas obfuscation and clipboard.
-- **Contact/phone obfuscation**: Email and phone numbers are drawn on `<canvas>` elements to prevent scraping. Do not render them as plain text.
-- **Translation cache**: `.translation-cache.json` caches AI translations by SHA256 hash of source content. Commit this file.
-
----
-
-## Adding a New Locale
-
-1. Add locale to `astro.config.mjs` (`i18n.locales` and `sitemap.i18n.locales`)
-2. Create `src/pages/[locale]/index.astro` and `src/pages/[locale]/[slug].astro` (copy existing locale pages as template)
-3. Add locale to `src/i18n/utils.ts` (`locales` array and date locale map)
-4. Add locale instructions to `scripts/translate.mjs`
-5. Add locale data files: `src/data/credentials.[locale].json`
-6. Run `npm run translate`
+- **Contact obfuscation**: The email address is drawn on a `<canvas>` element (in `Contact.astro`) to prevent scraping. Do not render it as plain text. There are no phone numbers on the site.
+- **Breadcrumbs**: Rendered in-page via Bootstrap breadcrumb component on non-Home pages (no top navbar, no fixed bottom breadcrumb bar).
 
 ---
 
@@ -244,13 +205,12 @@ The site exposes machine-readable content via the `astro-llms-md` integration, w
 **Generated files (in `dist/` and served live):**
 - `/llms.txt` — discovery index linking all `.md` files, grouped by section
 - `/llms-full.txt` — all page content concatenated in a single file
-- Per-page markdown at the same path as the HTML page: e.g., `/experience.md`, `/experience/telnyx.md`, `/es-ar/experience.md`
+- Per-page markdown at the same path as the HTML page: e.g., `/experience.md`, `/experience/telnyx.md`
 
 **Configuration** (in `astro.config.mjs`):
 - `contentSelector: 'main'` — extracts only the `<main>` element, excluding nav/footer/breadcrumbs
 - `excludeSelectors: [...DEFAULT_NOISE_SELECTORS]` — strips `nav`, `aside`, `footer`, `form`, hidden elements
-
-**Phone obfuscation**: The Emergency CTA tile in `HomePage.astro` has `data-llms-ignore` on its wrapper `div`, so the phone canvas is excluded from all markdown output. Canvas elements produce no text by nature, but the attribute makes the exclusion explicit.
+- `exclude` — legacy SEO redirect stubs (e.g., `aws-solutions-architect-professional`, `github-actions`, `bimodal`, `codyops`, `jenkins-migration-github-argocd`) whose canonical content lives under `/experience/` and `/credentials/`
 
 **No manual maintenance**: The markdown files are regenerated automatically on every build. Do not commit files from `dist/`.
 
@@ -259,7 +219,8 @@ The site exposes machine-readable content via the `astro-llms-md` integration, w
 ## Do Not
 
 - Do not edit `src/styles/bootstrap.min.css` manually — it is generated by PurgeCSS at build time.
-- Do not edit `src/i18n/es-ar.json`, `src/i18n/es-uy.json`, or `src/data/credentials.es-ar.json` / `credentials.es-uy.json` directly — these are generated by the translation script.
 - Do not introduce CSS frameworks other than Bootstrap 5.3.
-- Do not render email addresses or phone numbers as plain text in HTML (use canvas obfuscation).
+- Do not render the email address as plain text in HTML (use canvas obfuscation in `Contact.astro`).
+- Do not add phone numbers to the site.
 - Do not add client-side JS frameworks (React, Vue, etc.) without explicit instruction.
+- Do not reintroduce multilingual/i18n locales or a translation pipeline — the site is English-only by design.
