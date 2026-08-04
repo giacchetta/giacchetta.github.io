@@ -1,25 +1,14 @@
 import { getCollection } from 'astro:content';
 
-// Astro v6 glob loader ids remove dots from filenames without extensions (e.g. "github-actionses-ar" or "github-actions")
-const localeIdPattern = /(es-ar|es-uy)$/;
-
-function stripLocaleFromId(id) {
-  return id.replace(/(es-ar|es-uy)$/, '');
+/**
+ * Locale filtering is no longer needed (English-only site). Kept as a no-op
+ * so existing callers can be migrated incrementally.
+ */
+export function filterByLocale(entries) {
+  return entries;
 }
 
-export function filterByLocale(entries, locale) {
-  if (!locale || locale === 'en') {
-    return entries.filter(e => !localeIdPattern.test(e.id));
-  }
-  const localeSuffix = `.${locale}.`;
-  const localeEntries = entries.filter(e => e.id.includes(localeSuffix));
-  // Fallback to English for entries without a translation
-  const translatedBaseIds = new Set(localeEntries.map(e => stripLocaleFromId(e.id)));
-  const fallbacks = entries.filter(e => !localeIdPattern.test(e.id) && !translatedBaseIds.has(e.id));
-  return [...localeEntries, ...fallbacks];
-}
-
-export async function getAllPages(locale) {
+export async function getAllPages() {
   const credentials = await getCollection('credentials');
   const collaborations = await getCollection('collaborations');
   const certifications = await getCollection('certifications');
@@ -31,9 +20,9 @@ export async function getAllPages(locale) {
   };
 
   return {
-    credentials: filterByLocale(credentials, locale).sort(sortFn),
-    collaborations: filterByLocale(collaborations, locale).sort(sortFn),
-    certifications: filterByLocale(certifications, locale).sort(sortFn),
+    credentials: filterByLocale(credentials).sort(sortFn),
+    collaborations: filterByLocale(collaborations).sort(sortFn),
+    certifications: filterByLocale(certifications).sort(sortFn),
   };
 }
 
@@ -62,7 +51,7 @@ export function getAllNonFeaturedPages(pages) {
   return allNonFeatured;
 }
 
-/** Derive a clean slug from the entry's id (strips locale suffix) */
+/** Derive the URL slug from the entry's id. */
 export function cleanSlug(entry) {
-  return entry.id.replace(/(es-ar|es-uy)$/, '');
+  return entry.id;
 }
