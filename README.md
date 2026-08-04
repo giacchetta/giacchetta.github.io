@@ -73,7 +73,7 @@ An English-only professional portfolio built with **Astro 7**, featuring a moder
 ## Navigation & Contact
 
 - **No top navbar** and **no fixed bottom breadcrumb bar**. Bootstrap breadcrumbs render **in-page** at the top of every non-Home page (Home has none).
-- **Email-only contact**: the Home/Bento Tile 3 Email CTA opens the `#contactModal`, where the email address is drawn on a `<canvas>` (obfuscated to prevent scraping). There are no phone numbers on the site.
+- **Email-only contact**: the Home/Bento Tile 2 Email button opens the `#contactModal`, where the email address is drawn on a `<canvas>` (obfuscated to prevent scraping). There are no phone numbers on the site.
 
 ---
 

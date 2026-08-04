@@ -9,9 +9,9 @@ export function filterByLocale(entries) {
 }
 
 export async function getAllPages() {
-  const credentials = await getCollection('credentials');
-  const collaborations = await getCollection('collaborations');
-  const certifications = await getCollection('certifications');
+  const credentials = (await getCollection('credentials')).filter(p => !p.data.draft);
+  const collaborations = (await getCollection('collaborations')).filter(p => !p.data.draft);
+  const certifications = (await getCollection('certifications')).filter(p => !p.data.draft);
 
   const sortFn = (a, b) => {
     if (a.data.featured && !b.data.featured) return -1;

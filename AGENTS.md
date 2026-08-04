@@ -64,8 +64,8 @@ src/
 Layout.astro (HTML shell, SEO, canonical link, footer slot — no navbar)
 └── pages/index.astro → HomePage.astro (Bento dashboard — 6 tiles)
     ├── Tile 1: Hero (greeting + tagline)
-    ├── Tile 2: Profile & Status (profile pic, availability badge, AWS SA Pro badge)
-    ├── Tile 3: Email CTA — all viewports (opens #contactModal; full-width on mobile, 1/3 column on desktop)
+    ├── Tile 2: Profile (profile pic, name, Email button → opens #contactModal)
+    ├── Tile 3: Empty placeholder (future use; full-width on mobile, 1/3 column on desktop)
     ├── Tile 4: Tech Stack Matrix (9 curated badges + View Full Stack → /credentials/)
     ├── Tile 5: Featured Case Study (jenkins-migration-github-argocd)
     └── Tile 6: Recent Experience (top 3 roles + View Full Experience → /experience/)
@@ -77,13 +77,13 @@ pages/{experience,credentials}/[slug].astro → SlugPage.astro
     └── Renders MDX content with in-page breadcrumb; layout adapts to entry type (company / article / credential / certification)
 ```
 
-**Navigation**: There is no top navbar and no fixed bottom breadcrumb bar. Bootstrap breadcrumbs render **in-page** at the top of every non-Home page (Home has none). The only email entry point is the Home/Bento Tile 3 Email CTA, which opens the `#contactModal` (rendered by `Footer.astro` → `Contact.astro`).
+**Navigation**: There is no top navbar and no fixed bottom breadcrumb bar. Bootstrap breadcrumbs render **in-page** at the top of every non-Home page (Home has none). The only email entry point is the Home/Bento Tile 2 Email button, which opens the `#contactModal` (rendered by `Footer.astro` → `Contact.astro`).
 
 ---
 
 ## Content Collections
 
-Defined in `src/content.config.ts`. There are three collections:
+Defined in `src/content.config.ts`. There are three collections. All collections support a `draft` field (boolean, default `false`); draft entries are filtered out in `getStaticPaths` (both `[slug]` routes) and `getAllPages()`, so they are not published as pages or listed anywhere.
 
 ### `credentials`
 Technical skill deep-dives. Frontmatter fields:
@@ -92,6 +92,7 @@ Technical skill deep-dives. Frontmatter fields:
 - `category` (default: `"credentials"`)
 - `publishDate`, `updateDate` (optional ISO dates)
 - `featured` (boolean, default: `false`)
+- `draft` (boolean, default: `false`)
 
 ### `collaborations`
 Work history entries. Two subtypes controlled by the `type` field:
@@ -99,7 +100,7 @@ Work history entries. Two subtypes controlled by the `type` field:
 - `type: "article"` — A case study linked to a company via the `company` field (slug of parent)
 
 Frontmatter fields:
-- `title`, `description`, `category`, `publishDate`, `updateDate`, `featured`
+- `title`, `description`, `category`, `publishDate`, `updateDate`, `featured`, `draft`
 - `role` — Job title
 - `period` — Employment dates string (e.g., `"March 2005 - March 2007"`)
 - `location` — Geographic location
@@ -111,7 +112,7 @@ Frontmatter fields:
 
 ### `certifications`
 Professional certifications. Frontmatter fields:
-- `title`, `description`, `category`, `publishDate`, `updateDate`, `featured`
+- `title`, `description`, `category`, `publishDate`, `updateDate`, `featured`, `draft`
 - `provider` — Issuing organization (e.g., `"Amazon Web Services"`)
 - `certificationLevel` — e.g., `"Professional"`, `"Associate"`
 - `status` — `"Active"` | `"Expired"`
@@ -210,7 +211,7 @@ The site exposes machine-readable content via the `astro-llms-md` integration, w
 **Configuration** (in `astro.config.mjs`):
 - `contentSelector: 'main'` — extracts only the `<main>` element, excluding nav/footer/breadcrumbs
 - `excludeSelectors: [...DEFAULT_NOISE_SELECTORS]` — strips `nav`, `aside`, `footer`, `form`, hidden elements
-- `exclude` — legacy SEO redirect stubs (e.g., `aws-solutions-architect-professional`, `github-actions`, `bimodal`, `codyops`, `jenkins-migration-github-argocd`) whose canonical content lives under `/experience/` and `/credentials/`
+- `exclude` — legacy SEO redirect stubs (e.g., `github-actions`, `bimodal`, `codyops`, `jenkins-migration-github-argocd`) whose canonical content lives under `/experience/` and `/credentials/`
 
 **No manual maintenance**: The markdown files are regenerated automatically on every build. Do not commit files from `dist/`.
 

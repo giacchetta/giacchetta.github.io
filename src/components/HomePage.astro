@@ -47,7 +47,7 @@ const techStack = [
         </div>
       </div>
 
-      <!-- Tile 2: Profile & Status -->
+      <!-- Tile 2: Profile -->
       <div class="col-12 col-md-4">
         <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 d-flex flex-column align-items-center justify-content-center text-center gap-3">
           <Picture
@@ -59,30 +59,10 @@ const techStack = [
             loading="eager"
             fetchpriority="high"
           />
-          <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2 d-inline-flex align-items-center gap-2">
-            <span class="pulse-dot"></span>
-            {t('bio.availability')}
-          </span>
-          <a
-            href="/credentials/aws-solutions-architect-professional/"
-            class="badge bg-warning-subtle text-warning-emphasis rounded-pill px-3 py-2 text-decoration-none border"
-          >
-            🏆 AWS Solutions Architect Pro
-          </a>
-        </div>
-      </div>
-
-      <!-- Tile 3: Email CTA — all viewports -->
-      <div class="col-12 col-md-4 d-flex">
-        <div class="bento-tile bg-primary text-white rounded-5 shadow-sm p-4 h-100 d-flex flex-column justify-content-between w-100">
-          <div>
-            <div class="fs-1 mb-2">✉️</div>
-            <h2 class="h4 fw-bold mb-2">{t('hero.emailCta')}</h2>
-            <p class="mb-3 opacity-75 small">{t('bio.availability')}</p>
-          </div>
+          <p class="fs-5 fw-bold mb-0">{t('bio.name')}</p>
           <button
             type="button"
-            class="btn btn-light btn-lg d-flex align-items-center justify-content-center gap-2 fw-semibold"
+            class="btn btn-primary btn-lg d-flex align-items-center justify-content-center gap-2 fw-semibold"
             data-bs-toggle="modal"
             data-bs-target="#contactModal"
           >
@@ -90,6 +70,11 @@ const techStack = [
             <span>{t('hero.emailCta')}</span>
           </button>
         </div>
+      </div>
+
+      <!-- Tile 3: (empty placeholder) -->
+      <div class="col-12 col-md-4 d-flex">
+        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 w-100"></div>
       </div>
 
       <!-- Tile 4: Tech Stack Matrix -->
@@ -170,20 +155,6 @@ const techStack = [
   .bento-tile:hover {
     transform: scale(1.02);
     box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.12) !important;
-  }
-  .pulse-dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    background-color: var(--bs-success);
-    border-radius: 50%;
-    animation: bento-pulse 1.5s infinite;
-    flex-shrink: 0;
-  }
-  @keyframes bento-pulse {
-    0%   { box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7); }
-    70%  { box-shadow: 0 0 0 8px rgba(25, 135, 84, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(25, 135, 84, 0); }
   }
   .role-row {
     transition: background-color 0.2s ease;
