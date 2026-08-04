@@ -1,36 +1,26 @@
 ---
 import Favicon from '../assets/img/favicon.png';
 import Footer from '../components/Footer.astro';
-import LanguageSwitcher from '../components/LanguageSwitcher.astro';
-import { useTranslations, getLocaleForDate } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
 import '../styles/bootstrap.min.css';
 
 interface Props {
 	title: string;
 	description?: string;
-	breadcrumbs?: { label: string; href?: string }[];
 }
 
-const { title, description, breadcrumbs } = Astro.props;
-const locale = Astro.currentLocale ?? 'en';
-const t = useTranslations(locale);
-
-const langMap: Record<string, string> = { 'en': 'en', 'es-ar': 'es-AR', 'es-uy': 'es-UY' };
-const htmlLang = langMap[locale] ?? 'en';
+const { title, description } = Astro.props;
+const t = useTranslations();
 
 const path = Astro.url.pathname;
-const cleanPath = path.replace(/^\/(es-ar|es-uy)/, '') || '/';
-
 const siteBase = 'https://lucianogiacchetta.com';
 const canonicalURL = `${siteBase}${path}`;
-const ogLocaleMap: Record<string, string> = { 'en': 'en_US', 'es-ar': 'es_AR', 'es-uy': 'es_UY' };
-const ogLocale = ogLocaleMap[locale] ?? 'en_US';
 
 const metaDescription = description || t('meta.description');
 ---
 
 <!doctype html>
-<html lang={htmlLang} data-bs-theme="dark">
+<html lang="en" data-bs-theme="dark">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="description" content={metaDescription} />
@@ -38,34 +28,16 @@ const metaDescription = description || t('meta.description');
 		<link rel="icon" type="image/png" href={Favicon.src} />
 		<meta name="generator" content={Astro.generator} />
 		<link rel="canonical" href={canonicalURL} />
-		<link rel="alternate" hreflang="en" href={`${siteBase}${cleanPath}`} />
-		<link rel="alternate" hreflang="es-AR" href={`${siteBase}/es-ar${cleanPath}`} />
-		<link rel="alternate" hreflang="es-UY" href={`${siteBase}/es-uy${cleanPath}`} />
-		<link rel="alternate" hreflang="x-default" href={`${siteBase}${cleanPath}`} />
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content={canonicalURL} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={metaDescription} />
-		<meta property="og:locale" content={ogLocale} />
+		<meta property="og:locale" content="en_US" />
 		<title>{title}</title>
 	</head>
 	<body>
-		<LanguageSwitcher />
 		<slot />
 		<Footer />
-		{breadcrumbs && (
-			<nav class="navbar fixed-bottom bg-body-tertiary border-top border-dark py-1">
-				<div class="container layout">
-					<ol class="breadcrumb mb-0 small">
-						{breadcrumbs.map((crumb, i) => (
-							i < breadcrumbs.length - 1
-								? <li class="breadcrumb-item"><a href={crumb.href}>{crumb.label}</a></li>
-								: <li class="breadcrumb-item active" aria-current="page">{crumb.label}</li>
-						))}
-					</ol>
-				</div>
-			</nav>
-		)}
 	</body>
 </html>
 <script>
@@ -74,7 +46,6 @@ const metaDescription = description || t('meta.description');
 <style is:global>
 	body {
 		overflow-x: clip;
-		padding-bottom: 60px;
 	}
 
 	@media (min-width: 992px) {

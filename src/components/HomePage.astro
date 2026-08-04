@@ -3,12 +3,11 @@ import { Picture, Image } from 'astro:assets';
 import Profile from '../assets/img/profile.png';
 import Layout from '../layouts/Layout.astro';
 import { getAllPages, getFeaturedPagesByCategory, cleanSlug } from '../utils/content.js';
-import { useTranslations, localePath } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
 import credentialsRaw from '../data/credentials.json';
 
-const locale = Astro.currentLocale ?? 'en';
-const t = useTranslations(locale);
-const pages = await getAllPages(locale);
+const t = useTranslations();
+const pages = await getAllPages();
 
 const breadcrumbs = [{ label: t('nav.home') }];
 
@@ -36,7 +35,7 @@ const techStack = [
 ].map((name, i) => ({ name, style: badgeStyles[i % badgeStyles.length] }));
 ---
 
-<Layout title={t('site.title')} breadcrumbs={breadcrumbs}>
+<Layout title={t('site.title')}>
   <main class="container layout mt-3 mb-5">
     <div class="row g-4">
 
@@ -65,7 +64,7 @@ const techStack = [
             {t('bio.availability')}
           </span>
           <a
-            href={localePath('/credentials/aws-solutions-architect-professional/', locale)}
+            href="/credentials/aws-solutions-architect-professional/"
             class="badge bg-warning-subtle text-warning-emphasis rounded-pill px-3 py-2 text-decoration-none border"
           >
             🏆 AWS Solutions Architect Pro
@@ -73,22 +72,22 @@ const techStack = [
         </div>
       </div>
 
-      <!-- Tile 3: Emergency CTA — desktop only -->
-      <div class="col-md-4 d-none d-md-flex" data-llms-ignore>
-        <div class="bento-tile bg-danger text-white rounded-5 shadow-sm p-4 h-100 d-flex flex-column justify-content-between w-100">
+      <!-- Tile 3: Email CTA — desktop only -->
+      <div class="col-md-4 d-none d-md-flex">
+        <div class="bento-tile bg-primary text-white rounded-5 shadow-sm p-4 h-100 d-flex flex-column justify-content-between w-100">
           <div>
-            <div class="fs-1 mb-2">⚠️</div>
-            <h2 class="h4 fw-bold mb-2">{t('nav.ctaLabel')}</h2>
-            <p class="mb-3 opacity-75 small">{t('hero.serviceDownBody')}</p>
+            <div class="fs-1 mb-2">✉️</div>
+            <h2 class="h4 fw-bold mb-2">{t('hero.emailCta')}</h2>
+            <p class="mb-3 opacity-75 small">{t('bio.availability')}</p>
           </div>
           <button
-            id="bentoPhoneBtn"
             type="button"
             class="btn btn-light btn-lg d-flex align-items-center justify-content-center gap-2 fw-semibold"
-            data-locale={locale}
+            data-bs-toggle="modal"
+            data-bs-target="#contactModal"
           >
-            <span>📞</span>
-            <canvas id="bentoPhoneCanvas" height="20"></canvas>
+            <span>✉️</span>
+            <span>{t('hero.emailCta')}</span>
           </button>
         </div>
       </div>
@@ -103,7 +102,7 @@ const techStack = [
             ))}
           </div>
           <div class="text-end mt-3">
-            <a href={localePath('/credentials/', locale)} class="text-decoration-none small text-primary">
+            <a href="/credentials/" class="text-decoration-none small text-primary">
               {t('hero.viewFullStack')} &rarr;
             </a>
           </div>
@@ -118,7 +117,7 @@ const techStack = [
             <h2 class="h5 fw-bold mb-2">{featuredCaseStudy.data.title}</h2>
             <p class="text-muted small mb-3 flex-grow-1">{featuredCaseStudy.data.description}</p>
             <a
-              href={localePath(`/experience/${cleanSlug(featuredCaseStudy)}/`, locale)}
+              href={`/experience/${cleanSlug(featuredCaseStudy)}/`}
               class="btn btn-primary mt-auto"
             >
               {t('collaborations.readCaseStudy')} &rarr;
@@ -134,7 +133,7 @@ const techStack = [
           <div class="d-flex flex-column gap-3 flex-grow-1">
             {recentRoles.map((role) => (
               <a
-                href={localePath(`/experience/${cleanSlug(role)}/`, locale)}
+                href={`/experience/${cleanSlug(role)}/`}
                 class="d-flex align-items-center gap-3 text-decoration-none text-body p-2 rounded-3 role-row"
               >
                 {role.data.logo && (
@@ -153,7 +152,7 @@ const techStack = [
             ))}
           </div>
           <div class="text-end mt-3">
-            <a href={localePath('/experience/', locale)} class="btn btn-outline-secondary btn-sm">
+            <a href="/experience/" class="btn btn-outline-secondary btn-sm">
               {t('hero.viewFullExperience')}
             </a>
           </div>
@@ -194,43 +193,4 @@ const techStack = [
   }
 </style>
 
-<script>
-  const r = (s: string) => s.split('').reverse().join('');
-  const phones: Record<string, { d: string; t: string }> = {
-    'en':    { d: r('307-346-2797'),  t: r('+13073462797')   },
-    'es-ar': { d: r('11-2532-5404'),  t: r('+5491125325404') },
-    'es-uy': { d: r('097-995-367'),   t: r('+59897995367')   },
-  };
 
-  const bentoBtn = document.getElementById('bentoPhoneBtn');
-  if (bentoBtn) {
-    const locale = bentoBtn.getAttribute('data-locale') ?? 'en';
-    const { d, t } = phones[locale] ?? phones['en'];
-    const display = r(d);
-    const tel = r(t);
-
-    const isDesktop = window.matchMedia('(min-width: 768px)').matches;
-    const fontSize  = isDesktop ? '24px' : '14px';
-    const canvasH   = isDesktop ? 36 : 20;
-    const textY     = isDesktop ? 18 : 10;
-
-    const canvas = document.getElementById('bentoPhoneCanvas');
-    if (canvas instanceof HTMLCanvasElement) {
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.font = `${fontSize} Arial`;
-        const metrics = ctx.measureText(display);
-        canvas.width = metrics.width + 4;
-        canvas.height = canvasH;
-        ctx.font = `${fontSize} Arial`;
-        ctx.fillStyle = '#212529';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(display, 2, textY);
-      }
-    }
-
-    bentoBtn.addEventListener('click', () => {
-      window.location.href = 'tel:' + tel;
-    });
-  }
-</script>

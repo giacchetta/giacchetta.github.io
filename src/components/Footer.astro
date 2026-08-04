@@ -1,14 +1,8 @@
 ---
-import { Image } from 'astro:assets';
 import Contact from './Contact.astro';
-import emailIcon from '../assets/img/email.png';
-import githubIcon from '../assets/img/github-icon.png';
-import gianetIcon from '../assets/img/gianet.png';
-import linkedinIcon from '../assets/img/linkedin-icon.png';
 import { useTranslations } from '../i18n/utils';
 
-const locale = Astro.currentLocale ?? 'en';
-const t = useTranslations(locale);
+const t = useTranslations();
 const date = new Date();
 ---
 <footer class="text-center py-1">
