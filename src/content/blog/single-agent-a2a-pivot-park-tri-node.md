@@ -20,7 +20,7 @@ Lead: After end-to-end tests showed sub-agent → A2A is unreliable in OpenClaw,
 🛠️ **What changed (concrete)**
 - 🧭 Single-agent mode: both containers make main the working agent; when code is needed Researcher main curls Coder at http://coder:3000/a2a/tasks.
 - 🗂️ JSON5 preservation: sub-agent entries commented in openclaw.json so revival is one uncomment away.
-- 🧰 Local MCPs: added filesystem MCP for Coder and memory MCP for Researcher; tools surface as bundle-mcp:<server>__<tool>.
+- 🧰 Local MCPs: added filesystem MCP for Coder and memory MCP for Researcher; tools surface as `bundle-mcp:<server>__<tool>`.
 - 🧪 Orchestration + tests: index.js remained logic-identical (comments updated); tmux vm-bridge used for live runs and probes.
 
 ✅ **What we validated**
