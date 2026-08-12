@@ -1,6 +1,6 @@
 # Luciano Giacchetta — Professional Portfolio
 
-An English-only professional portfolio built with **Astro 7**, featuring a modern Bento UI dashboard homepage. Showcases career history, technical credentials, certifications, and detailed case studies.
+An English-only professional portfolio built with **Astro 7**, featuring a modern Bento UI dashboard homepage. Showcases career history, technical credentials, certifications, detailed case studies, and a blog.
 
 **Live site**: https://lucianogiacchetta.com
 
@@ -27,6 +27,7 @@ An English-only professional portfolio built with **Astro 7**, featuring a moder
 ├── src/
 │   ├── assets/img/                 # Logos, icons, profile images (PNG/SVG)
 │   ├── components/                 # Astro UI components
+│   │   ├── BlogPost.astro
 │   │   ├── Collaboration.astro
 │   │   ├── Contact.astro
 │   │   ├── Credentials.astro
@@ -34,6 +35,7 @@ An English-only professional portfolio built with **Astro 7**, featuring a moder
 │   │   ├── HomePage.astro
 │   │   └── SlugPage.astro
 │   ├── content/
+│   │   ├── blog/                   # Markdown blog posts
 │   │   ├── certifications/         # MDX certification entries
 │   │   ├── collaborations/         # MDX company and case-study entries
 │   │   └── credentials/            # MDX technical skill deep-dives
@@ -49,9 +51,11 @@ An English-only professional portfolio built with **Astro 7**, featuring a moder
 │   │   ├── experience.astro        # /experience/  (full roles listing)
 │   │   ├── credentials.astro       # /credentials/  (full skills matrix)
 │   │   ├── experience/[slug].astro # /experience/[slug]  (content pages)
-│   │   └── credentials/[slug].astro # /credentials/[slug]  (content pages)
+│   │   ├── credentials/[slug].astro # /credentials/[slug]  (content pages)
+│   │   ├── blog/index.astro        # /blog/  (post feed, full content, centered column)
+│   │   └── blog/[slug].astro       # /blog/[slug]  (post permalink)
 │   ├── styles/bootstrap.min.css    # PurgeCSS output — do not edit manually
-│   └── utils/content.js            # filterByLocale(), getAllPages(), cleanSlug()
+│   └── utils/content.js            # filterByLocale(), getAllPages(), getBlogPosts(), getExcerpt(), cleanSlug()
 ├── astro.config.mjs
 ├── package.json
 └── tsconfig.json
@@ -78,6 +82,9 @@ An English-only professional portfolio built with **Astro 7**, featuring a moder
 ---
 
 ## Content Collections
+
+### `blog`
+Blog posts rendered as full Markdown (title, date, authors, tags). Listed newest-first on `/blog/`, each with its own `/blog/[slug]/` permalink. Always set a frontmatter `description` — it becomes the page's meta description; without one it falls back to an auto-generated excerpt rather than the site-wide default.
 
 ### `collaborations`
 Work history entries with two subtypes:

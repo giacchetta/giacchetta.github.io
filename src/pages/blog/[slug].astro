@@ -1,0 +1,35 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BlogPost from '../../components/BlogPost.astro';
+import { getBlogPosts, getExcerpt } from '../../utils/content.js';
+import { useTranslations } from '../../i18n/utils';
+
+export async function getStaticPaths() {
+  const posts = await getBlogPosts();
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const t = useTranslations();
+const description = post.data.description || getExcerpt(post);
+---
+<Layout title={`${post.data.title} | ${t('bio.name')}`} description={description}>
+  <main class="container layout mt-3 mb-5">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-3">
+        <li class="breadcrumb-item"><a href="/">{t('nav.home')}</a></li>
+        <li class="breadcrumb-item"><a href="/blog/">{t('nav.blog')}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{post.data.title}</li>
+      </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-8">
+        <BlogPost post={post} headingTag="h1" />
+      </div>
+    </div>
+  </main>
+</Layout>
