@@ -35,6 +35,20 @@ const collaborationsCollection = defineCollection({
   }),
 });
 
+const blogCollection = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
+  schema: z.object({
+    title: z.string(),
+    slug: z.string().optional(),
+    description: z.string().optional(),
+    date: z.coerce.date(),
+    authors: z.array(z.string()).default([]),
+    tags: z.array(z.string()).default([]),
+    pr: z.number().optional(),
+    draft: z.boolean().default(false),
+  }),
+});
+
 const certificationsCollection = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/certifications' }),
   schema: z.object({
@@ -56,4 +70,5 @@ export const collections = {
   credentials: credentialsCollection,
   collaborations: collaborationsCollection,
   certifications: certificationsCollection,
+  blog: blogCollection,
 };

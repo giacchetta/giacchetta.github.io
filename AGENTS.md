@@ -17,7 +17,7 @@ A professional portfolio site for Luciano Giacchetta, a DevOps/Cloud/Systems Eng
 | Framework | Astro 7.x with MDX integration |
 | Styling | Bootstrap 5.3 - Keep custom CSS to an absolute minimum |
 | CSS Optimization | PurgeCSS (strips unused Bootstrap at build time) |
-| Content | Astro Content Collections with Zod schemas, MDX files |
+| Content | Astro Content Collections with Zod schemas, MDX/Markdown files |
 | UI strings | `src/i18n/en.json` (single English dictionary) |
 | Sitemap | `@astrojs/sitemap` |
 | Agent/LLM access | `astro-llms-md` — per-page `.md` files + `/llms.txt` + `/llms-full.txt` |
@@ -35,7 +35,8 @@ A professional portfolio site for Luciano Giacchetta, a DevOps/Cloud/Systems Eng
 src/
 ├── assets/img/              # Images and logos (PNG/SVG) imported in MDX and components
 ├── components/              # All UI components (Astro components only)
-├── content/                 # MDX content collections
+├── content/                 # MD/MDX content collections
+│   ├── blog/                # Blog posts (Markdown, auto-generated + manual)
 │   ├── certifications/      # Certification entries
 │   ├── collaborations/      # Company and article entries
 │   └── credentials/         # Technical skill deep-dives
@@ -50,12 +51,14 @@ src/
 │   ├── experience.astro     # /experience/ (full roles listing)
 │   ├── credentials.astro    # /credentials/ (full skills matrix)
 │   ├── experience/[slug].astro  # /experience/[slug] (dynamic content pages)
-│   └── credentials/[slug].astro  # /credentials/[slug] (dynamic content pages)
+│   ├── credentials/[slug].astro  # /credentials/[slug] (dynamic content pages)
+│   ├── blog/index.astro     # /blog/ (feed — full posts, centered single column)
+│   └── blog/[slug].astro    # /blog/[slug] (permalink for a single post)
 ├── styles/
 │   └── bootstrap.min.css    # PurgeCSS output — generated at build, do not edit manually
 ├── utils/
-│   └── content.js           # Collection helpers: filterByLocale, getAllPages, cleanSlug
-└── content.config.ts        # Zod schemas for all 3 collections
+│   └── content.js           # Collection helpers: filterByLocale, getAllPages, getBlogPosts, getExcerpt, cleanSlug
+└── content.config.ts        # Zod schemas for all 4 collections
 ```
 
 ### Page Rendering Flow
@@ -65,7 +68,7 @@ Layout.astro (HTML shell, SEO, canonical link, footer slot — no navbar)
 └── pages/index.astro → HomePage.astro (Bento dashboard — 6 tiles)
     ├── Tile 1: Hero (greeting + tagline)
     ├── Tile 2: Profile (profile pic, name, Email button → opens #contactModal)
-    ├── Tile 3: Empty placeholder (future use; full-width on mobile, 1/3 column on desktop)
+    ├── Tile 3: Latest Posts (3 most recent blog posts by `date`, each row clickable, + View All Posts link to /blog/)
     ├── Tile 4: Tech Stack Matrix (9 curated badges + View Full Stack → /credentials/)
     ├── Tile 5: Case Studies (2 most recent `type: "article"` entries by publishDate, each row clickable, + View All link to /experience/#detailed-case-studies)
     └── Tile 6: Recent Experience (top 3 roles + View Full Experience → /experience/)
@@ -75,6 +78,11 @@ pages/credentials.astro → Credentials.astro (full skills matrix listing, in-pa
 
 pages/{experience,credentials}/[slug].astro → SlugPage.astro
     └── Renders MDX content with in-page breadcrumb; layout adapts to entry type (company / article / credential / certification)
+
+pages/blog/index.astro → BlogPost.astro (repeated per post)
+    └── Feed of all published posts, newest first, full content, one centered column, in-page breadcrumb
+pages/blog/[slug].astro → BlogPost.astro
+    └── Permalink for a single post (renders an <h1> — required so astro-llms-md picks up its title); in-page breadcrumb
 ```
 
 **Navigation**: There is no top navbar and no fixed bottom breadcrumb bar. Bootstrap breadcrumbs render **in-page** at the top of every non-Home page (Home has none). The only email entry point is the Home/Bento Tile 2 Email button, which opens the `#contactModal` (rendered by `Footer.astro` → `Contact.astro`).
@@ -83,7 +91,22 @@ pages/{experience,credentials}/[slug].astro → SlugPage.astro
 
 ## Content Collections
 
-Defined in `src/content.config.ts`. There are three collections. All collections support a `draft` field (boolean, default `false`); draft entries are filtered out in `getStaticPaths` (both `[slug]` routes) and `getAllPages()`, so they are not published as pages or listed anywhere.
+Defined in `src/content.config.ts`. There are four collections. All collections support a `draft` field (boolean, default `false`); draft entries are filtered out in `getStaticPaths` (all `[slug]` routes), `getAllPages()`, and `getBlogPosts()`, so they are not published as pages or listed anywhere.
+
+### `blog`
+Blog posts (`.md` files under `src/content/blog/`), populated both manually and by an external CI pipeline (in another repo) that auto-generates a post per merged PR. Frontmatter fields:
+- `title` (required string)
+- `slug` (optional string) — when present, this becomes the entry's `id`/URL slug instead of the filename (Astro's glob loader default). Files keep a date-prefixed name (e.g. `2026-08-11-....md`) for readability; the route comes from `slug`.
+- `description` (optional string) — used verbatim as the page's `<meta name="description">`. **Should be set in frontmatter** (the external generator should produce it, same as `title`/`tags`) rather than relying on the fallback below — an authored one-liner beats a mechanically stripped excerpt.
+- `date` (required, coerced to a Date — accepts quoted or unquoted YAML dates)
+- `authors` (array of strings, default `[]`)
+- `tags` (array of strings, default `[]`)
+- `pr` (optional number) — source PR number, used by the generator for idempotency
+- `draft` (boolean, default `false`)
+
+Rendered via `getBlogPosts()` in `src/utils/content.js` (date-descending, drafts filtered), not through `getAllPages()`.
+
+**Meta description fallback**: `src/pages/blog/[slug].astro` uses `post.data.description || getExcerpt(post)`. Without this, a post with no `description` would silently inherit `Layout.astro`'s site-wide default (`meta.description`) — duplicating the homepage's `<meta name="description">` across every such post, an SEO problem. `getExcerpt()` (`src/utils/content.js`) strips Markdown syntax and emoji from `post.body` and truncates to ~155 chars at a word boundary. This is a safety net only; the primary fix is the generator emitting `description` in frontmatter.
 
 ### `credentials`
 Technical skill deep-dives. Frontmatter fields:
@@ -129,6 +152,11 @@ When adding new UI strings, add the key/value to `src/i18n/en.json` and use `con
 ---
 
 ## Adding Content
+
+### New Blog Post
+1. Create `src/content/blog/[YYYY-MM-DD-slug].md` with `title`, `date`, and (optionally) `slug`, `authors`, `tags`
+2. **Always set `description`** (a ~150-160 char SEO summary) — see the fallback caveat in [Content Collections → `blog`](#content-collections)
+3. Write the Markdown body — it renders in full on the `/blog/` feed and at its own `/blog/[slug]/` permalink
 
 ### New Collaboration (Company)
 1. Create `src/content/collaborations/[slug].mdx` with required frontmatter (`type: "company"`, `order`, `logo`, etc.)
@@ -196,6 +224,7 @@ The CI/CD workflow (`.github/workflows/static.yaml`) runs `npm run build`.
 - **No client-side frameworks**: The site is server-rendered static HTML. JavaScript is limited to Bootstrap's bundle (modals/collapse) and small inline scripts for canvas obfuscation and clipboard.
 - **Contact obfuscation**: The email address is drawn on a `<canvas>` element (in `Contact.astro`) to prevent scraping. Do not render it as plain text. There are no phone numbers on the site.
 - **Breadcrumbs**: Rendered in-page via Bootstrap breadcrumb component on non-Home pages (no top navbar, no fixed bottom breadcrumb bar).
+- **Every page needs an `<h1>`**: `astro-llms-md`'s default `titleSelector` is `h1`; a page with no `<h1>` is silently skipped from `.md` generation and `llms.txt` (no build error). `BlogPost.astro` accepts a `headingTag` prop (`"h1"` on the permalink page, `"h2"` in the feed) to guarantee exactly one `<h1>` per page.
 
 ---
 
@@ -206,7 +235,7 @@ The site exposes machine-readable content via the `astro-llms-md` integration, w
 **Generated files (in `dist/` and served live):**
 - `/llms.txt` — discovery index linking all `.md` files, grouped by section
 - `/llms-full.txt` — all page content concatenated in a single file
-- Per-page markdown at the same path as the HTML page: e.g., `/experience.md`, `/experience/telnyx.md`
+- Per-page markdown at the same path as the HTML page: e.g., `/experience.md`, `/experience/telnyx.md`, `/blog.md`, `/blog/[slug].md`
 
 **Configuration** (in `astro.config.mjs`):
 - `contentSelector: 'main'` — extracts only the `<main>` element, excluding nav/footer/breadcrumbs

@@ -1,0 +1,34 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BlogPost from '../../components/BlogPost.astro';
+import { getBlogPosts } from '../../utils/content.js';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations();
+const posts = await getBlogPosts();
+---
+<Layout title={`${t('blog.pageTitle')} | ${t('bio.name')}`} description={t('meta.descriptionBlog')}>
+  <main class="container layout mt-3 mb-5">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-3">
+        <li class="breadcrumb-item"><a href="/">{t('nav.home')}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{t('nav.blog')}</li>
+      </ol>
+    </nav>
+    <h1 class="display-5 fw-bold mb-4">{t('blog.pageTitle')}</h1>
+
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-8">
+        {posts.length === 0 ? (
+          <p class="text-muted">{t('blog.empty')}</p>
+        ) : (
+          posts.map((post) => (
+            <article class="mb-5 pb-4 border-bottom">
+              <BlogPost post={post} linked={true} />
+            </article>
+          ))
+        )}
+      </div>
+    </div>
+  </main>
+</Layout>

@@ -2,7 +2,7 @@
 import { Picture, Image } from 'astro:assets';
 import Profile from '../assets/img/profile.png';
 import Layout from '../layouts/Layout.astro';
-import { getAllPages, getFeaturedPagesByCategory, cleanSlug } from '../utils/content.js';
+import { getAllPages, getFeaturedPagesByCategory, getBlogPosts, cleanSlug } from '../utils/content.js';
 import { useTranslations } from '../i18n/utils';
 import credentialsRaw from '../data/credentials.json';
 
@@ -20,6 +20,8 @@ const recentRoles = pages.collaborations
   .filter(p => p.data.type === 'company')
   .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99))
   .slice(0, 3);
+
+const latestPosts = (await getBlogPosts()).slice(0, 3);
 
 const badgeStyles = [
   'bg-warning-subtle text-warning-emphasis border',
@@ -75,14 +77,40 @@ const techStack = [
         </div>
       </div>
 
-      <!-- Tile 3: (empty placeholder) -->
-      <div class="col-12 col-md-4 d-flex">
-        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 w-100"></div>
+      <!-- Tile 3: Latest Posts -->
+      <div class="col-12 col-md-6 d-flex">
+        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 w-100 d-flex flex-column tile-tall">
+          <h2 class="h5 fw-bold text-muted mb-3">{t('hero.latestPosts')}</h2>
+          <div class="d-flex flex-column gap-2 flex-grow-1">
+            {latestPosts.map((post) => (
+              <a
+                href={`/blog/${cleanSlug(post)}/`}
+                class="text-decoration-none text-body p-2 rounded-3 tile-row"
+              >
+                <div class="fw-semibold">{post.data.title}</div>
+                <small class="text-muted">
+                  {new Date(post.data.date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </small>
+              </a>
+            ))}
+          </div>
+          {latestPosts.length > 0 && (
+            <div class="text-end mt-3">
+              <a href="/blog/" class="text-decoration-none small text-primary">
+                {t('hero.viewAllPosts')} &rarr;
+              </a>
+            </div>
+          )}
+        </div>
       </div>
 
       <!-- Tile 4: Tech Stack Matrix -->
-      <div class="col-12 col-md-8">
-        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 d-flex flex-column">
+      <div class="col-12 col-md-6">
+        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 d-flex flex-column tile-tall">
           <h2 class="h5 fw-bold text-muted mb-3">{t('hero.techStack')}</h2>
           <div class="d-flex flex-wrap gap-2 flex-grow-1 align-content-start">
             {techStack.map((skill) => (
@@ -182,6 +210,9 @@ const techStack = [
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+  .tile-tall {
+    min-height: 320px;
   }
 </style>
 

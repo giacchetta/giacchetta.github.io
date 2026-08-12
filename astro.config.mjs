@@ -12,22 +12,8 @@ export default defineConfig({
     llms({
       contentSelector: 'main',
       excludeSelectors: [...DEFAULT_NOISE_SELECTORS],
-      exclude: [
-        // Legacy SEO redirect stubs — canonical content lives under /experience/ and /credentials/
-        'github-actions',
-        'bimodal',
-        'codyops',
-        'jenkins-migration-github-argocd',
-      ],
+      exclude: [],
     }),
   ],
-  redirects: {
-   '/github-actions/': '/credentials/github-actions/',
-
-   '/bimodal/': '/experience/bimodal/',
-
-   '/codyops/': '/experience/codyops/',
-
-   '/jenkins-migration-github-argocd/': '/experience/jenkins-migration-github-argocd/',
-  },
+  redirects: {},
 });
