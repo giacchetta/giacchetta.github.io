@@ -1,0 +1,31 @@
+name: Post-on-Merge Pipeline CI
+
+# Guards the post-on-merge pipeline's scripts/prompts/workflow (.github/post-on-merge.md).
+# This workflow is now consumed by other repos via `uses:` (issue #85), so a
+# broken sanitizer or a syntax error here would otherwise only surface mid-run
+# in a CONSUMER repo — this catches it on the PR that changes it.
+
+on:
+  pull_request:
+    paths:
+      - ".github/scripts/**"
+      - ".github/prompts/**"
+      - ".github/workflows/post-on-merge.yml"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Sanitizer self-test
+        run: python3 .github/scripts/sanitize-post.py --self-test
+
+      - name: Shell syntax check
+        run: |
+          set -euo pipefail
+          for f in .github/scripts/*.sh; do
+            echo "::group::bash -n $f"
+            bash -n "$f"
+            echo "::endgroup::"
+          done
