@@ -94,7 +94,7 @@ pages/blog/[slug].astro → BlogPost.astro
 Defined in `src/content.config.ts`. There are four collections. All collections support a `draft` field (boolean, default `false`); draft entries are filtered out in `getStaticPaths` (all `[slug]` routes), `getAllPages()`, and `getBlogPosts()`, so they are not published as pages or listed anywhere.
 
 ### `blog`
-Blog posts (`.md` files under `src/content/blog/`), populated both manually and by an external CI pipeline (in another repo) that auto-generates a post per merged PR. Frontmatter fields:
+Blog posts (`.md` files under `src/content/blog/`), populated both manually and by a CI pipeline that auto-generates a post per merged PR in other ("lab"/PoC) repos. The pipeline itself is a reusable GitHub Actions workflow hosted in this repo (`.github/workflows/post-on-merge.yml`), invoked by those repos via `uses:` — see `.github/post-on-merge.md` for the caller contract, inputs/secrets, and idempotency rules. Frontmatter fields:
 - `title` (required string)
 - `slug` (optional string) — when present, this becomes the entry's `id`/URL slug instead of the filename (Astro's glob loader default). Files keep a date-prefixed name (e.g. `2026-08-11-....md`) for readability; the route comes from `slug`.
 - `description` (optional string) — used verbatim as the page's `<meta name="description">`. **Should be set in frontmatter** (the external generator should produce it, same as `title`/`tags`) rather than relying on the fallback below — an authored one-liner beats a mechanically stripped excerpt.
