@@ -123,11 +123,18 @@ self-tests run as a workflow step before AI inference:
 
 ## Idempotency
 
-The post's frontmatter carries `pr: <number>`. The filename (slug) is
-model-chosen, so it can differ between runs of the same PR: on re-run,
-`push-post.sh` first looks for an existing post under `post_dir` carrying the
-same `pr:` and, if its filename differs, renames it into place (`git mv`)
-rather than publishing a duplicate. It then overwrites that file if its `pr:`
+The post's frontmatter carries `pr: "https://github.com/<source_repo>/pull/<N>"`
+— computed by `prepare-post.sh` from `SOURCE_REPO`/`PR_NUMBER`, never trusted
+from the model (it doesn't reliably know `source_repo` vs `target_repo`; any
+`pr:` line the model emits is stripped and replaced). It also doubles as the
+"View source PR" link rendered next to the tags on the published post.
+
+The filename (slug) is model-chosen, so it can differ between runs of the
+same PR: on re-run, `push-post.sh` first looks for an existing post under
+`post_dir` carrying a matching `pr:` (matching just the trailing PR number —
+tolerant of the legacy bare-number `pr: <N>` shape written before this URL
+change) and, if its filename differs, renames it into place (`git mv`) rather
+than publishing a duplicate. It then overwrites that file if its `pr:`
 matches (safe re-run), aborts if `pr:` differs (an unrelated post happens to
 have the same slug), and no-ops if the content is unchanged.
 

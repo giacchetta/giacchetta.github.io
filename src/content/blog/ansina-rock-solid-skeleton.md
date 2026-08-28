@@ -5,7 +5,7 @@ description: "M0 skeleton for Ansina: REST API, auth, persistence, CI, tests and
 date: 2026-08-21
 authors: [giacchetta]
 tags: [ai-agent, ai-mcp, ai-engineer]
-pr: 21
+pr: "https://github.com/giacchetta/ansina/pull/21"
 ---
 
 Laid the foundation: core infra, API, auth, persistence, CI, tests and docs — a production-minded M0 skeleton for Ansina.

@@ -5,7 +5,7 @@ description: "Pivoted an OpenClaw A2A fleet to single-agent mode: main→main A2
 date: 2026-08-12
 authors: ["giacchetta"]
 tags: ["ai-agent","ai-a2a","ai-mcp"]
-pr: 13
+pr: "https://github.com/giacchetta/openclaw-a2a-bridge/pull/13"
 ---
 
 Hook: We pivoted to a pragmatic architecture — single-agent A2A — while keeping the original tri-node design one uncomment away.

@@ -44,7 +44,7 @@ const blogCollection = defineCollection({
     date: z.coerce.date(),
     authors: z.array(z.string()).default([]),
     tags: z.array(z.string()).default([]),
-    pr: z.number().optional(),
+    pr: z.string().url().optional(),
     draft: z.boolean().default(false),
   }),
 });

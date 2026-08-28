@@ -197,6 +197,7 @@ jobs:
           PR_TITLE: ${{ fromJSON(steps.gather.outputs.feed).pr_title }}
           PR_NUMBER: ${{ inputs.pr_number }}
           POST_DIR: ${{ inputs.post_dir }}
+          SOURCE_REPO: ${{ inputs.source_repo || github.repository }}
         run: |
           set -euo pipefail
           bash .postkit/.github/scripts/prepare-post.sh
