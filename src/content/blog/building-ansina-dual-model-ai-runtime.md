@@ -5,6 +5,7 @@ description: "Building Ansina: Designing a lean, provable AI agent runtime built
 date: 2026-08-16
 authors: ["giacchetta"]
 tags: ["ai-agent"]
+pr: "https://github.com/giacchetta/ansina/pull/18"
 ---
 
 # Building Ansina: A Blueprint for a Deterministic, Dual-Model AI Runtime
