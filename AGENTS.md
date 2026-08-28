@@ -101,7 +101,7 @@ Blog posts (`.md` files under `src/content/blog/`), populated both manually and 
 - `date` (required, coerced to a Date — accepts quoted or unquoted YAML dates)
 - `authors` (array of strings, default `[]`)
 - `tags` (array of strings, default `[]`)
-- `pr` (optional number) — source PR number, used by the generator for idempotency
+- `pr` (optional string, URL) — full URL of the source PR (e.g. `https://github.com/<owner>/<repo>/pull/<N>`), computed by the generator (never model-authored) and used both for idempotency and rendered as a "View source PR" link next to the tags in `BlogPost.astro`
 - `draft` (boolean, default `false`)
 
 Rendered via `getBlogPosts()` in `src/utils/content.js` (date-descending, drafts filtered), not through `getAllPages()`.

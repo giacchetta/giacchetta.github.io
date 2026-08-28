@@ -1,6 +1,7 @@
 ---
 import { render } from 'astro:content';
 import { cleanSlug } from '../utils/content.js';
+import { useTranslations } from '../i18n/utils';
 
 interface Props {
   post: any;
@@ -11,6 +12,7 @@ interface Props {
 const { post, linked = false, headingTag = 'h2' } = Astro.props;
 const Heading = headingTag;
 const { Content } = await render(post);
+const t = useTranslations();
 
 const dateLocale = 'en-US';
 const formattedDate = new Date(post.data.date).toLocaleDateString(dateLocale, {
@@ -29,11 +31,21 @@ const formattedDate = new Date(post.data.date).toLocaleDateString(dateLocale, {
     )}
   </Heading>
   <div class="text-muted small mb-2">{formattedDate}</div>
-  {post.data.tags.length > 0 && (
+  {(post.data.tags.length > 0 || post.data.pr) && (
     <div class="d-flex flex-wrap gap-2">
       {post.data.tags.map((tag: string) => (
         <span class="badge bg-secondary-subtle text-secondary-emphasis border rounded-pill">{tag}</span>
       ))}
+      {post.data.pr && (
+        <a
+          href={post.data.pr}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="badge bg-primary-subtle text-primary-emphasis border rounded-pill text-decoration-none"
+        >
+          {t('blog.viewPr')} ↗
+        </a>
+      )}
     </div>
   )}
 </header>

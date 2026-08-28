@@ -35,7 +35,6 @@ messages:
       - `files_changed` — array of file paths.
       - `diffstat` — per-file additions/deletions.
       - `merge_date` — use as the frontmatter `date`.
-      - `pr_number` — use as the frontmatter `pr`.
 
       - **Repo:** {{repo}}
       - **PR number:** {{pr_number}}
@@ -55,7 +54,8 @@ messages:
          sentence, 120–160 chars, SEO meta description — not LinkedIn copy),
          `date` (={{merge_date}}), `authors: [giacchetta]`, `tags` (1–3 from
          `ai-engineer, ai-agent, ai-a2a, ai-mcp, ai-orcherstrator, ai-seo,
-         ai-video` — no others), `pr: {{pr_number}}`.
+         ai-video` — no others). Do NOT emit a `pr:` field — the pipeline
+         injects it after generation.
       5. Open the body with a standalone hook line under 140 characters (the
          LinkedIn mobile fold), then a short lead, then 2,000–3,000
          characters of body total. One closing one-liner, unlabelled.

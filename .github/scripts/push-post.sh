@@ -44,6 +44,12 @@ set -euo pipefail
 TARGET_REPO="${TARGET_REPO:-giacchetta/giacchetta.github.io}"
 SOURCE_REPO="${SOURCE_REPO:-${GITHUB_REPOSITORY:-}}"
 BRANCH_PREFIX="${BRANCH_PREFIX:-post/}"
+
+# Matches this PR's frontmatter `pr:` line in either shape: the current
+# `pr: "https://github.com/<owner>/<repo>/pull/<N>"` (owner/repo wildcarded —
+# a post can predate a source_repo rename, or live in a different repo than
+# the current caller) or the legacy bare `pr: <N>` written before that change.
+PR_LINE_PATTERN="^pr:[[:space:]]*\"?https://github\\.com/[^/]+/[^/]+/pull/${PR_NUMBER}\"?[[:space:]]*\$|^pr:[[:space:]]*${PR_NUMBER}[[:space:]]*\$"
 BRANCH_NAME="${BRANCH_PREFIX}${POST_FILENAME%.md}"
 GIT_USER_NAME="${GIT_USER_NAME:-Luciano Giacchetta}"
 GIT_USER_EMAIL="${GIT_USER_EMAIL:-ldgiacchetta@gmail.com}"
@@ -82,7 +88,7 @@ mkdir -p "$(dirname "$POST_PATH")"
 # DIFFERENT filename (the model chose a different slug this time), move it to
 # POST_PATH first so the diff/commit below updates the existing post in
 # place instead of leaving the old file behind as an orphaned duplicate.
-EXISTING_FILE_FOR_PR="$(grep -rl --include='*.md' -E "^pr:[[:space:]]*${PR_NUMBER}[[:space:]]*\$" "$(dirname "$POST_PATH")" 2>/dev/null | head -n1 || true)"
+EXISTING_FILE_FOR_PR="$(grep -rl --include='*.md' -E "$PR_LINE_PATTERN" "$(dirname "$POST_PATH")" 2>/dev/null | head -n1 || true)"
 if [ -n "$EXISTING_FILE_FOR_PR" ] && [ "$EXISTING_FILE_FOR_PR" != "$POST_PATH" ]; then
   echo "::notice::PR ${PR_NUMBER} already published as ${EXISTING_FILE_FOR_PR}; renaming to ${POST_PATH}."
   git mv "$EXISTING_FILE_FOR_PR" "$POST_PATH"
@@ -92,9 +98,9 @@ fi
 # re-run — overwrite. If it exists with a DIFFERENT pr: number, abort to avoid
 # clobbering an unrelated post.
 if [ -f "$POST_PATH" ]; then
-  EXISTING_PR="$(awk '/^pr:/{print $2; exit}' "$POST_PATH" || true)"
-  if [ -n "$EXISTING_PR" ] && [ "$EXISTING_PR" != "$PR_NUMBER" ]; then
-    echo "::error::${POST_PATH} already exists with pr: ${EXISTING_PR}, refusing to overwrite (this PR is ${PR_NUMBER})."
+  if grep -qE "^pr:" "$POST_PATH" && ! grep -qE "$PR_LINE_PATTERN" "$POST_PATH"; then
+    EXISTING_PR_LINE="$(grep -E '^pr:' "$POST_PATH" | head -n1)"
+    echo "::error::${POST_PATH} already exists with ${EXISTING_PR_LINE}, refusing to overwrite (this PR is ${PR_NUMBER})."
     exit 1
   fi
   echo "::notice::Overwriting existing ${POST_PATH} (re-run for PR ${PR_NUMBER})."

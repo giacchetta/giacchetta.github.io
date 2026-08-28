@@ -5,7 +5,7 @@ description: "Laid the M0 foundations: reproducible packaging & Makefile workflo
 date: 2026-08-19
 authors: [giacchetta]
 tags: [ai-agent, ai-mcp, ai-engineer]
-pr: 19
+pr: "https://github.com/giacchetta/ansina/pull/19"
 ---
 
 Ship the foundations so higher-level intelligence has a stable home.

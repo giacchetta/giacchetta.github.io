@@ -26,10 +26,17 @@
 # the post's .md/llms.txt output with no build error). The sanitizer fixes
 # and warns rather than failing the job — see sanitize-post.py's header.
 #
+# The frontmatter `pr:` field is handled the same way, for the same reason:
+# rather than trust the model to know source_repo vs target_repo and build a
+# correct URL, we strip whatever `pr:` line the model wrote (if any) and
+# inject a script-computed `pr: "https://github.com/<source_repo>/pull/<N>"`
+# right after the opening `---` fence.
+#
 # Inputs (env):
 #   RESPONSE_FILE  — path to the model response (from actions/ai-inference output)
 #   PR_TITLE       — the PR title (from gather; slug fallback + commit msg)
 #   PR_NUMBER      — the PR number (for idempotency metadata + slug fallback)
+#   SOURCE_REPO    — owner/name the PR lives in (for the frontmatter `pr:` URL)
 #   POST_DIR       — target directory in the target repo (default: src/content/blog)
 #
 # Outputs (GITHUB_ENV-style, written to $GITHUB_OUTPUT):
@@ -45,6 +52,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 : "${RESPONSE_FILE:?RESPONSE_FILE env is required}"
 : "${PR_TITLE:?PR_TITLE env is required}"
 : "${PR_NUMBER:?PR_NUMBER env is required}"
+: "${SOURCE_REPO:?SOURCE_REPO env is required}"
+
+PR_URL="https://github.com/${SOURCE_REPO}/pull/${PR_NUMBER}"
 
 if [ ! -s "$RESPONSE_FILE" ]; then
   echo "::error::Generated post is empty."
@@ -78,6 +88,17 @@ CONTENT="$(printf '%s\n' "$CONTENT" | awk '
 # Strip leading blank/whitespace-only lines before the frontmatter fence
 # (preserves blank lines in the body).
 CONTENT="$(printf '%s\n' "$CONTENT" | awk 'NF { p=1 } p { print }')"
+
+# Strip any model-emitted `pr:` line from the frontmatter (untrusted format
+# and value — the model doesn't reliably know source_repo vs target_repo) and
+# inject a script-computed one, bounded to the frontmatter block the same way
+# the slug read below is.
+CONTENT="$(printf '%s\n' "$CONTENT" | awk -v pr_line="pr: \"${PR_URL}\"" '
+  NR==1 && /^---[[:space:]]*$/ { print; print pr_line; in_fm=1; next }
+  in_fm && /^---[[:space:]]*$/ { in_fm=0; print; next }
+  in_fm && /^pr:/ { next }
+  { print }
+')"
 
 # Try to read the model's own `slug:` line first — it becomes the public
 # post URL, so a human-readable, on-topic slug beats the PR-title fallback.

@@ -82,7 +82,6 @@ invent a section of platitudes to pad the count.
    date: <YYYY-MM-DD>
    authors: [giacchetta]
    tags: [<tag>, <tag>, ...]
-   pr: <PR number>
    ---
    ```
    - `slug`: lowercase, kebab-case, no spaces, no underscores, matching
@@ -103,7 +102,10 @@ invent a section of platitudes to pad the count.
      never use a repo/product/protocol name (`openclaw`, `a2a`, `agents`) as
      a tag just because it appears in the feed — the site renders tags as
      visible badges, and only vocabulary words belong there.
-   - `pr`: the PR number given in the feed (`{{pr_number}}`).
+   - Do NOT emit a `pr:` field. The pipeline computes and injects
+     `pr: "https://github.com/<source_repo>/pull/<N>"` itself after
+     generation — it doesn't trust the model to know source_repo vs
+     target_repo.
 3. **No code blocks** in the body. No triple backticks. Inline `code` for
    identifiers/files is fine and encouraged (e.g. `sessions_spawn`,
    `main/IDENTITY.md`). **Any `<word>` or `<word>__<word>` placeholder,
