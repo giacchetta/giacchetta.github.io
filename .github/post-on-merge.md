@@ -8,10 +8,9 @@ the post's public URL (`/blog/<slug>`). This repo's `static.yaml` workflow
 rebuilds and deploys on push to `main`, so a merged post goes live
 automatically.
 
-**One merged PR == one post.** The PR's closing issues (parent + sub-issues)
-are gathered as narrative feed alongside the PR title/body/commits/diffstat,
-then `actions/ai-inference@v3` (Copilot CLI) writes the post from a calibrated
-system prompt.
+**One merged PR == one post.** The PR title, body, and the PR author's own
+comments are gathered as narrative feed, then `actions/ai-inference@v3`
+(Copilot CLI) writes the post from a calibrated system prompt.
 
 Originally built and run standalone inside `giacchetta/openclaw-a2a-bridge`;
 extracted here (issue #85) so any lab repo can call it without copying scripts.
@@ -23,13 +22,13 @@ extracted here (issue #85) so any lab repo can call it without copying scripts.
 ├── workflows/
 │   └── post-on-merge.yml        # on: workflow_call (+ workflow_dispatch self-test)
 ├── scripts/
-│   ├── gather-feed.sh           # gh + jq → feed.json (PR + linked issues + commits + diffstat)
+│   ├── gather-feed.sh           # gh + jq → feed.json (PR title/body + author's own comments)
 │   ├── prepare-post.sh          # strips fences/CRLF; slug from a grepped frontmatter line, PR-title fallback
 │   ├── sanitize-post.py         # backtick-wraps bare `<word>` tokens in the body (see Sanitization below)
 │   └── push-post.sh             # clone target repo, write post_dir/, commit, push via PR (idempotent)
 └── prompts/
-    ├── linkedin-post.system.md  # voice + hard rules (calibrated against existing posts)
-    └── linkedin-post.prompt.yml # user-message template ({{repo}}, {{pr_body}}, {{issues}}, …)
+    ├── linkedin-post.system.md  # voice + structure + hard rules — the single source of truth (calibrated against existing posts)
+    └── linkedin-post.prompt.yml # feed wiring only ({{repo}}, {{pr_number}}, {{merge_date}}, {{feed}}) — points at system.md for rules, doesn't restate them
 ```
 
 ## Calling this workflow
@@ -81,8 +80,40 @@ does the generation + cross-repo PR.
 Both secrets live in the **caller** repo (e.g. `GC_COPILOT_TOKEN` / `GC_TOKEN`
 on `openclaw-a2a-bridge`) and are passed through explicitly — this repo does
 not need its own copies for callers to use it. The default `GITHUB_TOKEN` is
-used only to read the source PR/issues via `gh` (scoped to `source_repo` via
-the job's `GH_REPO` env).
+used only to read the source PR/comments via `gh` (scoped to `source_repo`
+via the job's `GH_REPO` env).
+
+## Upstream contract: the multi-issue PR scope protocol
+
+Post quality depends on the source repo following the
+[multi-issue PR scope protocol](https://github.com/giacchetta/lead-agentic-ai-coding/blob/main/protocols/pr-scope-protocol.md):
+the PR body carries a `## Scope` checklist naming every issue in that diff
+(plus a `## References` section), and each issue gets its own PR comment from
+the PR author, `## ✅ #<issue> — <title>`, covering what landed, decisions
+worth flagging for review, and verification evidence. `gather-feed.sh` reads
+exactly that: the PR body plus the PR author's own comments (filtered by
+`.user.login`, paginated — a rolling multi-issue PR accumulates one comment
+per issue).
+
+A PR with an empty body and no comments still generates a post — it'll just
+be thin, since there's nothing to mine. `giacchetta/ansina#23` is the
+before-and-after case that motivated dropping the diff from the feed: an
+empty PR body meant the feed used to be commits + diffstat alone, and the
+generated post read as a per-file changelog. `giacchetta/ansina#29` shows the
+shape to aim for: a `## Scope` checklist plus one `## ✅ #<n> —` comment.
+
+## Where things live
+
+So the next prompt change lands in exactly one file:
+
+- `linkedin-post.system.md` owns voice, structure, frontmatter shape, and all
+  hard rules.
+- `linkedin-post.prompt.yml` owns only feed wiring (the `{{feed}}` /
+  `{{repo}}` / `{{pr_number}}` / `{{merge_date}}` template variables) and a
+  field reference for what's in the feed — it points at system.md for rules,
+  never restates them.
+- This doc owns pipeline mechanics: inputs, secrets, the self-checkout, the
+  sanitizer, output location, idempotency.
 
 ## Why the workflow checks itself out
 

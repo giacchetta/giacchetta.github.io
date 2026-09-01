@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# gather-feed.sh — collect PR + linked-issues feed for post generation.
+# gather-feed.sh — collect PR feed for post generation.
 #
 # Reads from the current repo (GH_TOKEN env) and emits a single JSON object on
 # stdout with the shape the ai-inference prompt template expects:
@@ -11,13 +11,21 @@
 #     "repo": "giacchetta/openclaw-a2a-bridge",
 #     "repo_description": "...",
 #     "merge_date": "2026-08-11",
-#     "base_ref": "main",
-#     "head_ref": "...",
-#     "issues": [ { "number": 6, "title": "...", "body": "..." }, ... ],
-#     "commits": [ { "headline": "...", "body": "..." }, ... ],
-#     "files_changed": [ "AGENTS.md", "README.md", ... ],
-#     "diffstat": "3 files changed, 40 insertions(+), 8 deletions(-)"
+#     "comments": [ { "author": "giacchetta", "created_at": "...", "body": "..." }, ... ]
 #   }
+#
+# `comments` is the PR author's own comments only (chronological), fetched via
+# the REST issues/comments endpoint rather than `gh pr view --json comments` —
+# it paginates (a rolling multi-issue PR accumulates one comment per issue,
+# per the pr-scope-protocol) and exposes `.user.login`/`.user.type` for
+# filtering out bots and other commenters.
+#
+# No diff/commits/files/diffstat and no linked-issue fetch: per the
+# pr-scope-protocol, the PR body carries a `## Scope` checklist naming every
+# in-scope issue and each issue gets its own `## ✅ #<n> — <title>` comment
+# from the author — that comment IS the narrative. (A checklist row like
+# `- [ ] #24 — ...` also isn't a closing keyword, so the old
+# closingIssuesReferences/`gh issue view` fetch would have missed it anyway.)
 #
 # Env: GH_TOKEN (auth), PR_NUMBER (required).
 set -euo pipefail
@@ -27,12 +35,11 @@ set -euo pipefail
 REPO="${GITHUB_REPOSITORY:-$(gh repo view --json nameWithOwner -q .nameWithOwner)}"
 
 # --- PR metadata -------------------------------------------------------------
-PR_JSON="$(gh pr view "$PR_NUMBER" --json number,title,body,baseRefName,headRefName,mergedAt,mergeCommit,files,commits)"
+PR_JSON="$(gh pr view "$PR_NUMBER" --json number,title,body,author,mergedAt)"
 
 PR_TITLE="$(echo "$PR_JSON" | jq -r '.title')"
 PR_BODY="$(echo "$PR_JSON" | jq -r '.body // ""')"
-BASE_REF="$(echo "$PR_JSON" | jq -r '.baseRefName')"
-HEAD_REF="$(echo "$PR_JSON" | jq -r '.headRefName')"
+PR_AUTHOR="$(echo "$PR_JSON" | jq -r '.author.login // ""')"
 MERGED_AT="$(echo "$PR_JSON" | jq -r '.mergedAt // ""')"
 
 # Merge date in UTC YYYY-MM-DD (the post's filename date). For workflow_dispatch
@@ -46,38 +53,18 @@ fi
 # --- Repo description --------------------------------------------------------
 REPO_DESCRIPTION="$(gh repo view "$REPO" --json description -q '.description // ""')"
 
-# --- Linked issues (parent + sub-issues) ------------------------------------
-# Parse "closes #N" / "fixes #N" / "resolves #N" / "refs #N" from the PR body.
-# Also pull the PR's closingIssuesReferences (GitHub's own linkage) as a backstop.
-ISSUE_NUMBERS="$(echo "$PR_JSON" | jq -r '
-  (.closingIssuesReferences // []) | map(.number | tostring) | .[]
-')"
-
-# Also scan the PR body for issue references (catches "refs #N" which GitHub
-# doesn't surface in closingIssuesReferences).
-BODY_REFS="$(printf '%s\n' "$PR_BODY" | grep -oE '(closes|fixes|resolves|refs|closed|fix) #[0-9]+' | grep -oE '[0-9]+' || true)"
-
-ALL_NUMBERS="$(printf '%s\n%s\n' "$ISSUE_NUMBERS" "$BODY_REFS" | sort -un | grep -E '^[0-9]+$' || true)"
-
-ISSUES_JSON="[]"
-if [ -n "$ALL_NUMBERS" ]; then
-  ISSUES_JSON="$(for n in $ALL_NUMBERS; do
-    gh issue view "$n" --json number,title,body 2>/dev/null || true
-  done | jq -s '
-    map({number, title, body: (.body // "")})
-    | sort_by(.number)
-  ')"
-fi
-
-# --- Commits (headline + body) ----------------------------------------------
-COMMITS_JSON="$(echo "$PR_JSON" | jq '[.commits[] | {headline: .messageHeadline, body: (.messageBody // "")}]')"
-
-# --- Files changed + diffstat -----------------------------------------------
-FILES_CHANGED="$(echo "$PR_JSON" | jq -r '[.files[].path]')"
-# gh pr view --json files gives per-file additions/deletions; synthesize a diffstat.
-DIFFSTAT="$(echo "$PR_JSON" | jq -r '
-  [.files[] | "\(.path) | \(.additions)+ \(.deletions)-"] | join("\n")
-')"
+# --- PR author's own comments (paginated) ------------------------------------
+# PR comments live on the issues endpoint in the REST API (a PR is an issue).
+# --paginate emits one JSON array per page (a rolling multi-issue PR
+# accumulates many per-issue comments); slurp+flatten with jq -s 'add', then
+# filter to the PR author via --arg (never string-interpolated into the jq
+# program) and drop everything else (bots, reviewers, other contributors).
+COMMENTS_JSON="$(gh api "repos/${REPO}/issues/${PR_NUMBER}/comments" --paginate \
+  | jq -s --arg author "$PR_AUTHOR" '
+      (add // [])
+      | map(select(.user.login == $author))
+      | map({author: .user.login, created_at: .created_at, body: .body})
+    ')"
 
 # --- Assemble ----------------------------------------------------------------
 jq -n \
@@ -87,12 +74,7 @@ jq -n \
   --arg repo "$REPO" \
   --arg repo_description "$REPO_DESCRIPTION" \
   --arg merge_date "$MERGE_DATE" \
-  --arg base_ref "$BASE_REF" \
-  --arg head_ref "$HEAD_REF" \
-  --argjson issues "${ISSUES_JSON:-[]}" \
-  --argjson commits "${COMMITS_JSON:-[]}" \
-  --argjson files_changed "${FILES_CHANGED:-[]}" \
-  --arg diffstat "$DIFFSTAT" \
+  --argjson comments "${COMMENTS_JSON:-[]}" \
   '{
     pr_number: ($pr_number | tonumber),
     pr_title: $pr_title,
@@ -100,10 +82,5 @@ jq -n \
     repo: $repo,
     repo_description: $repo_description,
     merge_date: $merge_date,
-    base_ref: $base_ref,
-    head_ref: $head_ref,
-    issues: $issues,
-    commits: $commits,
-    files_changed: $files_changed,
-    diffstat: $diffstat
+    comments: $comments
   }'

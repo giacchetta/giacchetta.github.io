@@ -13,8 +13,9 @@ name: Post on Merge
 # .github/post-on-merge.md for the caller contract, inputs/secrets, and a
 # copy-pasteable caller stub.
 #
-# One merged PR == one post. The PR's closing issues (parent + sub-issues)
-# are gathered as narrative feed alongside the PR title/body/commits/diffstat.
+# One merged PR == one post. The PR title, body, and the PR author's own
+# comments are gathered as narrative feed — see .github/post-on-merge.md's
+# "Upstream contract" section for what the source PR needs to carry.
 #
 # The scripts and prompts this workflow depends on live in THIS repo
 # (.github/scripts, .github/prompts) rather than the caller's checkout — a
@@ -152,7 +153,7 @@ jobs:
           set -euo pipefail
           bash .postkit/.github/scripts/gather-feed.sh > feed.json
           # Show a compact summary in the workflow log for debugging.
-          jq '{pr_number, pr_title, repo, merge_date, issue_count: (.issues|length), commit_count: (.commits|length), files_changed: (.files_changed|length)}' feed.json
+          jq '{pr_number, pr_title, repo, merge_date, comment_count: (.comments|length)}' feed.json
           # Expose the feed as a step output for the inference step. Use the
           # heredoc form so multi-line JSON survives intact into the output.
           {
