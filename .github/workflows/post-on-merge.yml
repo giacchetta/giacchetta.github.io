@@ -170,7 +170,14 @@ jobs:
         uses: actions/ai-inference@v3
         with:
           prompt-file: .postkit/.github/prompts/linkedin-post.prompt.yml
-          system-prompt-file: .postkit/.github/prompts/linkedin-post.system.md
+          # NOT system-prompt-file: actions/ai-inference@v3 silently ignores
+          # system-prompt/system-prompt-file whenever prompt-file is a
+          # `.prompt.yml` (its `.prompt.yml` code path builds messages solely
+          # from that file's own `messages:` array — see main.ts/helpers.ts
+          # buildMessages). linkedin-post.system.md is instead read as the
+          # {{system_prompt}} file_input below and interpolated into
+          # linkedin-post.prompt.yml's own `role: system` message, so it
+          # actually reaches the model.
           model: ${{ inputs.model }}
           # Only YAML-safe scalars go in `input:`. The PR title/body and JSON
           # arrays contain colons, `#`, and other chars that break YAML parsing
@@ -183,6 +190,7 @@ jobs:
             merge_date: "${{ fromJSON(steps.gather.outputs.feed).merge_date }}"
           file_input: |
             feed: feed.json
+            system_prompt: .postkit/.github/prompts/linkedin-post.system.md
         env:
           COPILOT_GITHUB_TOKEN: ${{ secrets.copilot_token }}
 

@@ -1,21 +1,26 @@
 # User-message template for the LinkedIn post generator.
 # Consumed by actions/ai-inference@v3 via `prompt-file:` + `input:` + `file_input:`.
 # - `input:` provides YAML-safe scalars ({{repo}}, {{pr_number}}, {{merge_date}}).
-# - `file_input:` injects feed.json as a single {{feed}} variable (raw JSON).
+# - `file_input:` injects feed.json as {{feed}} (raw JSON) and
+#   linkedin-post.system.md as {{system_prompt}} (raw text).
 #   The PR title/body and JSON arrays are NOT inlined in `input:` because they
 #   contain colons, `#`, and other chars that break YAML parsing.
 #
 # Voice, structure, frontmatter shape, and all hard rules live in
-# linkedin-post.system.md (passed separately as `system-prompt-file:`) — this
-# file only wires the feed in and points at where the rules live. Don't
-# restate a rule here; edit system.md instead.
+# linkedin-post.system.md, interpolated below as {{system_prompt}} — this
+# file only wires it (and the feed) in. Don't restate a rule here; edit
+# system.md instead.
+#
+# system_prompt is a file_input, NOT the `system-prompt-file:` action input:
+# actions/ai-inference@v3 silently ignores system-prompt/system-prompt-file
+# whenever prompt-file is a `.prompt.yml` — see post-on-merge.yml's "Run AI
+# inference" step for the full explanation. Interpolating it into this file's
+# own `role: system` message is what actually gets it to the model.
 
 messages:
   - role: system
     content: |
-      You are a ghostwriter for Luciano Giacchetta, an AI engineer. Follow the
-      voice and rules in the system prompt exactly. Output ONE complete
-      Markdown file with frontmatter. Nothing else.
+      {{system_prompt}}
 
   - role: user
     content: |
