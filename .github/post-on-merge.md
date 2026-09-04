@@ -28,7 +28,7 @@ extracted here (issue #85) so any lab repo can call it without copying scripts.
 │   └── push-post.sh             # clone target repo, write post_dir/, commit, push via PR (idempotent)
 └── prompts/
     ├── linkedin-post.system.md  # voice + structure + hard rules — the single source of truth (calibrated against existing posts)
-    └── linkedin-post.prompt.yml # feed wiring only ({{repo}}, {{pr_number}}, {{merge_date}}, {{feed}}) — points at system.md for rules, doesn't restate them
+    └── linkedin-post.prompt.yml # feed wiring ({{repo}}, {{pr_number}}, {{merge_date}}, {{feed}}) + interpolates system.md as {{system_prompt}} into its own system message — see "Why the system prompt is interpolated, not passed via system-prompt-file" below
 ```
 
 ## Calling this workflow
@@ -109,11 +109,44 @@ So the next prompt change lands in exactly one file:
 - `linkedin-post.system.md` owns voice, structure, frontmatter shape, and all
   hard rules.
 - `linkedin-post.prompt.yml` owns only feed wiring (the `{{feed}}` /
-  `{{repo}}` / `{{pr_number}}` / `{{merge_date}}` template variables) and a
-  field reference for what's in the feed — it points at system.md for rules,
-  never restates them.
+  `{{repo}}` / `{{pr_number}}` / `{{merge_date}}` template variables), a
+  field reference for what's in the feed, and interpolating system.md's
+  content into its own `role: system` message as `{{system_prompt}}` — it
+  never restates a rule from system.md.
 - This doc owns pipeline mechanics: inputs, secrets, the self-checkout, the
   sanitizer, output location, idempotency.
+
+## Why the system prompt is interpolated, not passed via `system-prompt-file`
+
+`actions/ai-inference@v3` has two incompatible code paths: when `prompt-file`
+is a `.prompt.yml`, it parses that file's own `messages:` array and builds
+the model request **from it alone** — the `system-prompt` / `system-prompt-file`
+action inputs are only read on the *legacy* (plain-text `prompt-file`) path
+and are silently ignored otherwise. There's no warning or error; the step
+just succeeds having never read the file.
+
+This workflow always uses `linkedin-post.prompt.yml`, so passing
+`system-prompt-file: linkedin-post.system.md` to the `actions/ai-inference`
+step — as it did originally — is a no-op: the model never sees it. That
+regression shipped invisibly when `linkedin-post.system.md` was split out as
+"the single source of truth" for rules — before that, `linkedin-post.prompt.yml`'s
+own user message inlined the frontmatter/structure rules directly, so it
+happened to work despite the ignored input; once those rules moved to
+system.md, the model started receiving only a one-line stub ("follow the
+rules in the system prompt") with no actual rules attached, and generated
+posts lost their frontmatter fields (`slug`/`description`/`authors`/`tags`)
+and structure (emoji section headings, bulleted narrative, hashtag line) —
+see `giacchetta/ansina#29`'s generated post (target_repo PR #93) for the
+before-and-after.
+
+The fix: `linkedin-post.system.md` is read as a `file_input:` (`system_prompt:
+.postkit/.github/prompts/linkedin-post.system.md` in the workflow step) and
+interpolated as `{{system_prompt}}` into `linkedin-post.prompt.yml`'s own
+`role: system` message — file_input *is* honored on the `.prompt.yml` path,
+since it's consumed by this repo's own template substitution before the
+action ever sees the rendered messages. `system-prompt-file` is no longer
+passed to the action at all (kept as documentation-only context in a
+comment, not as a real wiring path).
 
 ## Why the workflow checks itself out
 
