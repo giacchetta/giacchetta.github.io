@@ -1,6 +1,7 @@
 ---
 import { render } from 'astro:content';
 import { cleanSlug } from '../utils/content.js';
+import { formatDate } from '../utils/date.js';
 import { useTranslations } from '../i18n/utils';
 
 interface Props {
@@ -14,12 +15,7 @@ const Heading = headingTag;
 const { Content } = await render(post);
 const t = useTranslations();
 
-const dateLocale = 'en-US';
-const formattedDate = new Date(post.data.date).toLocaleDateString(dateLocale, {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-});
+const formattedDate = formatDate(post.data.date);
 ---
 
 <header class="mb-3">

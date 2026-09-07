@@ -16,8 +16,11 @@
   "hero.viewFullExperience": "View Full Experience",
   "hero.latestPosts": "Latest Posts",
   "hero.viewAllPosts": "View All Posts",
-  "hero.serviceDownBody": "Production incident? Tap to call now.",
   "hero.emailCta": "Email",
+  "hero.phoneCta": "Phone",
+  "hero.linkedinCta": "LinkedIn",
+  "hero.githubCta": "GitHub",
+  "hero.youtubeCta": "YouTube",
   "experience.pageTitle": "Full Experience",
   "credentials.pageTitle": "Full Skills Matrix",
   "blog.pageTitle": "Blog",
@@ -42,8 +45,9 @@
   "credentials.learnMore": "Learn More",
   "contact.title": "Contact Me",
   "contact.copyEmail": "Copy Email",
+  "contact.phoneTitle": "Call Me",
+  "contact.copyPhone": "Copy Number",
   "contact.close": "Close",
   "footer.additionalResources": "Additional Resources",
-  "footer.lastUpdate": "Last Update:",
-  "nav.ctaLabel": "Service Down?"
+  "footer.lastUpdate": "Last Update:"
 }

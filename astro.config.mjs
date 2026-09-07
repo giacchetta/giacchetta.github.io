@@ -16,4 +16,9 @@ export default defineConfig({
     }),
   ],
   redirects: {},
+  vite: {
+    build: {
+      assetsInlineLimit: 0,
+    },
+  },
 });

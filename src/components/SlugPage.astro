@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import { getCollection, render } from 'astro:content';
 import { useTranslations } from '../i18n/utils';
 import { cleanSlug, filterByLocale } from '../utils/content.js';
+import { formatDate } from '../utils/date.js';
 
 interface Props {
   page: any;
@@ -16,7 +17,6 @@ const isCompanyCollaboration = isCollaboration && page.data.type === 'company';
 const isArticleCollaboration = isCollaboration && page.data.type === 'article';
 
 const t = useTranslations();
-const dateLocale = 'en-US';
 
 const pageDescription = page.data.description || page.data.summary || '';
 
@@ -118,20 +118,12 @@ const breadcrumbs = [
                 <div class="text-muted small mt-2">
                   {page.data.publishDate && (
                     <span class="me-3">
-                      {t('date.published')} {new Date(page.data.publishDate).toLocaleDateString(dateLocale, {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
+                      {t('date.published')} {formatDate(page.data.publishDate)}
                     </span>
                   )}
                   {page.data.updateDate && page.data.updateDate !== page.data.publishDate && (
                     <span>
-                      {t('date.updated')} {new Date(page.data.updateDate).toLocaleDateString(dateLocale, {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
+                      {t('date.updated')} {formatDate(page.data.updateDate)}
                     </span>
                   )}
                 </div>

@@ -1,0 +1,77 @@
+---
+import { useTranslations } from '../i18n/utils';
+
+const t = useTranslations();
+---
+<!-- Modal -->
+<div class="modal fade" id="phoneModal" tabindex="-1" aria-labelledby="phoneModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="phoneModalLabel">{t('contact.phoneTitle')}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <canvas id="phoneCanvas" height="60"></canvas>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="copyPhoneBtn" data-copy-label={t('contact.copyPhone')}>{t('contact.copyPhone')}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{t('contact.close')}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const phone = '+1 (307) 346-2797';
+
+  function drawPhone() {
+    const canvas = document.getElementById('phoneCanvas');
+    if (canvas instanceof HTMLCanvasElement) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        const dpr = window.devicePixelRatio || 1;
+        ctx.font = '24px Arial';
+        const textMetrics = ctx.measureText(phone);
+        const width = textMetrics.width + 20;
+        const height = 60;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        ctx.scale(dpr, dpr);
+        ctx.font = '24px Arial';
+        ctx.fillStyle = '#f8f9fa';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(phone, 10, 30);
+      }
+    }
+  }
+
+  drawPhone();
+
+  const phoneModal = document.getElementById('phoneModal');
+  if (phoneModal) {
+    phoneModal.addEventListener('shown.bs.modal', drawPhone);
+  }
+
+  const copyBtn = document.getElementById('copyPhoneBtn');
+  if (copyBtn) {
+    const copyLabel = copyBtn.getAttribute('data-copy-label') || 'Copy Number';
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(phone).then(() => {
+        copyBtn.innerText = 'Copied!';
+        copyBtn.classList.remove('btn-primary');
+        copyBtn.classList.add('btn-success');
+
+        setTimeout(() => {
+          copyBtn.innerText = copyLabel;
+          copyBtn.classList.remove('btn-success');
+          copyBtn.classList.add('btn-primary');
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+      });
+    });
+  }
+</script>
