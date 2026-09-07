@@ -3,8 +3,14 @@ import { Picture, Image } from 'astro:assets';
 import Profile from '../assets/img/profile.png';
 import Layout from '../layouts/Layout.astro';
 import { getAllPages, getFeaturedPagesByCategory, getBlogPosts, cleanSlug } from '../utils/content.js';
+import { formatDate } from '../utils/date.js';
 import { useTranslations } from '../i18n/utils';
 import credentialsRaw from '../data/credentials.json';
+import gmailIcon from '../assets/svg/gmail.svg?raw';
+import phoneIcon from '../assets/svg/phone.svg?raw';
+import linkedinIcon from '../assets/svg/linkedin.svg?raw';
+import githubIcon from '../assets/svg/github.svg?raw';
+import youtubeIcon from '../assets/svg/youtube.svg?raw';
 
 const t = useTranslations();
 const pages = await getAllPages();
@@ -54,26 +60,68 @@ const techStack = [
 
       <!-- Tile 2: Profile -->
       <div class="col-12 col-md-4">
-        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 d-flex flex-column align-items-center justify-content-center text-center gap-3">
-          <Picture
-            src={Profile}
-            alt="Luciano Giacchetta"
-            width={140}
-            height={140}
-            class="rounded-circle shadow-sm"
-            loading="eager"
-            fetchpriority="high"
-          />
-          <p class="fs-5 fw-bold mb-0">{t('bio.name')}</p>
-          <button
-            type="button"
-            class="btn btn-primary btn-lg d-flex align-items-center justify-content-center gap-2 fw-semibold"
-            data-bs-toggle="modal"
-            data-bs-target="#contactModal"
-          >
-            <span>✉️</span>
-            <span>{t('hero.emailCta')}</span>
-          </button>
+        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 d-flex flex-column justify-content-center gap-3">
+          <p class="fs-3 fw-bold mb-0 text-center">{t('bio.name')}</p>
+          <div class="row g-3 align-items-center">
+            <div class="col-5 d-flex justify-content-center">
+              <Picture
+                src={Profile}
+                alt="Luciano Giacchetta"
+                width={120}
+                height={120}
+                class="rounded-circle shadow-sm"
+                loading="eager"
+                fetchpriority="high"
+              />
+            </div>
+            <div class="col-7 icon-grid">
+              <button
+                type="button"
+                class="btn icon-btn icon-btn-brand"
+                data-bs-toggle="modal"
+                data-bs-target="#contactModal"
+                aria-label={t('hero.emailCta')}
+                title={t('hero.emailCta')}
+                set:html={gmailIcon}
+              />
+              <button
+                type="button"
+                class="btn icon-btn icon-btn-brand"
+                data-bs-toggle="modal"
+                data-bs-target="#phoneModal"
+                aria-label={t('hero.phoneCta')}
+                title={t('hero.phoneCta')}
+                set:html={phoneIcon}
+              />
+              <a
+                href="https://www.linkedin.com/in/giacchetta/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn icon-btn icon-btn-brand"
+                aria-label={`${t('hero.linkedinCta')} (opens in a new tab)`}
+                title={t('hero.linkedinCta')}
+                set:html={linkedinIcon}
+              />
+              <a
+                href="https://github.com/giacchetta"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn icon-btn icon-btn-brand"
+                aria-label={`${t('hero.githubCta')} (opens in a new tab)`}
+                title={t('hero.githubCta')}
+                set:html={githubIcon}
+              />
+              <a
+                href="https://www.youtube.com/@LucianoGiacchetta"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn icon-btn icon-btn-brand"
+                aria-label={`${t('hero.youtubeCta')} (opens in a new tab)`}
+                title={t('hero.youtubeCta')}
+                set:html={youtubeIcon}
+              />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -89,11 +137,7 @@ const techStack = [
               >
                 <div class="fw-semibold">{post.data.title}</div>
                 <small class="text-muted">
-                  {new Date(post.data.date).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
+                  {formatDate(post.data.date)}
                 </small>
               </a>
             ))}
@@ -213,6 +257,35 @@ const techStack = [
   }
   .tile-tall {
     min-height: 320px;
+  }
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 42px);
+    gap: 0.5rem;
+    justify-content: center;
+    align-content: center;
+    min-height: 120px;
+  }
+  .icon-btn {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .icon-btn :global(svg) {
+    width: 22px;
+    height: 22px;
+  }
+  .icon-btn-brand {
+    background-color: var(--bs-tertiary-bg);
+    border: 1px solid var(--bs-border-color);
+  }
+  .icon-btn-brand:hover {
+    background-color: var(--bs-secondary-bg);
   }
 </style>
 

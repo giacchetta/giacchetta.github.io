@@ -1,5 +1,6 @@
 ---
 import Contact from './Contact.astro';
+import Phone from './Phone.astro';
 import { useTranslations } from '../i18n/utils';
 
 const t = useTranslations();
@@ -8,5 +9,6 @@ const date = new Date();
 <footer class="text-center py-1">
 	<small class="text-muted">{t('footer.lastUpdate')} {date.toDateString()}</small>
 </footer>
-<!-- Modal rendered outside the fixed navbar to avoid stacking context issues -->
+<!-- Modals rendered outside the fixed navbar to avoid stacking context issues -->
 <Contact />
+<Phone />

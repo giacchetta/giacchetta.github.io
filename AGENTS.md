@@ -34,6 +34,7 @@ A professional portfolio site for Luciano Giacchetta, a DevOps/Cloud/Systems Eng
 ```
 src/
 ├── assets/img/              # Images and logos (PNG/SVG) imported in MDX and components
+├── assets/svg/              # Icon SVGs (brand marks + phone) imported via `?raw` and inlined with set:html in HomePage.astro
 ├── components/              # All UI components (Astro components only)
 ├── content/                 # MD/MDX content collections
 │   ├── blog/                # Blog posts (Markdown, auto-generated + manual)
@@ -57,7 +58,8 @@ src/
 ├── styles/
 │   └── bootstrap.min.css    # PurgeCSS output — generated at build, do not edit manually
 ├── utils/
-│   └── content.js           # Collection helpers: filterByLocale, getAllPages, getBlogPosts, getExcerpt, cleanSlug
+│   ├── content.js           # Collection helpers: filterByLocale, getAllPages, getBlogPosts, getExcerpt, cleanSlug
+│   └── date.js               # formatDate() — locks toLocaleDateString to UTC so authored dates render the same day regardless of build-machine timezone
 └── content.config.ts        # Zod schemas for all 4 collections
 ```
 
@@ -67,7 +69,7 @@ src/
 Layout.astro (HTML shell, SEO, canonical link, footer slot — no navbar)
 └── pages/index.astro → HomePage.astro (Bento dashboard — 6 tiles)
     ├── Tile 1: Hero (greeting + tagline)
-    ├── Tile 2: Profile (profile pic, name, Email button → opens #contactModal)
+    ├── Tile 2: Profile (name on top; avatar + a vertical row of 5 circular icon-only buttons below: Email → opens #contactModal, Phone → opens #phoneModal, LinkedIn/GitHub/YouTube → external links)
     ├── Tile 3: Latest Posts (3 most recent blog posts by `date`, each row clickable, + View All Posts link to /blog/)
     ├── Tile 4: Tech Stack Matrix (9 curated badges + View Full Stack → /credentials/)
     ├── Tile 5: Case Studies (2 most recent `type: "article"` entries by publishDate, each row clickable, + View All link to /experience/#detailed-case-studies)
@@ -85,7 +87,7 @@ pages/blog/[slug].astro → BlogPost.astro
     └── Permalink for a single post (renders an <h1> — required so astro-llms-md picks up its title); in-page breadcrumb
 ```
 
-**Navigation**: There is no top navbar and no fixed bottom breadcrumb bar. Bootstrap breadcrumbs render **in-page** at the top of every non-Home page (Home has none). The only email entry point is the Home/Bento Tile 2 Email button, which opens the `#contactModal` (rendered by `Footer.astro` → `Contact.astro`).
+**Navigation**: There is no top navbar and no fixed bottom breadcrumb bar. Bootstrap breadcrumbs render **in-page** at the top of every non-Home page (Home has none). The Home/Bento Tile 2 has a five-item icon-only button menu next to the avatar (label is `aria-label`/`title` only, no visible text), laid out as a 3-column CSS grid (`.icon-grid`, `grid-template-columns: repeat(3, 42px)`) so the 5 buttons wrap into two short rows (3 + 2) instead of one tall column — sized via `min-height: 120px` to roughly match the avatar's height. Email opens `#contactModal` (rendered by `Footer.astro` → `Contact.astro`), Phone opens `#phoneModal` (rendered by `Footer.astro` → `Phone.astro`), and LinkedIn/GitHub/YouTube are plain external links (`target="_blank" rel="noopener noreferrer"`) to `https://www.linkedin.com/in/giacchetta/`, `https://github.com/giacchetta`, and `https://www.youtube.com/@LucianoGiacchetta`. The icons are inlined SVGs imported via Vite's `?raw` suffix from `src/assets/svg/` and injected with Astro's `set:html`, and all 5 buttons share the same neutral `icon-btn-brand` circle for visual consistency. Phone uses a hand-authored monochrome glyph with `fill="currentColor"` (so it picks up the ambient text color rather than a fixed brand color); Email (Gmail), LinkedIn, GitHub, and YouTube use each brand's official multi-color mark, unmodified except GitHub, which uses its dark-background/white variant to match `Layout.astro`'s hardcoded `data-bs-theme="dark"` — all sourced from thesvg.org. Because `set:html`-injected content isn't part of Astro's scoped-CSS tree, the uniform icon sizing in `HomePage.astro`'s `<style>` block uses `:global(svg)` — a plain `.icon-btn svg` selector would silently never match.
 
 ---
 
@@ -222,7 +224,8 @@ The CI/CD workflow (`.github/workflows/static.yaml`) runs `npm run build`.
 - **Image imports**: Always use relative paths in MDX frontmatter (`../../assets/img/logo.png`). Astro's `Image` component handles optimization.
 - **Scoped styles**: All component styles use Astro's `<style>` (scoped by default). Bootstrap utilities handle layout/spacing.
 - **No client-side frameworks**: The site is server-rendered static HTML. JavaScript is limited to Bootstrap's bundle (modals/collapse) and small inline scripts for canvas obfuscation and clipboard.
-- **Contact obfuscation**: The email address is drawn on a `<canvas>` element (in `Contact.astro`) to prevent scraping. Do not render it as plain text. There are no phone numbers on the site.
+- **Brand icon source**: When a new brand icon is needed for `src/assets/svg/` (e.g. another social/profile link), search [thesvg.org](https://thesvg.org/) — direct SVG files follow the pattern `https://thesvg.org/icons/<brand>/default.svg` (a `dark.svg`/`light.svg` variant may also exist for a specific background, as used for GitHub's white mark against this site's dark theme). Inspect the fetched SVG before committing it (no `<script>`, no external references) and normalize sizing via the shared `.icon-btn`/`.icon-grid` CSS rather than the file's own `width`/`height` attributes.
+- **Contact obfuscation**: Both the email (`Contact.astro`) and the phone number (`Phone.astro`) are drawn on a `<canvas>` element and offered only via a "Copy" clipboard button — never rendered as plain text, and never as a `tel:`/`mailto:` href (not even one assigned by JS at runtime, since that still lands in the live DOM). `astro.config.mjs` sets `vite.build.assetsInlineLimit: 0` specifically so these components' hoisted `<script>` blocks are emitted as external hashed chunks under `dist/_astro/` instead of being inlined verbatim into every page's HTML (Astro's default for scripts with no `import`) — removing that setting would put both the email and the phone number back in plain sight of a `curl`/`view-source`.
 - **Breadcrumbs**: Rendered in-page via Bootstrap breadcrumb component on non-Home pages (no top navbar, no fixed bottom breadcrumb bar).
 - **Every page needs an `<h1>`**: `astro-llms-md`'s default `titleSelector` is `h1`; a page with no `<h1>` is silently skipped from `.md` generation and `llms.txt` (no build error). `BlogPost.astro` accepts a `headingTag` prop (`"h1"` on the permalink page, `"h2"` in the feed) to guarantee exactly one `<h1>` per page.
 
@@ -250,7 +253,7 @@ The site exposes machine-readable content via the `astro-llms-md` integration, w
 
 - Do not edit `src/styles/bootstrap.min.css` manually — it is generated by PurgeCSS at build time.
 - Do not introduce CSS frameworks other than Bootstrap 5.3.
-- Do not render the email address as plain text in HTML (use canvas obfuscation in `Contact.astro`).
-- Do not add phone numbers to the site.
+- Do not render the email address or phone number as plain text, or as a `mailto:`/`tel:` href — canvas-render them (`Contact.astro`, `Phone.astro`) and offer a Copy button instead.
+- Do not remove or lower `vite.build.assetsInlineLimit: 0` in `astro.config.mjs` — it's what keeps the canvas-obfuscated components' scripts out of the served page HTML.
 - Do not add client-side JS frameworks (React, Vue, etc.) without explicit instruction.
 - Do not reintroduce multilingual/i18n locales or a translation pipeline — the site is English-only by design.

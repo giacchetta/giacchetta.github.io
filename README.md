@@ -26,6 +26,7 @@ An English-only professional portfolio built with **Astro 7**, featuring a moder
 ├── .github/workflows/static.yaml   # CI/CD: build and deploy to GitHub Pages
 ├── src/
 │   ├── assets/img/                 # Logos, icons, profile images (PNG/SVG)
+│   ├── assets/svg/                 # Profile-tile icons (brand marks + phone), inlined via ?raw + set:html
 │   ├── components/                 # Astro UI components
 │   │   ├── BlogPost.astro
 │   │   ├── Collaboration.astro
@@ -33,6 +34,7 @@ An English-only professional portfolio built with **Astro 7**, featuring a moder
 │   │   ├── Credentials.astro
 │   │   ├── Footer.astro
 │   │   ├── HomePage.astro
+│   │   ├── Phone.astro
 │   │   └── SlugPage.astro
 │   ├── content/
 │   │   ├── blog/                   # Markdown blog posts
@@ -55,7 +57,9 @@ An English-only professional portfolio built with **Astro 7**, featuring a moder
 │   │   ├── blog/index.astro        # /blog/  (post feed, full content, centered column)
 │   │   └── blog/[slug].astro       # /blog/[slug]  (post permalink)
 │   ├── styles/bootstrap.min.css    # PurgeCSS output — do not edit manually
-│   └── utils/content.js            # filterByLocale(), getAllPages(), getBlogPosts(), getExcerpt(), cleanSlug()
+│   └── utils/
+│       ├── content.js              # filterByLocale(), getAllPages(), getBlogPosts(), getExcerpt(), cleanSlug()
+│       └── date.js                 # formatDate() — UTC-locked date formatting
 ├── astro.config.mjs
 ├── package.json
 └── tsconfig.json
@@ -77,7 +81,8 @@ An English-only professional portfolio built with **Astro 7**, featuring a moder
 ## Navigation & Contact
 
 - **No top navbar** and **no fixed bottom breadcrumb bar**. Bootstrap breadcrumbs render **in-page** at the top of every non-Home page (Home has none).
-- **Email-only contact**: the Home/Bento Tile 2 Email button opens the `#contactModal`, where the email address is drawn on a `<canvas>` (obfuscated to prevent scraping). There are no phone numbers on the site.
+- **Profile tile**: the Home/Bento Tile 2 shows the name on top, then the avatar next to a five-item icon-only button menu (name via `aria-label`/`title`, no visible text), wrapped into a 3+2 grid so its height roughly matches the avatar — Email (Gmail) and Phone open modals (`#contactModal`, `#phoneModal`); LinkedIn, GitHub, and YouTube are plain external links (`target="_blank" rel="noopener noreferrer"`). Icons live in `src/assets/svg/` and are inlined via a Vite `?raw` import + `set:html`.
+- **Contact via canvas only**: both the email and phone number are drawn on a `<canvas>` and offered only via a Copy-to-clipboard button — never rendered as plain text, and never as a `mailto:`/`tel:` href. `astro.config.mjs` sets `vite.build.assetsInlineLimit: 0` so these components' scripts are emitted as external hashed JS chunks instead of being inlined into every page's HTML — required for the obfuscation to hold.
 
 ---
 
