@@ -8,6 +8,7 @@ import { useTranslations } from '../i18n/utils';
 import credentialsRaw from '../data/credentials.json';
 import gmailIcon from '../assets/svg/gmail.svg?raw';
 import phoneIcon from '../assets/svg/phone.svg?raw';
+import whatsappIcon from '../assets/svg/whatsapp.svg?raw';
 import linkedinIcon from '../assets/svg/linkedin.svg?raw';
 import githubIcon from '../assets/svg/github.svg?raw';
 import youtubeIcon from '../assets/svg/youtube.svg?raw';
@@ -92,6 +93,15 @@ const techStack = [
                 aria-label={t('hero.phoneCta')}
                 title={t('hero.phoneCta')}
                 set:html={phoneIcon}
+              />
+              <a
+                href="https://wa.me/luciano.giacchetta"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn icon-btn icon-btn-brand"
+                aria-label={`${t('hero.whatsappCta')} (opens in a new tab)`}
+                title={t('hero.whatsappCta')}
+                set:html={whatsappIcon}
               />
               <a
                 href="https://www.linkedin.com/in/giacchetta/"

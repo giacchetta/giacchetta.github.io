@@ -81,7 +81,7 @@ An English-only professional portfolio built with **Astro 7**, featuring a moder
 ## Navigation & Contact
 
 - **No top navbar** and **no fixed bottom breadcrumb bar**. Bootstrap breadcrumbs render **in-page** at the top of every non-Home page (Home has none).
-- **Profile tile**: the Home/Bento Tile 2 shows the name on top, then the avatar next to a five-item icon-only button menu (name via `aria-label`/`title`, no visible text), wrapped into a 3+2 grid so its height roughly matches the avatar — Email (Gmail) and Phone open modals (`#contactModal`, `#phoneModal`); LinkedIn, GitHub, and YouTube are plain external links (`target="_blank" rel="noopener noreferrer"`). Icons live in `src/assets/svg/` and are inlined via a Vite `?raw` import + `set:html`.
+- **Profile tile**: the Home/Bento Tile 2 shows the name on top, then the avatar next to a six-item icon-only button menu (name via `aria-label`/`title`, no visible text), wrapped into a 3+3 grid so its height roughly matches the avatar — Email (Gmail) and Phone open modals (`#contactModal`, `#phoneModal`); WhatsApp, LinkedIn, GitHub, and YouTube are plain external links (`target="_blank" rel="noopener noreferrer"`). Icons live in `src/assets/svg/` and are inlined via a Vite `?raw` import + `set:html`.
 - **Contact via canvas only**: both the email and phone number are drawn on a `<canvas>` and offered only via a Copy-to-clipboard button — never rendered as plain text, and never as a `mailto:`/`tel:` href. `astro.config.mjs` sets `vite.build.assetsInlineLimit: 0` so these components' scripts are emitted as external hashed JS chunks instead of being inlined into every page's HTML — required for the obfuscation to hold.
 
 ---
