@@ -3,7 +3,7 @@ import { Picture, Image } from 'astro:assets';
 import Profile from '../assets/img/profile.png';
 import Layout from '../layouts/Layout.astro';
 import { getAllPages, getFeaturedPagesByCategory, getBlogPosts, cleanSlug } from '../utils/content.js';
-import { formatDate } from '../utils/date.js';
+import { formatDate, periodStartYear } from '../utils/date.js';
 import { useTranslations } from '../i18n/utils';
 import credentialsRaw from '../data/credentials.json';
 import gmailIcon from '../assets/svg/gmail.svg?raw';
@@ -23,12 +23,35 @@ const featuredCaseStudies = getFeaturedPagesByCategory(pages, 'collaborations')
   .sort((a, b) => new Date(b.data.publishDate ?? 0) - new Date(a.data.publishDate ?? 0))
   .slice(0, 2);
 
-const recentRoles = pages.collaborations
-  .filter(p => p.data.type === 'company')
+const companies = pages.collaborations.filter(p => p.data.type === 'company');
+
+const recentRoles = companies
   .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99))
   .slice(0, 3);
 
-const latestPosts = (await getBlogPosts()).slice(0, 3);
+const allPosts = await getBlogPosts();
+const latestPosts = allPosts.slice(0, 3);
+
+// Hero terminal panes — everything below is derived from content already on the
+// site, so the numbers can't drift out of date (see AGENTS.md Tile 1).
+const careerStart = Math.min(
+  ...companies.map(c => periodStartYear(c.data.period)).filter(Boolean)
+);
+const yearsExperience = new Date().getFullYear() - careerStart;
+const currentRoles = companies
+  .filter(c => c.data.period?.trim().endsWith('Present'))
+  .sort((a, b) => periodStartYear(b.data.period) - periodStartYear(a.data.period));
+const skillDomains = Object.entries(credentialsRaw).map(([name, items]) => ({
+  slug: name.toLowerCase().replace(/\s*&\s*/g, '-').replace(/\s+/g, '-'),
+  count: items.length,
+}));
+const skillNameWidth = Math.max(...skillDomains.map(d => d.slug.length)) + 1;
+const skillsTableText = [
+  `${'NAME'.padEnd(skillNameWidth)}${'SKILLS'.padStart(6)}  ${'STATUS'.padStart(6)}`,
+  ...skillDomains.map(d =>
+    `${d.slug.padEnd(skillNameWidth)}${String(d.count).padStart(6)}  ${'Ready'.padStart(6)}`
+  ),
+].join('\n');
 
 const badgeStyles = [
   'bg-warning-subtle text-warning-emphasis border',
@@ -51,18 +74,12 @@ const techStack = [
   <main class="container layout mt-3 mb-5">
     <div class="row g-4">
 
-      <!-- Tile 1: Hero -->
-      <div class="col-12 col-md-8">
-        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 p-md-5 h-100 d-flex flex-column justify-content-center">
-          <h1 class="display-5 fw-bold mb-3">{t('bio.greeting')}</h1>
-          <p class="lead text-muted mb-0">{t('bio.tagline')}</p>
-        </div>
-      </div>
-
-      <!-- Tile 2: Profile -->
+      <!-- Tile 2: Profile — DOM-first so it's the top thing a phone shows;
+           order-md-first on Tile 1 (Hero) below restores the desktop left/right
+           visual layout without needing to touch this tile's markup. -->
       <div class="col-12 col-md-4">
         <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 d-flex flex-column justify-content-center gap-3">
-          <p class="fs-3 fw-bold mb-0 text-center">{t('bio.name')}</p>
+          <h1 class="fs-3 fw-bold mb-0 text-center">{t('bio.name')}</h1>
           <div class="row g-3 align-items-center">
             <div class="col-5 d-flex justify-content-center">
               <Picture
@@ -130,6 +147,55 @@ const techStack = [
                 title={t('hero.youtubeCta')}
                 set:html={youtubeIcon}
               />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tile 1: Hero -->
+      <div class="col-12 col-md-8 order-md-first">
+        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100">
+          <div class="row g-3 h-100">
+            <!-- Career pane -->
+            <div class="col-12 col-lg-6 d-flex">
+              <div class="term rounded-3 p-3 h-100 w-100 d-flex flex-column">
+                <h2 class="visually-hidden">{t('hero.careerPaneLabel')}</h2>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <span class="term-dot bg-danger" aria-hidden="true"></span>
+                  <span class="term-dot bg-warning" aria-hidden="true"></span>
+                  <span class="term-dot bg-success" aria-hidden="true"></span>
+                  <span class="ms-auto small text-secondary">~/career</span>
+                </div>
+                <div class="font-monospace small">
+                  <div><span class="text-success">$</span> whoami</div>
+                  <div class="mb-2">{t('hero.terminalRole')}</div>
+                  <div><span class="text-success">$</span> uptime</div>
+                  <div class="mb-2">up {yearsExperience} years, {companies.length} companies, since {careerStart}</div>
+                  <div><span class="text-success">$</span> jobs</div>
+                  {currentRoles.map((role, i) => (
+                    <div>[{i + 1}]+ {role.data.title} running since {periodStartYear(role.data.period)}</div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <!-- Stack pane -->
+            <div class="col-12 col-lg-6 d-flex">
+              <div class="term rounded-3 p-3 h-100 w-100 d-flex flex-column">
+                <h2 class="visually-hidden">{t('hero.stackPaneLabel')}</h2>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <span class="term-dot bg-danger" aria-hidden="true"></span>
+                  <span class="term-dot bg-warning" aria-hidden="true"></span>
+                  <span class="term-dot bg-success" aria-hidden="true"></span>
+                  <span class="ms-auto small text-secondary">~/stack</span>
+                </div>
+                <div class="font-monospace small">
+                  <div><span class="text-success">$</span> kubectl get skills</div>
+                  <pre class="mb-2 overflow-x-auto">{skillsTableText}</pre>
+                  <div><span class="text-success">$</span> helm list --filter posts</div>
+                  <div>blog   deployed   {allPosts.length} posts</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -296,6 +362,23 @@ const techStack = [
   }
   .icon-btn-brand:hover {
     background-color: var(--bs-secondary-bg);
+  }
+  .term {
+    background-color: #0d1117;
+    border: 1px solid var(--bs-border-color);
+  }
+  .term-dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .term .font-monospace {
+    font-size: clamp(0.68rem, 2.6vw, 0.8rem);
+  }
+  .term pre {
+    margin: 0;
   }
 </style>
 

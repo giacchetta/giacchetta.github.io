@@ -8,3 +8,9 @@ export function formatDate(value) {
     timeZone: 'UTC',
   });
 }
+
+// First 4-digit year in a free-text period, e.g. "November 2024 - Present" -> 2024.
+export function periodStartYear(period) {
+  const match = /(\d{4})/.exec(period ?? '');
+  return match ? Number(match[1]) : null;
+}
