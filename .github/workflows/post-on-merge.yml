@@ -217,6 +217,7 @@ jobs:
       # deploys on push to main. Requires the posts_pat secret (PAT with
       # contents:write + pull-requests:write on target_repo).
       - name: Push post to target repo
+        id: push
         env:
           POSTS_PAT: ${{ secrets.posts_pat }}
           POST_PATH: ${{ steps.post.outputs.path }}
@@ -229,6 +230,27 @@ jobs:
         run: |
           set -euo pipefail
           bash .postkit/.github/scripts/push-post.sh
+
+      # Convert the same cleaned post to LinkedIn-ready plain text (Unicode
+      # bold/monospace glyphs in place of Markdown, since LinkedIn's composer
+      # accepts neither Markdown nor HTML) and comment it onto the post PR
+      # push-post.sh just opened/updated — see to-linkedin.py's header for the
+      # UTF-16-vs-codepoint length gotcha this also lints for.
+      - name: Comment LinkedIn-ready text on the post PR
+        if: steps.push.outputs.pr_url != ''
+        env:
+          POSTS_PAT: ${{ secrets.posts_pat }}
+          TARGET_REPO: ${{ inputs.target_repo }}
+          POST_PR_URL: ${{ steps.push.outputs.pr_url }}
+          CLEANED_FILE: ${{ steps.post.outputs.cleaned_file }}
+        run: |
+          set -euo pipefail
+          # to-linkedin.py prints the stats line to stderr first, followed by
+          # an optional ::warning:: annotation line when over the limit —
+          # `head -n1` always grabs the plain stats line, not the annotation.
+          STATS_LINE="$(python3 .postkit/.github/scripts/to-linkedin.py "$CLEANED_FILE" -o linkedin.txt 2>&1 >/dev/null | head -n1)"
+          STATS_LINE="$STATS_LINE" LINKEDIN_FILE=linkedin.txt \
+            bash .postkit/.github/scripts/comment-linkedin.sh
 
       - name: Print generated post to log
         if: always()

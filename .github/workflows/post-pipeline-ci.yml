@@ -21,6 +21,9 @@ jobs:
       - name: Sanitizer self-test
         run: python3 .github/scripts/sanitize-post.py --self-test
 
+      - name: LinkedIn converter self-test
+        run: python3 .github/scripts/to-linkedin.py --self-test
+
       - name: Shell syntax check
         run: |
           set -euo pipefail

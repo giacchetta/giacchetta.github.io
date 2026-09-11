@@ -47,11 +47,14 @@ The voice is:
   claim; wasted on mobile).
 - **Lead**: after a blank line, 2–3 sentences expanding the hook. Still no
   emoji.
-- **Body sections**: **3–4** sections. Each is an **emoji + bold heading** on
-  its own line (e.g. `⚡ **Gateway WebSocket Lifecycle Architecture**`),
-  followed by a blank line, then **2–4 bullet points**. Each bullet:
-  `- **<bold lead-in>** — <2-3 sentences of concrete detail>`,
-  roughly 200-250 characters. Heading emojis: ⚡⚙️🛡️🔬🚀🔒🧠🧹🔄🛑✅📦📉🔧🧪⏱️.
+- **Body sections**: exactly **3** sections. Each is an **emoji + bold
+  heading** on its own line (e.g. `⚡ **Gateway WebSocket Lifecycle
+  Architecture**`), followed by a blank line, then **2–3 bullet points**.
+  Each bullet: `- **<bold lead-in>** — <1-2 sentences of concrete detail>`,
+  **at most 220 characters** (count the whole bullet line, lead-in
+  included). Heading emojis: ⚡⚙️🛡️🔬🚀🔒🧠🧹🔄🛑✅📦📉🔧🧪⏱️. This caps the
+  bullets at 3 × 3 × 220 ≈ 2,000 characters before the hook/lead/closing/
+  hashtags are added — see Length below for why that headroom matters.
 - **Closing line**: one short line, optionally one emoji. Never prefixed
   with a label like "One-line close:", "Closing:", or "TL;DR:" — just the
   line itself.
@@ -75,12 +78,34 @@ The voice is:
 
 Total body length: **2,000–3,000 characters** (roughly 320–480 words),
 excluding the frontmatter, **including the hashtag line**. Target ~2,500.
-**3,000 is a hard cap** — it is LinkedIn's limit for a standard post. Before
-emitting, estimate the length;
-if you're under 2,000, go **deeper** in the sections you already have (the
-mechanism, the failure mode it fixes, the file/tool names, the validation
-evidence) — do not add filler sentences, do not restate the lead, do not
-invent a section of platitudes to pad the count.
+**3,000 is a hard cap** — it is LinkedIn's limit for a standard post, and this
+cap is enforced downstream (not just estimated): the pipeline converts your
+Markdown into LinkedIn's plain-text bold/monospace characters and measures
+the result the way LinkedIn itself does (UTF-16 code units — see the next
+paragraph), warning on the generated post PR if it's over. Before emitting,
+count the body as written here (Markdown asterisks and backticks included in
+your own estimate); if you're under 2,000, go **deeper** in the sections you
+already have (the mechanism, the failure mode it fixes, the file/tool names,
+the validation evidence) — do not add filler sentences, do not restate the
+lead, do not invent a section of platitudes to pad the count.
+
+**The 3,000 cap is smaller in practice than it looks, because of how the
+pipeline renders your Markdown.** LinkedIn's own character counter — and
+therefore its 3,000-character limit — counts UTF-16 code units, matching
+JavaScript's `String.length`. There is no plain-bold or plain-monospace
+character in Unicode, so every character you put inside `**bold**` or
+`` `code` `` gets mapped to a Unicode "Mathematical Alphanumeric Symbols"
+look-alike glyph to render as styled text on LinkedIn — and every one of
+those glyphs is outside the Basic Multilingual Plane, costing **two** UTF-16
+units instead of one. A 10-character bold lead-in costs 20; a 25-character
+file path in backticks costs 50. **Keep bold lead-ins to 4 words or fewer**
+and **keep inline-code spans to short identifiers** (`sessions_spawn`, not
+`src/agents/orchestrator/sessions_spawn_handler.py`) — this is why the
+per-bullet cap above is 220 characters of plain text, not 220 characters of
+rendered LinkedIn output. If a draft still comes in over budget, **cut a
+whole bullet** — the lowest-signal one — rather than trimming every sentence
+down into mush; a shorter post with each bullet intact reads better than a
+full-length one with every sentence half-said.
 
 ## Hard rules
 
