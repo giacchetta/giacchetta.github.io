@@ -199,6 +199,26 @@ in the same place. Re-running the pipeline for the same source PR **edits
 that comment in place** (found by a leading `<!-- linkedin-text -->` marker)
 rather than stacking a new one, matching `push-post.sh`'s own idempotency.
 
+**Three fixes exist purely because LinkedIn's paste handler is stricter than
+plain-text conversion alone accounts for** — found by pasting a real
+converted post into LinkedIn and checking what actually survived:
+
+- **The hook (first line) is bolded.** `linkedin-post.system.md` keeps the
+  *source* hook plain — no bold, no emoji, so the model writes a standalone
+  claim, not a formatted heading — but a bold opening line is what stops the
+  scroll once it's actually on LinkedIn. This is a rendering choice made in
+  `to-linkedin.py` (`_bold_hook`), not a prompt change.
+- **Bullets are indented with NBSP, not a literal tab or spaces.** LinkedIn
+  strips leading ASCII whitespace per line on paste, so a real tab/space
+  indent silently vanishes — the same mechanism as the next point. NBSP
+  survives.
+- **An otherwise-empty separator line gets a single invisible NBSP.**
+  LinkedIn's paste handler collapses two consecutive real line breaks with
+  nothing between them into one, silently erasing the blank-line paragraph
+  gap between the hook/lead/headings/bullets/closing/hashtags. A "blank"
+  line that contains even an invisible character survives as its own
+  paragraph — the standard fix every LinkedIn-formatter tool applies.
+
 **The UTF-16 gotcha.** LinkedIn's own character counter — and its
 3,000-character post limit — counts UTF-16 code units (`String.length` in
 JavaScript), not Unicode codepoints. Every Mathematical-Alphanumeric glyph
@@ -214,6 +234,14 @@ rules now bound the body to a derivable ~2,000 characters of bullets, and the
 Length section explains the doubling cost so the model budgets bold/code
 spans deliberately rather than guessing. `to-linkedin.py` reports both counts
 (codepoints and UTF-16) and treats the UTF-16 one as the binding number.
+
+Bolding the hook adds meaningfully to that budget — a ~100-140 character hook
+costs roughly double once fully bold, since every one of its characters
+becomes an astral glyph — and the NBSP bullet indents/blank-line fillers add
+a smaller, fixed amount per bullet/gap. Between the two, a post that
+cleared 3,000 UTF-16 units before these fixes can cross it after; this
+pipeline's own length lint (below) is what actually catches that, not manual
+estimation.
 
 **Warn, don't fail.** Like `sanitize-post.py`, `to-linkedin.py` never blocks
 the run by default — an over-length conversion prints `::warning::` in the CI

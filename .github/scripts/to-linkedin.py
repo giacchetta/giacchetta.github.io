@@ -18,8 +18,9 @@ italic text to screen readers or to LinkedIn's own search index — some
 screen readers skip them, others spell them out letter by letter, and
 LinkedIn does not index text set in them the way it indexes plain text. This
 is the same trade every plain-text LinkedIn formatter makes. It is accepted
-here knowingly: the hook, lead, and prose stay ordinary ASCII, so only bold
-lead-ins, section headings, and inline-code identifiers are affected.
+here knowingly: the lead and general prose stay ordinary ASCII, so only the
+hook, bold lead-ins, section headings, and inline-code identifiers are
+affected.
 
 Second, sharper trade-off: every character mapped to a Unicode math glyph is
 in the Supplementary Multilingual Plane (astral) and costs TWO UTF-16 code
@@ -35,7 +36,27 @@ Frontmatter is dropped entirely — this tool converts the BODY only. The
 post's `title` is deliberately NOT prepended to the output: the body's first
 line is designed as a standalone hook (linkedin-post.system.md's Hook rule)
 because that line is exactly what LinkedIn shows in its "…see more" mobile
-preview. Prepending the title would push the real hook below the fold.
+preview. Prepending the title would push the real hook below the fold. The
+hook IS bolded here, though, as a LinkedIn-specific rendering choice (see
+_bold_hook): the system prompt keeps the source hook plain — no bold, no
+emoji — so it reads as a standalone claim rather than a formatted heading,
+but a bold opening line is what stops the scroll once it's actually on
+LinkedIn. This roughly doubles the hook's own UTF-16 cost (every character
+in it becomes an astral glyph), which is accounted for in the length check
+below since that check runs on the fully-converted text.
+
+Two more LinkedIn-paste-specific fixes live in convert_body(), both because
+LinkedIn's paste handler silently drops things that plain Markdown->text
+conversion would otherwise leave in place:
+  - Bullets are indented with NBSP (not a literal tab or ASCII spaces) —
+    LinkedIn strips leading ASCII whitespace per line, so a real tab/space
+    indent vanishes on paste exactly like the next point.
+  - An otherwise-empty separator line (the blank line between the hook and
+    lead, between a heading and its bullets, etc.) gets a single invisible
+    NBSP instead of staying truly empty — two consecutive real line breaks
+    with nothing between them collapse into one on LinkedIn's paste handler,
+    silently erasing the paragraph gap. A "blank" line that contains even an
+    invisible character survives as its own paragraph.
 
 Usage:
     python3 to-linkedin.py <post.md> [-o out.txt] [--strict]
@@ -86,7 +107,8 @@ def _map_alphabet(text: str, offsets: tuple[int, int, int | None]) -> str:
     return "".join(out)
 
 
-NBSP = " "
+NBSP = " "  # non-breaking space -- survives LinkedIn's leading-ASCII-whitespace trim
+BLANK_LINE_FILLER = NBSP  # content for an otherwise-empty separator line -- see convert_body
 
 # --------------------------------------------------------------------------
 # Inline conversion. Code spans are resolved to placeholders FIRST: CommonMark
@@ -167,13 +189,25 @@ _RULE_RE = re.compile(r"^ {0,3}((?:-\s*){3,}|(?:\*\s*){3,}|(?:_\s*){3,})$")
 
 _RULE_OUT = "─" * 16
 
+# Every bullet level is indented with NBSP, not a literal tab or ASCII
+# spaces — LinkedIn's paste handler strips leading ASCII whitespace (the
+# same mechanism that eats blank separator lines; see BLANK_LINE_FILLER
+# below), so a literal tab/4-space indent would silently vanish on paste
+# exactly like an empty line does. NBSP survives. Each nesting level doubles
+# the previous level's indent so the levels stay visually distinct.
+_BULLET_PREFIXES = {0: NBSP * 4 + "• ", 1: NBSP * 8 + "◦ ", 2: NBSP * 12 + "▪ "}
+
 
 def _bullet_prefix(indent: int) -> str:
     if indent == 0:
-        return "• "
+        return _BULLET_PREFIXES[0]
     if indent <= 3:
-        return NBSP * 2 + "◦ "
-    return NBSP * 4 + "▪ "
+        return _BULLET_PREFIXES[1]
+    return _BULLET_PREFIXES[2]
+
+
+def _is_bullet_line(s: str) -> bool:
+    return s.startswith(tuple(_BULLET_PREFIXES.values()))
 
 
 def convert_body(body: str) -> str:
@@ -227,7 +261,7 @@ def convert_body(body: str) -> str:
         om = _ORDERED_RE.match(line)
         if om:
             indent = len(om.group(1))
-            prefix = (NBSP * 2 if indent else "") + f"{om.group(2)} "
+            prefix = (NBSP * 4 if indent == 0 else NBSP * 8) + f"{om.group(2)} "
             out.append(prefix + _convert_inline(om.group(3)))
             continue
 
@@ -243,9 +277,6 @@ def convert_body(body: str) -> str:
     # paragraphs and costs length for no visual gain). Blank lines between
     # other blocks (heading -> bullets, bullets -> closing line, etc.) are
     # kept, since those genuinely are paragraph breaks.
-    def _is_bullet_line(s: str) -> bool:
-        return s.startswith(("• ", NBSP * 2 + "◦ ", NBSP * 4 + "▪ "))
-
     collapsed: list[str] = []
     i = 0
     while i < len(out):
@@ -260,11 +291,27 @@ def convert_body(body: str) -> str:
         collapsed.append(out[i])
         i += 1
 
-    # Collapse runs of 3+ blank lines to at most 2, then trim to a single
-    # trailing newline.
+    # Collapse runs of 3+ blank lines to at most 2 (i.e. exactly one genuine
+    # separator gap), then trim to a single trailing newline.
     text = "\n".join(collapsed)
     text = re.sub(r"\n{3,}", "\n\n", text)
-    return text.strip("\n") + "\n"
+    text = text.strip("\n") + "\n"
+
+    # Replace every remaining blank separator line with one containing a
+    # single invisible character (BLANK_LINE_FILLER). LinkedIn's paste
+    # handler collapses a truly empty line — two consecutive real line
+    # breaks with nothing between them merge into one, so the visual
+    # paragraph gap between the hook/lead/headings/bullets/closing/hashtags
+    # disappears on paste. A "blank" line that actually contains a
+    # character (even an invisible one) is preserved as its own paragraph,
+    # the same fix every LinkedIn-formatter tool applies. NBSP is reused
+    # here rather than a zero-width character since it's already proven (via
+    # the bullet indent above) to survive LinkedIn's whitespace handling,
+    # and — being a real published-width character, not literally
+    # zero-width — is less likely to be optimized away by a paste sanitizer.
+    # Non-overlapping str.replace is safe here: the 3+-run collapse above
+    # guarantees no "\n\n\n" survives, so every "\n\n" is a standalone gap.
+    return text.replace("\n\n", f"\n{BLANK_LINE_FILLER}\n")
 
 
 # --------------------------------------------------------------------------
@@ -280,8 +327,22 @@ def split_frontmatter(raw: str) -> str:
     return raw
 
 
+def _bold_hook(text: str) -> str:
+    """Bold the first line only — the hook. linkedin-post.system.md keeps
+    the SOURCE hook plain (no bold, no emoji, no heading marker: it must
+    read as a standalone claim, not a formatted heading), but on LinkedIn a
+    bold opening line is what actually stops the scroll — this is a
+    rendering choice made here, not a change to what the model writes.
+    Idempotent: re-bolding an already-bold (Unicode math) first line is a
+    no-op, since _map_alphabet only touches plain ASCII letters/digits."""
+    first, sep, rest = text.partition("\n")
+    if not first.strip():
+        return text
+    return _map_alphabet(first, _BOLD) + sep + rest
+
+
 def convert(raw: str) -> str:
-    return convert_body(split_frontmatter(raw))
+    return _bold_hook(convert_body(split_frontmatter(raw)))
 
 
 # --------------------------------------------------------------------------
@@ -312,17 +373,33 @@ def stats_line(text: str) -> tuple[str, bool]:
 # --------------------------------------------------------------------------
 # Self-tests (no external framework/deps — none exist in this repo; mirrors
 # sanitize-post.py's self-test shape).
+#
+# Split in two: _BODY_SELF_TESTS exercise convert_body() directly, for
+# granular Markdown-block/inline features where the given snippet's first
+# line does NOT represent a real post's hook (e.g. a bullet-nesting test's
+# first line is a bullet, not a hook — convert()'s hook-bolding would bold
+# it too, which is correct for a real file but not what that test is
+# checking). _DOCUMENT_SELF_TESTS exercise the full convert() pipeline
+# (frontmatter-stripping + hook-bolding together) on snippets shaped like a
+# real post body, where "line one is the hook" genuinely holds.
+#
+# Expected strings that depend on the bullet-prefix/blank-line constants are
+# built from those constants (_BULLET_PREFIXES, BLANK_LINE_FILLER) rather
+# than hand-transcribed, so a future prefix change doesn't silently
+# desync the tests from the implementation — and so a hand-typed Unicode
+# transcription slip (this bit twice while writing this script) can't
+# reintroduce itself here.
 # --------------------------------------------------------------------------
-_SELF_TESTS: list[tuple[str, str, str]] = [
+_BODY_SELF_TESTS: list[tuple[str, str, str]] = [
     (
         "bold section heading with leading emoji",
         "⚡ **Gateway WebSocket Lifecycle**\n",
         "⚡ 𝗚𝗮𝘁𝗲𝘄𝗮𝘆 𝗪𝗲𝗯𝗦𝗼𝗰𝗸𝗲𝘁 𝗟𝗶𝗳𝗲𝗰𝘆𝗰𝗹𝗲\n",
     ),
     (
-        "bold lead-in bullet with a code span, single-space unaffected",
+        "bold lead-in bullet with a code span, indented with NBSP",
         "- **Dependency isolation** — `tui/` owns its packaging.\n",
-        "• 𝗗𝗲𝗽𝗲𝗻𝗱𝗲𝗻𝗰𝘆 𝗶𝘀𝗼𝗹𝗮𝘁𝗶𝗼𝗻 — 𝚝𝚞𝚒/ owns its packaging.\n",
+        _BULLET_PREFIXES[0] + "𝗗𝗲𝗽𝗲𝗻𝗱𝗲𝗻𝗰𝘆 𝗶𝘀𝗼𝗹𝗮𝘁𝗶𝗼𝗻 — 𝚝𝚞𝚒/ owns its packaging.\n",
     ),
     (
         "bold wrapping a code span collapses to monospace (no bold+mono glyph exists)",
@@ -345,19 +422,19 @@ _SELF_TESTS: list[tuple[str, str, str]] = [
         "Use a literal * character here.\n",
     ),
     (
-        "nested bullet gets NBSP nested-marker prefix",
+        "nested bullet gets a deeper NBSP indent than its parent",
         "- top level\n  - nested one\n",
-        "• top level\n" + NBSP * 2 + "◦ nested one\n",
+        _BULLET_PREFIXES[0] + "top level\n" + _BULLET_PREFIXES[1] + "nested one\n",
     ),
     (
-        "blank line between two bullets of the same list is collapsed",
+        "blank line between two bullets of the same list is collapsed entirely",
         "- first\n\n- second\n",
-        "• first\n• second\n",
+        _BULLET_PREFIXES[0] + "first\n" + _BULLET_PREFIXES[0] + "second\n",
     ),
     (
-        "blank line between a heading and its bullets is kept",
+        "blank line between a heading and its bullets is kept, filled with NBSP",
         "⚡ **Heading**\n\n- bullet\n",
-        "⚡ 𝗛𝗲𝗮𝗱𝗶𝗻𝗴\n\n• bullet\n",
+        "⚡ 𝗛𝗲𝗮𝗱𝗶𝗻𝗴\n" + BLANK_LINE_FILLER + "\n" + _BULLET_PREFIXES[0] + "bullet\n",
     ),
     (
         "legacy ATX heading becomes a bold line, marker dropped, emoji kept",
@@ -367,7 +444,7 @@ _SELF_TESTS: list[tuple[str, str, str]] = [
     (
         "legacy asterisk bullet handled the same as a dash bullet",
         "* first point\n",
-        "• first point\n",
+        _BULLET_PREFIXES[0] + "first point\n",
     ),
     (
         "markdown link becomes 'text (url)'",
@@ -380,9 +457,15 @@ _SELF_TESTS: list[tuple[str, str, str]] = [
         "See https://example.com/path for details.\n",
     ),
     (
-        "horizontal rule becomes a plain dash run",
+        "horizontal rule becomes a plain dash run, surrounding blanks NBSP-filled",
         "above\n\n---\n\nbelow\n",
-        "above\n\n" + _RULE_OUT + "\n\nbelow\n",
+        "above\n"
+        + BLANK_LINE_FILLER
+        + "\n"
+        + _RULE_OUT
+        + "\n"
+        + BLANK_LINE_FILLER
+        + "\nbelow\n",
     ),
     (
         "fenced code block markers dropped, contents monospaced",
@@ -390,14 +473,42 @@ _SELF_TESTS: list[tuple[str, str, str]] = [
         "𝚙𝚕𝚊𝚒𝚗 𝚝𝚎𝚡𝚝\n",
     ),
     (
-        "frontmatter is stripped, title not prepended",
+        "idempotent: re-processing an already-converted bullet line is a no-op",
+        _BULLET_PREFIXES[0] + "𝗗𝗲𝗽𝗲𝗻𝗱𝗲𝗻𝗰𝘆 𝗶𝘀𝗼𝗹𝗮𝘁𝗶𝗼𝗻 — 𝚝𝚞𝚒/ owns its packaging.\n",
+        _BULLET_PREFIXES[0] + "𝗗𝗲𝗽𝗲𝗻𝗱𝗲𝗻𝗰𝘆 𝗶𝘀𝗼𝗹𝗮𝘁𝗶𝗼𝗻 — 𝚝𝚞𝚒/ owns its packaging.\n",
+    ),
+]
+
+_DOCUMENT_SELF_TESTS: list[tuple[str, str, str]] = [
+    (
+        "frontmatter is stripped, title not prepended, hook is bolded",
         '---\ntitle: "A Title"\nslug: x\n---\nHook line.\n',
-        "Hook line.\n",
+        _map_alphabet("Hook line.", _BOLD) + "\n",
     ),
     (
-        "idempotent: converting already-converted text is a no-op",
-        "• 𝗗𝗲𝗽𝗲𝗻𝗱𝗲𝗻𝗰𝘆 𝗶𝘀𝗼𝗹𝗮𝘁𝗶𝗼𝗻 — 𝚝𝚞𝚒/ owns its packaging.\n",
-        "• 𝗗𝗲𝗽𝗲𝗻𝗱𝗲𝗻𝗰𝘆 𝗶𝘀𝗼𝗹𝗮𝘁𝗶𝗼𝗻 — 𝚝𝚞𝚒/ owns its packaging.\n",
+        "hook (first line only) is bolded; lead stays plain, separator blank is NBSP-filled",
+        "Sub-agent A2A is unreliable.\n\nWe moved the calls to the root agent.\n",
+        _map_alphabet("Sub-agent A2A is unreliable.", _BOLD)
+        + "\n"
+        + BLANK_LINE_FILLER
+        + "\n"
+        + "We moved the calls to the root agent.\n",
+    ),
+    (
+        "idempotent: re-running the full pipeline on already-converted output is a no-op",
+        # Reuses the previous case's own expected output as input — this is
+        # the strongest idempotency check in the suite, since it exercises
+        # hook-bolding, blank-line-filling, and bullet indenting together.
+        _map_alphabet("Sub-agent A2A is unreliable.", _BOLD)
+        + "\n"
+        + BLANK_LINE_FILLER
+        + "\n"
+        + "We moved the calls to the root agent.\n",
+        _map_alphabet("Sub-agent A2A is unreliable.", _BOLD)
+        + "\n"
+        + BLANK_LINE_FILLER
+        + "\n"
+        + "We moved the calls to the root agent.\n",
     ),
 ]
 
@@ -405,15 +516,16 @@ _SELF_TESTS: list[tuple[str, str, str]] = [
 def run_self_tests() -> int:
     passed = 0
     failed = 0
-    for name, given, expected in _SELF_TESTS:
-        got = convert(given)
-        if got == expected:
-            passed += 1
-        else:
-            failed += 1
-            print(f"FAIL: {name}", file=sys.stderr)
-            print(f"  expected: {expected!r}", file=sys.stderr)
-            print(f"  got:      {got!r}", file=sys.stderr)
+    for convert_fn, tests in ((convert_body, _BODY_SELF_TESTS), (convert, _DOCUMENT_SELF_TESTS)):
+        for name, given, expected in tests:
+            got = convert_fn(given)
+            if got == expected:
+                passed += 1
+            else:
+                failed += 1
+                print(f"FAIL: {name}", file=sys.stderr)
+                print(f"  expected: {expected!r}", file=sys.stderr)
+                print(f"  got:      {got!r}", file=sys.stderr)
     total = passed + failed
 
     # A couple of standalone, non-table checks: UTF-16 vs codepoint counting
