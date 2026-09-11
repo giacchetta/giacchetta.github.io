@@ -25,7 +25,9 @@ extracted here (issue #85) so any lab repo can call it without copying scripts.
 │   ├── gather-feed.sh           # gh + jq → feed.json (PR title/body + author's own comments)
 │   ├── prepare-post.sh          # strips fences/CRLF; slug from a grepped frontmatter line, PR-title fallback
 │   ├── sanitize-post.py         # backtick-wraps bare `<word>` tokens in the body (see Sanitization below)
-│   └── push-post.sh             # clone target repo, write post_dir/, commit, push via PR (idempotent)
+│   ├── push-post.sh             # clone target repo, write post_dir/, commit, push via PR (idempotent)
+│   ├── to-linkedin.py           # Markdown body → LinkedIn plain text + length lint (see LinkedIn export below)
+│   └── comment-linkedin.sh      # posts/updates that text as a comment on the post PR (idempotent)
 └── prompts/
     ├── linkedin-post.system.md  # voice + structure + hard rules — the single source of truth (calibrated against existing posts)
     └── linkedin-post.prompt.yml # feed wiring ({{repo}}, {{pr_number}}, {{merge_date}}, {{feed}}) + interpolates system.md as {{system_prompt}} into its own system message — see "Why the system prompt is interpolated, not passed via system-prompt-file" below
@@ -178,12 +180,93 @@ guarantee, not the first line of defense. Its logic is covered by table-driven
 self-tests run as a workflow step before AI inference:
 `python3 .github/scripts/sanitize-post.py --self-test`.
 
+## LinkedIn export
+
+LinkedIn's post composer accepts plain text only — no Markdown, no HTML — so
+pasting the generated `.md` post in as-is leaves literal `**stars**` and
+backticks on the page. `to-linkedin.py` converts the post's body (frontmatter
+dropped; the `title` is deliberately **not** prepended, since the body's
+first line is already designed as a standalone hook — see
+`linkedin-post.system.md`'s Hook rule) into plain text with the same visual
+trick every LinkedIn-formatter web tool uses: Markdown `**bold**` and
+`` `code` `` map onto Unicode "Mathematical Alphanumeric Symbols" look-alike
+glyphs (bold/monospace letterforms that are still plain text, not
+formatting), and `- ` bullets map onto `•`/`◦`/`▪`. `comment-linkedin.sh`
+then posts that text as a comment on the post PR `push-post.sh` just
+opened, inside a ` ```text ` fence — GitHub renders a one-click copy button
+on the fence, so reviewing the post PR and copying the LinkedIn text happen
+in the same place. Re-running the pipeline for the same source PR **edits
+that comment in place** (found by a leading `<!-- linkedin-text -->` marker)
+rather than stacking a new one, matching `push-post.sh`'s own idempotency.
+
+**Three fixes exist purely because LinkedIn's paste handler is stricter than
+plain-text conversion alone accounts for** — found by pasting a real
+converted post into LinkedIn and checking what actually survived:
+
+- **The hook (first line) is bolded.** `linkedin-post.system.md` keeps the
+  *source* hook plain — no bold, no emoji, so the model writes a standalone
+  claim, not a formatted heading — but a bold opening line is what stops the
+  scroll once it's actually on LinkedIn. This is a rendering choice made in
+  `to-linkedin.py` (`_bold_hook`), not a prompt change.
+- **Bullets are indented with NBSP, not a literal tab or spaces.** LinkedIn
+  strips leading ASCII whitespace per line on paste, so a real tab/space
+  indent silently vanishes — the same mechanism as the next point. NBSP
+  survives.
+- **An otherwise-empty separator line gets a single invisible NBSP.**
+  LinkedIn's paste handler collapses two consecutive real line breaks with
+  nothing between them into one, silently erasing the blank-line paragraph
+  gap between the hook/lead/headings/bullets/closing/hashtags. A "blank"
+  line that contains even an invisible character survives as its own
+  paragraph — the standard fix every LinkedIn-formatter tool applies.
+
+**The UTF-16 gotcha.** LinkedIn's own character counter — and its
+3,000-character post limit — counts UTF-16 code units (`String.length` in
+JavaScript), not Unicode codepoints. Every Mathematical-Alphanumeric glyph
+used for bold/monospace is outside the Basic Multilingual Plane and costs
+**two** UTF-16 units, not one. A post that measures under 3,000 characters as
+plain Markdown can render well over that once its bold lead-ins and code
+spans are converted — 3 of the 7 posts live at the time this was built
+exceeded it once converted, despite `linkedin-post.system.md` already
+carrying a "3,000 hard cap" rule; the rule existed, but the structural rules
+above it (section/bullet counts) allowed more raw characters than the cap
+could ever hold once rendered. Both were tightened together: the structure
+rules now bound the body to a derivable ~2,000 characters of bullets, and the
+Length section explains the doubling cost so the model budgets bold/code
+spans deliberately rather than guessing. `to-linkedin.py` reports both counts
+(codepoints and UTF-16) and treats the UTF-16 one as the binding number.
+
+Bolding the hook adds meaningfully to that budget — a ~100-140 character hook
+costs roughly double once fully bold, since every one of its characters
+becomes an astral glyph — and the NBSP bullet indents/blank-line fillers add
+a smaller, fixed amount per bullet/gap. Between the two, a post that
+cleared 3,000 UTF-16 units before these fixes can cross it after; this
+pipeline's own length lint (below) is what actually catches that, not manual
+estimation.
+
+**Warn, don't fail.** Like `sanitize-post.py`, `to-linkedin.py` never blocks
+the run by default — an over-length conversion prints `::warning::` in the CI
+log and in the PR comment's stats line; the CODEOWNER review on `target_repo`
+is the backstop, same as every other soft check in this pipeline. A `--strict`
+flag (exit 1 over the limit) exists for local/manual use only and is never
+passed by the workflow.
+
+**Known, accepted trade-off.** Unicode math-alphabet letters are not
+accessible: some screen readers skip them, others spell them out
+letter-by-letter, and LinkedIn's own search does not index text set in them
+the same way it indexes plain text. This is the trade every plain-text
+LinkedIn formatter (including the third-party tool this replaces) makes, and
+it's accepted here knowingly — the hook, lead, and general prose stay plain
+ASCII throughout; only bold lead-ins, section headings, and inline-code
+identifiers are affected.
+
 ## Output
 
 - **`target_repo`**: `<post_dir>/<slug>.md` — always, via a short-lived
   `post/<slug>` branch + pull request (never a direct push to `target_repo`'s
   default branch). Merging that PR is what deploys it, via `target_repo`'s own
   build/deploy workflow.
+- **The post PR**: also carries a `<!-- linkedin-text -->` comment with the
+  LinkedIn-ready plain text — see LinkedIn export above.
 
 ## Idempotency
 

@@ -33,6 +33,12 @@
 # of updating the first. If POST_PATH already exists with a DIFFERENT pr:
 # number (a slug collision with an unrelated post), we abort rather than
 # clobber it.
+#
+# Outputs (written to $GITHUB_OUTPUT, when set — this script also runs
+# standalone): pr_url (the opened-or-existing post PR's URL, empty if the run
+# committed nothing and no PR needed opening) and branch (BRANCH_NAME). A
+# downstream step uses pr_url to comment the LinkedIn-ready text onto the
+# same PR.
 set -euo pipefail
 
 : "${POSTS_PAT:?POSTS_PAT env is required}"
@@ -159,6 +165,7 @@ EXISTING_PR_URL="$(gh pr list \
 
 if [ -n "$EXISTING_PR_URL" ]; then
   echo "::notice::Pull request already open for ${BRANCH_NAME}: ${EXISTING_PR_URL}"
+  PR_URL="$EXISTING_PR_URL"
 else
   echo "::group::Create pull request for ${BRANCH_NAME}"
   PR_URL="$(gh pr create \
@@ -169,4 +176,11 @@ else
     --body "${PR_BODY}")"
   echo "::endgroup::"
   echo "::notice::Opened pull request: ${PR_URL}"
+fi
+
+if [ -n "${GITHUB_OUTPUT:-}" ]; then
+  {
+    echo "pr_url=${PR_URL}"
+    echo "branch=${BRANCH_NAME}"
+  } >> "$GITHUB_OUTPUT"
 fi
