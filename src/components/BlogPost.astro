@@ -16,6 +16,7 @@ const { Content } = await render(post);
 const t = useTranslations();
 
 const formattedDate = formatDate(post.data.date);
+const isoDate = new Date(post.data.date).toISOString();
 ---
 
 <header class="mb-3">
@@ -26,7 +27,7 @@ const formattedDate = formatDate(post.data.date);
       post.data.title
     )}
   </Heading>
-  <div class="text-muted small mb-2">{formattedDate}</div>
+  <div class="text-muted small mb-2"><time datetime={isoDate}>{formattedDate}</time></div>
   {(post.data.tags.length > 0 || post.data.pr) && (
     <div class="d-flex flex-wrap gap-2">
       {post.data.tags.map((tag: string) => (

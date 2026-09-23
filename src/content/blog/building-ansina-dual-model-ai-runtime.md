@@ -8,8 +8,6 @@ tags: ["ai-agent"]
 pr: "https://github.com/giacchetta/ansina/pull/18"
 ---
 
-# Building Ansina: A Blueprint for a Deterministic, Dual-Model AI Runtime
-
 Designing a lean, provable AI agent runtime built from the ground up on Python ≥ 3.14: introducing the architecture blueprint for **Ansina**.
 
 Currently in its blueprint phase and moving rapidly toward initial implementation, Ansina focuses on a tight, deterministic core where every architectural choice serves operational control, high signal-to-noise ratio, and zero unnecessary bloat.

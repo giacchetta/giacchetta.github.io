@@ -4,6 +4,7 @@ import Profile from '../assets/img/profile.png';
 import Layout from '../layouts/Layout.astro';
 import { getAllPages, getFeaturedPagesByCategory, getBlogPosts, cleanSlug } from '../utils/content.js';
 import { formatDate, periodStartYear } from '../utils/date.js';
+import { homeGraph } from '../utils/seo.js';
 import { useTranslations } from '../i18n/utils';
 import credentialsRaw from '../data/credentials.json';
 import gmailIcon from '../assets/svg/gmail.svg?raw';
@@ -41,6 +42,25 @@ const yearsExperience = new Date().getFullYear() - careerStart;
 const currentRoles = companies
   .filter(c => c.data.period?.trim().endsWith('Present'))
   .sort((a, b) => periodStartYear(b.data.period) - periodStartYear(a.data.period));
+
+// Structured data (Person + WebSite + ProfilePage) — sourced from the same
+// content already driving the visible page, so it can't drift out of sync.
+const sameAsLinks = [
+  'https://www.linkedin.com/in/giacchetta/',
+  'https://github.com/giacchetta',
+  'https://www.youtube.com/@LucianoGiacchetta',
+];
+const knowsAbout = Object.values(credentialsRaw).flat().map((item) => item.name);
+const worksFor = currentRoles.map((role) => ({ '@type': 'Organization', name: role.data.title }));
+const homeJsonLd = homeGraph({
+  jobTitle: t('site.jobTitle'),
+  brand: t('site.brand'),
+  sameAs: sameAsLinks,
+  worksFor,
+  knowsAbout,
+  description: t('meta.descriptionHome'),
+});
+
 const skillDomains = Object.entries(credentialsRaw).map(([name, items]) => ({
   slug: name.toLowerCase().replace(/\s*&\s*/g, '-').replace(/\s+/g, '-'),
   count: items.length,
@@ -70,7 +90,7 @@ const techStack = [
 ].map((name, i) => ({ name, style: badgeStyles[i % badgeStyles.length] }));
 ---
 
-<Layout title={t('site.title')} description={t('meta.descriptionHome')}>
+<Layout title={t('site.title')} description={t('meta.descriptionHome')} suffix={false} jsonLd={homeJsonLd}>
   <main class="container layout mt-3 mb-5">
     <div class="row g-4">
 
@@ -80,6 +100,7 @@ const techStack = [
       <div class="col-12 col-md-4">
         <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 d-flex flex-column justify-content-center gap-3">
           <h1 class="fs-3 fw-bold mb-0 text-center">{t('bio.name')}</h1>
+          <p class="small text-muted mb-0 text-center">{t('site.brand')}</p>
           <div class="row g-3 align-items-center">
             <div class="col-5 d-flex justify-content-center">
               <Picture

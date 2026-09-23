@@ -6,8 +6,13 @@ import { useTranslations } from '../../i18n/utils';
 
 const t = useTranslations();
 const posts = await getBlogPosts();
+
+const breadcrumbs = [
+  { label: t('nav.home'), href: '/' },
+  { label: t('nav.blog') },
+];
 ---
-<Layout title={`${t('blog.pageTitle')} | ${t('bio.name')}`} description={t('meta.descriptionBlog')}>
+<Layout title={t('meta.titleBlog')} description={t('meta.descriptionBlog')} breadcrumbs={breadcrumbs}>
   <main class="container layout mt-3 mb-5">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-3">

@@ -4,8 +4,13 @@ import Collaboration from '../components/Collaboration.astro';
 import { useTranslations } from '../i18n/utils';
 
 const t = useTranslations();
+
+const breadcrumbs = [
+  { label: t('nav.home'), href: '/' },
+  { label: t('nav.experience') },
+];
 ---
-<Layout title={`${t('experience.pageTitle')} | ${t('bio.name')}`} description={t('meta.descriptionExperience')}>
+<Layout title={t('meta.titleExperience')} description={t('meta.descriptionExperience')} breadcrumbs={breadcrumbs}>
   <main class="container layout mt-3 mb-5">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-3">
