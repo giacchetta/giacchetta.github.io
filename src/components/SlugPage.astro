@@ -3,8 +3,9 @@ import Layout from '../layouts/Layout.astro';
 import { Image } from 'astro:assets';
 import { getCollection, render } from 'astro:content';
 import { useTranslations } from '../i18n/utils';
-import { cleanSlug, filterByLocale } from '../utils/content.js';
+import { cleanSlug, filterByLocale, getExcerpt } from '../utils/content.js';
 import { formatDate } from '../utils/date.js';
+import { techArticle } from '../utils/seo.js';
 
 interface Props {
   page: any;
@@ -18,7 +19,23 @@ const isArticleCollaboration = isCollaboration && page.data.type === 'article';
 
 const t = useTranslations();
 
-const pageDescription = page.data.description || page.data.summary || '';
+// Falls back through description -> summary -> a stripped excerpt of the body,
+// so a page with neither frontmatter field never silently inherits the
+// site-wide meta description (the same problem getExcerpt solves for blog).
+const pageDescription = page.data.description || page.data.summary || getExcerpt(page);
+
+// Keyword-bearing <title>, built from frontmatter that's already authored per
+// entry (role/provider) rather than the bare entry title — "Telnyx" or
+// "Github Actions" alone carries no search intent.
+const pageTitle = isCompanyCollaboration
+  ? (page.data.role ? `${page.data.title} — ${page.data.role}` : page.data.title)
+  : isArticleCollaboration
+  ? `${page.data.title} — Case Study`
+  : page.collection === 'certifications'
+  ? (page.data.provider ? `${page.data.title} — ${page.data.provider} Certification` : page.data.title)
+  : page.collection === 'credentials'
+  ? `${page.data.title} — Engineering Deep Dive`
+  : page.data.title;
 
 let companyEntry: any = null;
 let linkedArticles: any[] = [];
@@ -51,9 +68,23 @@ const breadcrumbs = [
     : []),
   { label: page.data.title },
 ];
+
+// TechArticle structured data for case studies and skill/certification deep
+// dives — not for company profile pages, which aren't editorial content.
+const pageUrl = `https://lucianogiacchetta.com/${isCollaboration ? 'experience' : 'credentials'}/${cleanSlug(page)}/`;
+const articleJsonLd =
+  isArticleCollaboration || page.collection === 'credentials' || page.collection === 'certifications'
+    ? techArticle({
+        title: page.data.title,
+        description: pageDescription,
+        datePublished: page.data.publishDate,
+        dateModified: page.data.updateDate,
+        url: pageUrl,
+      })
+    : null;
 ---
 
-<Layout title={`${page.data.title} | Luciano Giacchetta`} description={pageDescription}>
+<Layout title={pageTitle} description={pageDescription} breadcrumbs={breadcrumbs} jsonLd={articleJsonLd}>
   <main>
     <div class="container layout mt-4">
       <nav aria-label="breadcrumb">

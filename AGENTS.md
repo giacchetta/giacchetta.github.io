@@ -46,7 +46,7 @@ src/
 │   ├── en.json              # UI strings (single English dictionary)
 │   └── utils.ts             # useTranslations() helper
 ├── layouts/
-│   └── Layout.astro         # Base HTML shell: SEO head, footer slot (no navbar)
+│   └── Layout.astro         # Base HTML shell: single SEO authority — title composition, canonical, OG/Twitter, JSON-LD, footer slot (no navbar)
 ├── pages/
 │   ├── index.astro          # Home / (Bento dashboard)
 │   ├── experience.astro     # /experience/ (full roles listing)
@@ -59,14 +59,17 @@ src/
 │   └── bootstrap.min.css    # PurgeCSS output — generated at build, do not edit manually
 ├── utils/
 │   ├── content.js           # Collection helpers: filterByLocale, getAllPages, getBlogPosts, getExcerpt, cleanSlug
-│   └── date.js               # formatDate() — locks toLocaleDateString to UTC so authored dates render the same day regardless of build-machine timezone
+│   ├── date.js               # formatDate() — locks toLocaleDateString to UTC so authored dates render the same day regardless of build-machine timezone
+│   └── seo.js                # schema.org JSON-LD builders (Person/WebSite/ProfilePage graph, BreadcrumbList, BlogPosting, TechArticle) consumed by Layout.astro
 └── content.config.ts        # Zod schemas for all 4 collections
 ```
+
+`public/og.png` (1200×630, outside `src/`) is the site-wide social share image referenced by `Layout.astro`.
 
 ### Page Rendering Flow
 
 ```
-Layout.astro (HTML shell, SEO, canonical link, footer slot — no navbar)
+Layout.astro (HTML shell — title composition, canonical link, OG/Twitter tags, JSON-LD, footer slot — no navbar)
 └── pages/index.astro → HomePage.astro (Bento dashboard — 6 tiles)
     ├── Tile 1: Hero (two side-by-side terminal panes — `~/career` and `~/stack` — showing build-time-derived stats; no prose copy, no name)
     ├── Tile 2: Profile (name on top as the page's only `<h1>`; avatar + a vertical row of 6 circular icon-only buttons below: Email → opens #contactModal, Phone → opens #phoneModal, WhatsApp/LinkedIn/GitHub/YouTube → external links)
@@ -98,6 +101,24 @@ The table alignment relies on literal space-padding rendered inside a `<pre>`; w
 
 ---
 
+## SEO & Structured Data
+
+`Layout.astro` is the single SEO authority — every page routes its metadata through its props rather than composing `<title>`/meta tags itself.
+
+- **Title composition**: pages pass only the page-specific title text as `title`; `Layout.astro` appends `" | " + bio.name` unless `suffix={false}` is passed. Only `HomePage.astro` passes `suffix={false}` (its `site.title` string is already the complete title) — this is why the homepage is the one page whose `<title>` doesn't end in `| Luciano Giacchetta`.
+- **Brand vs. entity**: `site.brand` ("Giacchetta Engineering") is a DBA of the real tax name "Luciano Giacchetta". It appears as visible text only in the Home/Bento Tile 2 subtitle and as `Person.alternateName` in JSON-LD — never as the `<title>` suffix, `og:site_name`, or `<meta name="author">`, which all stay "Luciano Giacchetta", the entity with existing search history.
+- **Other `Layout.astro` props**: `description`; `ogType` (`"website"` default, `"article"` on blog permalinks, which also emits `article:published_time`/`article:modified_time`); `publishedTime`/`modifiedTime`; `breadcrumbs` — the same `{label, href?}[]` shape already used for the visible Bootstrap breadcrumb, auto-rendered as `BreadcrumbList` JSON-LD; `jsonLd` — page-specific structured-data node(s) (object or array).
+- **Structured data builders**: `src/utils/seo.js` exports pure functions (`homeGraph`, `breadcrumbList`, `blogPosting`, `techArticle`) returning plain schema.org objects; `Layout.astro` serializes each into its own `<script type="application/ld+json">`. Every non-Person node references the site's one canonical Person by `@id` (`https://lucianogiacchetta.com/#person`) instead of duplicating Person data.
+  - Home (`HomePage.astro`): `Person` (jobTitle, `sameAs` social links, `worksFor` from current roles, `knowsAbout` flattened from `src/data/credentials.json`) + `WebSite` + `ProfilePage`, as one `@graph`.
+  - Blog permalinks (`pages/blog/[slug].astro`): `BlogPosting` (dates, `tags` as `keywords`, author/publisher → Person).
+  - Case studies (`type: "article"` collaborations) and `credentials`/`certifications` deep-dives (`SlugPage.astro`): `TechArticle`. Company profile pages get `BreadcrumbList` only, no `TechArticle` — a company's own page isn't editorial content about it.
+- **Inner-page `<title>`s carry keywords the bare entry title doesn't**: `SlugPage.astro` derives the title per entry type — `"{title} — {role}"` for companies, `"{title} — Case Study"` for articles, `"{title} — Engineering Deep Dive"` for credentials, `"{title} — {provider} Certification"` for certifications — falling back to the bare title when the extra field is absent. The visible `<h1>` is untouched; only `<title>`/`og:title`/`twitter:title` use the enriched version.
+- **Description fallback chain** (all four collections): `description` (frontmatter) → `summary` (collaborations only) → `getExcerpt()` (`src/utils/content.js`) → `Layout.astro`'s site-wide `meta.description`. The `getExcerpt()` step means a page missing both `description` and `summary` gets an auto-generated excerpt instead of silently duplicating the site-wide description.
+- **Social card**: `public/og.png` (1200×630, generated once from `src/assets/img/profile.png`) is the site-wide `og:image`/`twitter:image` for every page — there is no per-page image and no build-time generation step. Regenerate it by hand (e.g. a one-off `sharp` script rendering an SVG composite, then `sharp().png().toFile()`) if the profile photo or brand copy changes.
+- **Sitemap freshness**: `astro.config.mjs` passes a `serialize` function to `@astrojs/sitemap` that reads `lastmod` straight from each entry's frontmatter (`date` for blog, `updateDate`/`publishDate` for the other three collections) via a small regex-based frontmatter reader — content collections aren't available yet this early in config — and sets `changefreq`/`priority` by route (home `1.0`/weekly; section indexes `0.8`/monthly; blog posts `0.7`/yearly; other slug pages `0.6`/monthly).
+
+---
+
 ## Content Collections
 
 Defined in `src/content.config.ts`. There are four collections. All collections support a `draft` field (boolean, default `false`); draft entries are filtered out in `getStaticPaths` (all `[slug]` routes), `getAllPages()`, and `getBlogPosts()`, so they are not published as pages or listed anywhere.
@@ -115,7 +136,7 @@ Blog posts (`.md` files under `src/content/blog/`), populated both manually and 
 
 Rendered via `getBlogPosts()` in `src/utils/content.js` (date-descending, drafts filtered), not through `getAllPages()`.
 
-**Meta description fallback**: `src/pages/blog/[slug].astro` uses `post.data.description || getExcerpt(post)`. Without this, a post with no `description` would silently inherit `Layout.astro`'s site-wide default (`meta.description`) — duplicating the homepage's `<meta name="description">` across every such post, an SEO problem. `getExcerpt()` (`src/utils/content.js`) strips Markdown syntax and emoji from `post.body` and truncates to ~155 chars at a word boundary. This is a safety net only; the primary fix is the generator emitting `description` in frontmatter.
+**Meta description fallback**: `src/pages/blog/[slug].astro` uses `post.data.description || getExcerpt(post)` — the same chain `SlugPage.astro` now uses for the other three collections; see [SEO & Structured Data](#seo--structured-data). Without this, a post with no `description` would silently inherit `Layout.astro`'s site-wide default (`meta.description`) — duplicating the homepage's `<meta name="description">` across every such post, an SEO problem. `getExcerpt()` (`src/utils/content.js`) strips Markdown syntax and emoji from `post.body` and truncates to ~155 chars at a word boundary. This is a safety net only; the primary fix is the generator emitting `description` in frontmatter.
 
 ### `credentials`
 Technical skill deep-dives. Frontmatter fields:
@@ -264,3 +285,4 @@ The site exposes machine-readable content via the `astro-llms-md` integration, w
 - Do not remove or lower `vite.build.assetsInlineLimit: 0` in `astro.config.mjs` — it's what keeps the canvas-obfuscated components' scripts out of the served page HTML.
 - Do not add client-side JS frameworks (React, Vue, etc.) without explicit instruction.
 - Do not reintroduce multilingual/i18n locales or a translation pipeline — the site is English-only by design.
+- Do not use `site.brand` ("Giacchetta Engineering") as the `<title>` suffix, `og:site_name`, or `<meta name="author">` — it's a DBA of the real tax name "Luciano Giacchetta", the entity with existing search history. The brand belongs only in the Home Tile 2 subtitle and `Person.alternateName` in JSON-LD.

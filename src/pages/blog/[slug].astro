@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import BlogPost from '../../components/BlogPost.astro';
 import { getBlogPosts, getExcerpt } from '../../utils/content.js';
+import { blogPosting } from '../../utils/seo.js';
 import { useTranslations } from '../../i18n/utils';
 
 export async function getStaticPaths() {
@@ -15,14 +16,39 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const t = useTranslations();
 const description = post.data.description || getExcerpt(post);
+
+const breadcrumbs = [
+  { label: t('nav.home'), href: '/' },
+  { label: t('nav.blog'), href: '/blog/' },
+  { label: post.data.title },
+];
+
+const postUrl = `https://lucianogiacchetta.com/blog/${post.id}/`;
+const postJsonLd = blogPosting({
+  title: post.data.title,
+  description,
+  datePublished: post.data.date,
+  tags: post.data.tags,
+  url: postUrl,
+  image: 'https://lucianogiacchetta.com/og.png',
+});
 ---
-<Layout title={`${post.data.title} | ${t('bio.name')}`} description={description}>
+<Layout
+  title={post.data.title}
+  description={description}
+  ogType="article"
+  publishedTime={post.data.date}
+  breadcrumbs={breadcrumbs}
+  jsonLd={postJsonLd}
+>
   <main class="container layout mt-3 mb-5">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-3">
-        <li class="breadcrumb-item"><a href="/">{t('nav.home')}</a></li>
-        <li class="breadcrumb-item"><a href="/blog/">{t('nav.blog')}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{post.data.title}</li>
+        {breadcrumbs.map((crumb, i) => (
+          i < breadcrumbs.length - 1
+            ? <li class="breadcrumb-item"><a href={crumb.href}>{crumb.label}</a></li>
+            : <li class="breadcrumb-item active" aria-current="page">{crumb.label}</li>
+        ))}
       </ol>
     </nav>
 
