@@ -1,8 +1,8 @@
 ---
 pr: "https://github.com/giacchetta/ansina/pull/52"
-slug: password-login-throttling-cors
-title: "Password Login, Throttling, and Browser CORS"
-description: "This PR adds password login, login throttling, and browser CORS so third-party clients can authenticate without auth-policy gaps."
+slug: ansina-password-login-throttling-cors
+title: "Ansina: Password Login, Throttling, and Browser CORS"
+description: "Ansina adds password login, login throttling, and browser CORS so third-party clients can authenticate without auth-policy gaps."
 date: 2026-09-23
 authors: [giacchetta]
 tags: [ai-engineer]
