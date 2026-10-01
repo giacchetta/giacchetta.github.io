@@ -3,8 +3,8 @@ name: Post on Merge
 # Reusable workflow: generate a LinkedIn-style post from a merged PR in some
 # other "lab" repo and open a pull request against THIS repo adding it under
 # src/content/blog/<slug>.md (an Astro content collection). This repo's
-# CODEOWNER reviews and merges that PR; static.yaml rebuilds and deploys on
-# push to main.
+# CODEOWNER reviews and merges that PR; Cloudflare Pages (git-connected)
+# rebuilds and deploys on push to main.
 #
 # This workflow owns no trigger of its own beyond `workflow_call` (and a
 # workflow_dispatch twin for self-testing from this repo) — the calling repo
@@ -213,7 +213,7 @@ jobs:
 
       # Push the post to the target repo via a short-lived branch + pull
       # request (NOT a direct push to main). The target repo's CODEOWNER
-      # reviews and merges the PR; its static.yaml workflow rebuilds and
+      # reviews and merges the PR; its Cloudflare Pages project rebuilds and
       # deploys on push to main. Requires the posts_pat secret (PAT with
       # contents:write + pull-requests:write on target_repo).
       - name: Push post to target repo

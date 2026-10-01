@@ -6,7 +6,7 @@
 
 ## What this project is
 
-A professional portfolio site for Luciano Giacchetta, a DevOps/Cloud/Systems Engineer. It is a statically generated, **English-only** site built with **Astro 7** and deployed to GitHub Pages.
+A professional portfolio site for Luciano Giacchetta, a DevOps/Cloud/Systems Engineer. It is a statically generated, **English-only** site built with **Astro 7** and deployed to Cloudflare Pages.
 
 ---
 
@@ -21,7 +21,7 @@ A professional portfolio site for Luciano Giacchetta, a DevOps/Cloud/Systems Eng
 | UI strings | `src/i18n/en.json` (single English dictionary) |
 | Sitemap | `@astrojs/sitemap` |
 | Agent/LLM access | `astro-llms-md` — per-page `.md` files + `/llms.txt` + `/llms-full.txt` |
-| Deployment | GitHub Actions → GitHub Pages |
+| Deployment | Cloudflare Pages (git-connected, builds on push to `main`) |
 
 **CSS Rule**: Only use Bootstrap 5.3 classes. Do not introduce any other CSS framework or large custom stylesheets.
 
@@ -240,7 +240,10 @@ Categories currently used: `"Public Cloud"`, `"Private Cloud"`, `"Development"`,
 | `npm run build` | Full production build: PurgeCSS + Astro build |
 | `npm run preview` | Preview production build locally |
 
-The CI/CD workflow (`.github/workflows/static.yaml`) runs `npm run build`.
+Cloudflare Pages runs `npm run build` on every push to `main` and on every
+PR (as a preview deployment). The build config lives in `tofu-gc-stack`
+(`cloudflare.tf` → `pages_projects`), not in this repo — there is no local
+CI workflow driving it.
 
 ---
 
