@@ -114,13 +114,22 @@ Professional certifications with provider, level, status, and credential URL.
 
 ## Deployment
 
-Cloudflare Pages is git-connected to this repo and builds automatically:
-1. Push to `main` (or open a PR, which gets its own preview deployment)
-2. Cloudflare installs dependencies and runs `npm run build` (PurgeCSS → Astro build)
-3. Cloudflare serves `dist/` from the `lucianogiacchetta` Pages project
+Cloudflare Pages is git-connected to this repo and builds automatically on
+push to `main`:
+1. Cloudflare installs dependencies and runs `npm run build` (PurgeCSS → Astro build)
+2. Cloudflare serves `dist/` from the `lucianogiacchetta` Pages project
 
 The project itself (build command, custom domain, env vars) is managed as
-code in the `tofu-gc-stack` repo, not in this one.
+code in the `tofu-gc-stack` repo, not in this one. Preview deployments are
+deliberately off (builds are verified locally and Dependabot PRs don't need
+a live preview) — PRs instead get a plain build-only CI check (see below).
+
+### PR build check
+
+`.github/workflows/build-check.yml` runs `npm ci && npm run build` on every
+PR to `main` — no deploy, just a pass/fail signal that the build still works
+(catches a Dependabot bump breaking the build, for example). It's a required
+status check on `main`.
 
 ---
 
