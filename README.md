@@ -15,7 +15,7 @@ An English-only professional portfolio built with **Astro 7**, featuring a moder
 - **UI strings**: `src/i18n/en.json` (single English dictionary)
 - **Sitemap**: `@astrojs/sitemap`
 - **Agent/LLM access**: `astro-llms-md` — generates per-page `.md` files, `/llms.txt`, and `/llms-full.txt` at build time
-- **Deployment**: GitHub Actions → GitHub Pages
+- **Deployment**: [Cloudflare Pages](https://pages.cloudflare.com) — builds and deploys automatically on push to `main`, managed in `tofu-gc-stack` (see `cloudflare.tf` → `pages_projects`)
 
 ---
 
@@ -23,7 +23,6 @@ An English-only professional portfolio built with **Astro 7**, featuring a moder
 
 ```
 /
-├── .github/workflows/static.yaml   # CI/CD: build and deploy to GitHub Pages
 ├── src/
 │   ├── assets/img/                 # Logos, icons, profile images (PNG/SVG)
 │   ├── assets/svg/                 # Profile-tile icons (brand marks + phone), inlined via ?raw + set:html
@@ -115,10 +114,13 @@ Professional certifications with provider, level, status, and credential URL.
 
 ## Deployment
 
-Pushes to `main` trigger the GitHub Actions workflow (`.github/workflows/static.yaml`):
-1. Install dependencies (`npm ci`)
-2. Build with `npm run build` (PurgeCSS → Astro build)
-3. Deploy `dist/` to GitHub Pages
+Cloudflare Pages is git-connected to this repo and builds automatically:
+1. Push to `main` (or open a PR, which gets its own preview deployment)
+2. Cloudflare installs dependencies and runs `npm run build` (PurgeCSS → Astro build)
+3. Cloudflare serves `dist/` from the `lucianogiacchetta` Pages project
+
+The project itself (build command, custom domain, env vars) is managed as
+code in the `tofu-gc-stack` repo, not in this one.
 
 ---
 
