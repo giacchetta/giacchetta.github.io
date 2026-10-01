@@ -240,10 +240,12 @@ Categories currently used: `"Public Cloud"`, `"Private Cloud"`, `"Development"`,
 | `npm run build` | Full production build: PurgeCSS + Astro build |
 | `npm run preview` | Preview production build locally |
 
-Cloudflare Pages runs `npm run build` on every push to `main` and on every
-PR (as a preview deployment). The build config lives in `tofu-gc-stack`
-(`cloudflare.tf` → `pages_projects`), not in this repo — there is no local
-CI workflow driving it.
+Cloudflare Pages runs `npm run build` on every push to `main` and deploys the
+result. Preview deployments are off, so PRs get no Cloudflare build — instead
+`.github/workflows/build-check.yml` runs `npm ci && npm run build` (build
+only, no deploy) and is a required status check on `main`. The Pages project
+config lives in `tofu-gc-stack` (`cloudflare.tf` → `pages_projects`), not in
+this repo.
 
 ---
 
