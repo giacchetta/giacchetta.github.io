@@ -1,7 +1,7 @@
 ---
 pr: "https://github.com/giacchetta/ansina/pull/57"
 slug: heart-daemon-measurement-and-reliability
-title: "Making Heartbeat Measurable on Real Hardware"
+title: "Ansina: Making Heartbeat Measurable on Real Hardware"
 description: "A measured Heart daemon now evaluates decisions, snapshots live state, trips a circuit breaker, journals each tick, and runs repeatable MLX hardware checks."
 date: 2026-10-02
 authors: [giacchetta]
