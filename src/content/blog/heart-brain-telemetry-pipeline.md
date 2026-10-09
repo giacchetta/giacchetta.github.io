@@ -1,14 +1,14 @@
 ---
 pr: "https://github.com/giacchetta/ansina/pull/66"
-slug: heart-brain-telemetry-pipeline
-title: "Wiring Heart Escalations to the Brain"
+slug: ansina-heart-brain-telemetry-pipeline
+title: "Ansina: Wiring Heart Escalations to the Brain"
 description: "Wired Heart escalation to Brain streaming, added bounded telemetry and a supervised Vector shipper, and published a versioned corpus contract while keeping triage experimental."
 date: 2026-10-09
 authors: [giacchetta]
 tags: [ai-engineer, ai-agent]
 ---
 
-M7 wired Heart escalations to the Brain—and made telemetry, shipping, and evidence part of the same operating path.
+Heart escalations to the Brain—and made telemetry, shipping, and evidence part of the same operating path.
 
 The 8-hour soak supported the decision to wire `escalate` to `BrainProvider.stream()`, but it exercised only idle ticks. Alongside that first Brain call, we built a bounded telemetry pipeline and a supervised Vector sidecar, then defined the corpus contract for what they produce. Request triage is still an experiment, not a production route.
 
