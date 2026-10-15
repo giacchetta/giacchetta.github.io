@@ -1,0 +1,134 @@
+---
+title: "Multi-Cloud Artifact Repository Platform"
+description: "Case Study: Re-architecting an Enterprise Artifact Repository from Legacy Artifactory 4.x to a HA Multi-Cloud JFrog Platform"
+category: "collaborations"
+publishDate: 2026-10-15
+updateDate: 2026-10-15
+featured: true
+type: "article"
+company: "telnyx"
+tech_stack: ["JFrog Artifactory", "JFrog Xray", "Terraform", "Helm", "Kustomize", "Kubernetes", "ArgoCD", "AWS", "GCP", "S3", "GCS", "PostgreSQL", "Vault", "Okta", "Prometheus", "Grafana", "Nginx"]
+---
+
+## Executive Summary
+
+I owned the re-architecture of a company-wide artifact repository. The legacy platform — a single-instance Artifactory 4.x that had quietly become load-bearing for Maven, PyPI, npm, APT/YUM and generic artifacts across the whole engineering organization — was replaced with a modern JFrog Platform: **two independent High-Availability clusters on Kubernetes, in two different clouds (AWS and GCP)**, replicated at the application layer through Artifactory Federation.
+
+The program covered the full lifecycle: infrastructure as code (Terraform/OpenTofu), deployment as code (Helm + Kustomize), application configuration as code (repositories, permissions, SSO, backup), secrets (HashiCorp Vault), SSO (Okta), a checksum-verified data migration with a zero-downtime DNS cutover, load-test-driven capacity validation for multi-gigabyte artifacts, and full observability with alerting — all wired into a GitOps deployment model.
+
+This case study pairs with the [JFrog Artifactory engineering deep dive](/credentials/artifactory-platform/), which collects the reusable field notes from this platform.
+
+---
+
+## 1. The Legacy: Artifactory 4.x
+
+* **A single point of failure.** One legacy Artifactory 4.x instance served the entire company. Any restart was a company-wide artifact outage.
+* **Configuration lived in people's heads.** Repositories, permissions and users were managed by hand; nothing was reproducible and drift was undetectable.
+* **A migration-breaking auth gap.** Consumer pipelines still carried 4.x-era API keys — an auth concept that does not exist in 7.x — so every consumer needed re-credentialing before it could talk to the new platform.
+* **A PyPI sidecar existed only as a workaround.** A devpi server had been standing in front of the repository for years because old Artifactory could not normalize PEP 503 package names.
+* **Identity was not federated.** Local users only.
+* **~100 GiB of artifacts** across dozens of local repositories, some untouched for years.
+
+---
+
+## 2. The Target Architecture
+
+Two fully independent JPDs (JFrog Platform Deployments) — one on AWS, one on GCP, in separate geographies:
+
+```text
+                     Global Entrypoint (DNS)
+                      /                    \
+        +---------------------+      +---------------------+
+        |      Site A         |      |      Site B         |
+        |     (AWS EKS)       |      |     (GCP GKE)       |
+        |---------------------|      |---------------------|
+        | nginx (2x, LB/TLS)  |      | nginx (2x, LB/TLS)  |
+        | Artifactory HA (x2) |<---->| Artifactory HA (x2) |
+        | Xray + Catalog      | RTFS | Xray + Catalog      |
+        | external PostgreSQL |      | external PostgreSQL |
+        | S3 private bucket   |      | GCS private bucket  |
+        +---------------------+      +---------------------+
+```
+
+Key decisions:
+
+* **Two independent JPDs, not one stretched cluster.** Each site owns its own database and its own filestore. There is no shared cross-cloud storage — by design.
+* **Cross-site replication at the application layer.** Artifactory Federation (RTFS) mirrors artifacts bidirectionally between the sites, asynchronously. No S3 cross-region replication, no GCS dual-region buckets: storage-layer replication would duplicate every byte and couple the clouds at their weakest layer. Federation keeps each site autonomous and lets replication self-recover from outages.
+* **Checksum-based storage makes versioning pointless.** Artifacts are immutable, content-addressed objects; bucket versioning would only add cost. Buckets are private, encrypted at rest, and lifecycle rules abort incomplete multipart uploads.
+* **HA inside each cluster.** Two Artifactory nodes per site with hard node anti-affinity (they can never share a Kubernetes node), one external managed PostgreSQL per site, nginx in front for TLS and load balancing.
+* **Dev mirrors prod.** Four environments (dev/prod × two clouds) share the same declared shapes, so dev exercises exactly what prod ships; prod adds Enterprise licensing, Xray and Catalog.
+
+---
+
+## 3. Everything as Code
+
+* **Terraform (OpenTofu).** Two independent root modules — one per cloud — each with its own state, so neither cloud's provider configuration is ever conditional. Shared reusable modules (object-storage buckets, cloud IAM for service accounts, and an application-config module) are referenced from both roots.
+* **Application configuration as code.** The entire JPD surface is declarative: dozens of repositories (local, remote, virtual, federated), user groups, service identities, a set of scoped permission targets, backup policy, and a proxied upstream remote whose token is sourced from Vault. Everything is imported from the live system and then verified with zero-drift plans — the code is the source of truth, not a description of it.
+* **Helm + Kustomize.** The JFrog platform chart is pinned and rendered through per-environment kustomize overlays; environment-specific values (replicas, resources, storage, node selectors) live in the environment directories, and every render is verified against the vendored chart templates before anything ships.
+* **Vault + Vault Secrets Operator.** All runtime secrets (database credentials, encryption keys, license blobs, upstream tokens) live in Vault KV stores; VSO materializes them into Kubernetes Secrets. Each VaultStaticSecret declares `rolloutRestartTargets`, so rotating a secret triggers a controlled rolling restart of exactly the workloads that consume it — and only those.
+* **ArgoCD.** A dedicated deployment repository is the source of truth for GitOps: if a workload is not declared there, it does not exist to ArgoCD. The full loop is automated — CI builds an image, the registry notifies an image updater, the updater opens an auto-merge PR bumping the version, ArgoCD syncs. Every probe, monitor and config resource in the platform is GitOps-managed.
+
+---
+
+## 4. Identity, Secrets & SSO
+
+* **Least privilege by default.** Every write path requires a scoped service identity. Per-team identities get exactly the permissions they need — never admin — and long-lived tokens are scoped, time-boxed and rotation-managed.
+* **No static cloud keys on AWS.** The Artifactory Kubernetes service account authenticates to S3 through IRSA (IAM Roles for Service Accounts).
+* **GCP needed a different pattern.** Workload Identity was unavailable in this environment, so the platform uses a dedicated GCP service account whose JSON keyfile is written by Terraform into Vault, materialized by VSO, and mounted as a Kubernetes secret.
+* **SSO with Okta.** The login door started with Okta OIDC (single sign-on, auto-provisioned users), then upgraded to Okta SAML with group attribute mapping — the only mechanism that carries group membership into the JPD.
+* **Machine credentials are SSO-independent.** Service-account tokens and CI credentials intentionally survive SSO cutovers — access-service credentials are decoupled from login settings, so the migration never broke automation.
+
+---
+
+## 5. The Migration: Zero-Downtime Cutover
+
+Five phases, each independently verifiable:
+
+1. **Recreate the configuration as code.** Every repository, group, user and permission from the old server was re-created declaratively (import + zero-drift verification), so the new platform started life fully owned by the codebase.
+2. **Copy the data safely.** In-cluster streaming jobs piped old-artifact GETs directly into new-platform PUTs — no scratch disk, chunk-by-chunk hashing against the source's recorded SHA1, and skip-if-exists resume semantics. ~100 GiB migrated at a sustained, upstream-bound rate, with every file checksum-verified. One subtle catch: Maven SNAPSHOT re-stamping (timed filenames under stable coordinates) fools naive path-based diffing — the final verification was checksum-based, not path-based.
+3. **Migrate consumers.** CI runners and package-management flows were repointed to per-site endpoints with new scoped identities; the legacy PyPI sidecar was drained and replaced by virtual repositories that are a strict superset of what it served.
+4. **Bridge the front door.** A compatibility layer in front of the new platform kept legacy clients working during the transition — reads allowed, writes rejected with 405 — and real-world flows (pip index pages, full downloads, range requests) were verified against the new platform before the flip.
+5. **Flip DNS with a rollback window.** A DNS cutover moved the public record to the new global entrypoint, with a defined rollback window before decommissioning the legacy server. Federation canaries proved bidirectional replication end-to-end on the new entrypoint.
+
+---
+
+## 6. Validation: Load Testing Huge Artifacts
+
+Before inviting consumers, the platform was stress-tested in-cluster with a purpose-built harness (indexed Kubernetes Jobs, a configurable scenario matrix, phased HTTPS vs. Xet clients):
+
+* **Huge single blobs are a different protocol problem.** Plain HTTPS pulls of a single multi-gigabyte artifact (tens of GB) stalled deterministically at tens of GB — an upstream-fetch behavior, not a proxy one. Enabling the Xet protocol (supported end-to-end by Artifactory) eliminated the stall: cold pulls at ~110–130 MB/s, warm (chunk-store served) at ~190 MB/s per client.
+* **The per-process pipeline is the pacing unit.** No client knob (concurrency, buffer sizes, newer client versions) moved the ~130 MB/s per-process ceiling materially; the honest capacity-planning answer is N processes on N machines scale linearly — five concurrent clients reached ~650 MB/s aggregate with the serving pods comfortable (page-cache serving, well under resource limits).
+* **Sizing was validated under load.** Concurrency tests drove memory peaks near interim limits — resource requests/limits and the cache-fs quota were re-sized from measurements, not guesses.
+* **Findings became vendor tickets.** A chunk-store registration lag on the S3 chain (objects written before metadata registration) was isolated with evidence and escalated to the vendor, with an interim operational posture documented.
+
+---
+
+## 7. Lessons from the Trenches
+
+* **Shared identity needs per-site counterparts.** Repointing both sites to one global entrypoint silently broke federation: mirror pairing is keyed by each site's identity URL, which was derived from the same base URL. Every replication stream wedged until per-site identity URLs were set — and the failure only showed in the artifactory-side logs, not the replication service's. Lesson: when systems derive identity from shared configuration, changing the shared part requires re-deriving the specific parts — and the diagnostic layer that reports the truth may not be the service you expect.
+* **Connection poolers change the semantics of advisory locks.** Xray coordinates boot-time migrations with session-scoped PostgreSQL advisory locks; through a pooling endpoint, a dead client's locks persist server-side and deadlock the next boot. The fix was infrastructure-level (session pooling + pool sizing) and required cross-team work with the database team. Lesson: lock-based coordination assumes lock lifetime equals connection lifetime — verify that against the pooling layer before assuming it.
+* **Docs can be wrong; vendored templates are not.** Several documented Helm keys were dead in the pinned chart version (renamed or mis-nested — `replicas` vs `replicaCount`, single vs double nesting, `storageClassName` vs `storageClass`). The discipline that caught every one: grep the vendored chart templates and render-verify, never trust docs alone.
+* **Cheap escape hatches beat waiting for vendor fixes.** A package-index format change upstream broke the remote repository's parser; a tiny in-cluster nginx re-serializer (normalizing anchors and hrefs) fixed resolution for every consumer in one afternoon — with a documented, reversible rollback for when the vendor ships the real fix.
+* **GitOps discipline is not optional.** Configuration deployed from an unmerged branch was silently reverted by the next full apply from main. The rule landed the hard way: land the code and deploy it in the same change; never deploy from an unmerged branch.
+* **Evidence-first escalation works.** Registry races on burst applies, lock leaks, a metrics-unit bug and a parser regression all became reproducible vendor support tickets with collected evidence — not complaints.
+
+---
+
+## 8. Observability & Operations
+
+* **Metrics:** JFrog's OpenMetrics endpoints (Artifactory + the federation service) scraped by Prometheus via authenticated ServiceMonitors; a static per-cluster label disambiguates identical pod names across the two sites.
+* **Dashboards:** the upstream Grafana dashboards were adapted to be cluster-aware (pod names collide across sites) and extended with platform-specific panels — federation lag with thresholds, DB connection saturation, and binary upload/download failure rates.
+* **Alerting:** two tiers of alerting — Kubernetes-level (pod availability, crash loops, OOM kills, PVC pressure) and application-level (DB connection saturation, replication lag, federation member health, storage operation failures). Every expression was verified against the live metrics store before landing; routing differs by environment.
+* **E2E probes:** lightweight in-cluster probes assert per-site health and cross-site federation lag on a schedule, deployed through the GitOps repo — closing the loop between what the code declares and what production proves.
+
+---
+
+## 9. Outcome
+
+* Zero-downtime cutover to a platform that is fully HA within each cloud and resilient across clouds, with a rollback window that was retired on schedule.
+* ~100 GiB of artifacts migrated with per-file checksum verification and zero divergence — proven by audit, not by assumption.
+* The entire platform is declarative. Any environment can be reproduced from code; drift is surfaced by plan, not discovered by incident.
+* Capacity is measured, not guessed: per-client and aggregate throughput, resource peaks, and cache behavior are documented from real load tests.
+* The pattern is reusable. Two-cloud HA with application-layer replication, config-as-code end-to-end, Vault-managed secrets, and GitOps delivery is now the reference for the next stateful shared service that needs multi-cloud resilience.
+
+The hardest problems in this project were never the happy path — they were the interactions between layers that each work in isolation (identity vs. entrypoints, locks vs. poolers, docs vs. charts). The through-line of the whole program: make every layer verifiable, and let evidence — not assumptions — drive the design.
