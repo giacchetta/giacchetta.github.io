@@ -1,16 +1,16 @@
 ---
 pr: "https://github.com/giacchetta/ansina/pull/73"
-slug: telemetry-corpus-ground-truth-hardening
-title: "Hardening Telemetry for Ground-Truth Decisions"
+slug: ansina-telemetry-corpus-ground-truth-hardening
+title: "Ansina: Hardening Telemetry for Ground-Truth Decisions"
 description: "Added deployment-level telemetry attribution, exact decision counters, and fault-injection tooling while keeping the hardware soak open until corpus evidence exists."
 date: 2026-10-15
 authors: [giacchetta]
-tags: [ai-engineer, ai-agent]
+tags: [ansina, ai-engineer, ai-agent]
 ---
 
 Telemetry can now tell us which host produced each record—and how many decisions the daemon actually made.
 
-We changed the corpus at the collection boundary, not by guessing from sample payloads. Host-keyed objects separate deployments, lifetime counters recover exact decision windows, and fault injection exercises the real Heart paths. The Mac Mini M4 soak is still pending; tooling is not a substitute for published ground truth.
+We changed the corpus at the collection boundary, not by guessing from sample payloads. Host-keyed objects separate deployments, lifetime counters recover exact decision windows, and fault injection exercises the real Heart paths.
 
 ⚙️ **Attribute Every Record**
 
@@ -28,7 +28,7 @@ We changed the corpus at the collection boundary, not by guessing from sample pa
 
 - **Drive real failure paths** — `FaultInjector` flips a registered readiness check, raises into the tick loop’s failure handler, or sleeps to trigger its real overrun check. It does not fabricate daemon snapshot text.
 - **Make the schedule usable** — A committed example and soak scripts can deploy a schedule, collect the run, and score journal decisions against expected outcomes. Same-kind overlaps are rejected; different fault axes can overlap.
-- **Keep the evidence gate open** — The example is validated, but no real Mac Mini M4 soak or ground-truth-labelled corpus entry exists yet. Long failure windows can trip the circuit breaker and cancel later windows, so issue #72 stays open.
+- **Keep the evidence gate open** — The example is validated, but no real Mac Mini M4 soak or ground-truth-labelled corpus entry exists yet. Long failure windows can trip the circuit breaker and cancel later windows.
 
 Better telemetry is only as useful as the evidence behind it.
 
