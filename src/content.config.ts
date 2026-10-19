@@ -1,5 +1,15 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import credentialsData from './data/credentials.json';
+
+/**
+ * Every known skill id, built directly from the JSON import rather than
+ * `src/utils/skills.js` — this file loads before `astro:content` types are
+ * available, so it stays framework-free and local.
+ */
+const knownSkillIds = new Set(
+  (Object.values(credentialsData) as any[]).flat().map((entry: any) => entry.id)
+);
 
 const credentialsCollection = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/credentials' }),
@@ -32,6 +42,23 @@ const collaborationsCollection = defineCollection({
     order: z.number().optional(),
     type: z.enum(['company', 'article']).optional(),
     company: z.string().optional(),
+    // Array of src/data/credentials.json `id`s. Validated here rather than
+    // left to a component check, so an unknown id fails the build with a
+    // real, file-attributed Astro content error instead of silently
+    // rendering nothing (see AGENTS.md's tech_stack note).
+    tech_stack: z.array(z.string())
+      .superRefine((ids, ctx) => {
+        ids.forEach((id, i) => {
+          if (!knownSkillIds.has(id)) {
+            ctx.addIssue({
+              code: 'custom',
+              path: [i],
+              message: `Unknown tech_stack id "${id}" — add it to src/data/credentials.json or fix the typo.`,
+            });
+          }
+        });
+      })
+      .optional(),
   }),
 });
 

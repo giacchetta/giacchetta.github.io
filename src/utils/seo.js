@@ -90,8 +90,12 @@ export function blogPosting({ title, description, datePublished, dateModified, t
   };
 }
 
-/** Structured data for a case study or credential/certification deep-dive. */
-export function techArticle({ title, description, datePublished, dateModified, url }) {
+/**
+ * Structured data for a case study or credential/certification deep-dive.
+ * `keywords`/`about` are populated on case studies from their resolved
+ * tech_stack (see src/utils/skills.js) and omitted when empty.
+ */
+export function techArticle({ title, description, datePublished, dateModified, url, keywords = [], about = [] }) {
   return {
     '@context': 'https://schema.org',
     '@type': 'TechArticle',
@@ -103,5 +107,7 @@ export function techArticle({ title, description, datePublished, dateModified, u
     publisher: { '@id': PERSON_ID },
     url,
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    keywords: keywords.length ? keywords.join(', ') : undefined,
+    about: about.length ? about.map((name) => ({ '@type': 'Thing', name })) : undefined,
   };
 }
