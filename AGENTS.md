@@ -60,7 +60,8 @@ src/
 ├── utils/
 │   ├── content.js           # Collection helpers: filterByLocale, getAllPages, getBlogPosts, getExcerpt, cleanSlug
 │   ├── date.js               # formatDate() — locks toLocaleDateString to UTC so authored dates render the same day regardless of build-machine timezone
-│   └── seo.js                # schema.org JSON-LD builders (Person/WebSite/ProfilePage graph, BreadcrumbList, BlogPosting, TechArticle) consumed by Layout.astro
+│   ├── seo.js                # schema.org JSON-LD builders (Person/WebSite/ProfilePage graph, BreadcrumbList, BlogPosting, TechArticle) consumed by Layout.astro
+│   └── skills.js             # The single reader of src/data/credentials.json — id/label resolution, the tech_stack ↔ case-study reverse index (matrix-wide via caseStudiesForSkillId, and credentialPage-scoped via caseStudiesForCredential), and the derivations behind the matrix and home Bento tiles (see Credentials Data)
 └── content.config.ts        # Zod schemas for all 4 collections
 ```
 
@@ -80,9 +81,11 @@ Layout.astro (HTML shell — title composition, canonical link, OG/Twitter tags,
 
 pages/experience.astro → Collaboration.astro (full roles + case studies listing, in-page breadcrumb)
 pages/credentials.astro → Credentials.astro (full skills matrix listing, in-page breadcrumb)
+    └── Every card for a skill referenced by at least one case study's tech_stack also lists "Used in these case studies" links — works for any skill id, not only the two with a deep-dive page — see Credentials Data
 
 pages/{experience,credentials}/[slug].astro → SlugPage.astro
     └── Renders MDX content with in-page breadcrumb; layout adapts to entry type (company / article / credential / certification)
+    └── Article entries additionally render a tech_stack badge row (linked to each skill's deep-dive page or /credentials/#<id> anchor); credential entries additionally render a "Used in these case studies" reverse index — see Credentials Data
 
 pages/blog/index.astro → BlogPost.astro (repeated per post)
     └── Feed of all published posts, newest first, full content, one centered column, in-page breadcrumb
@@ -94,7 +97,7 @@ pages/blog/[slug].astro → BlogPost.astro
 
 **Hero terminal (Tile 1)**: Two shell-styled panes (`.term`), `col-12 col-lg-6` each — stacked full-width below `lg` (992px), side by side at `lg` and up. Every value shown is computed in `HomePage.astro`'s frontmatter from content already in other collections, so nothing here is hand-maintained:
 - `~/career` pane — `yearsExperience` (current year minus the earliest company `period` start year, via `periodStartYear()` in `src/utils/date.js`), `companies.length` (non-draft `collaborations` where `type === "company"`), and a `$ jobs` list of `currentRoles` (companies whose `period` ends in `"Present"`).
-- `~/stack` pane — a `kubectl get skills`-style table built from `Object.entries(credentialsRaw)` (one row per `src/data/credentials.json` category, padded to a fixed column width for alignment — see `skillsTableText`), and a published blog post count from `allPosts.length` (the same `getBlogPosts()` result Tile 3 slices for its 3 latest).
+- `~/stack` pane — a `kubectl get skills`-style table built from `skillDomains()` (`src/utils/skills.js`, one row per `src/data/credentials.json` category, padded to a fixed column width for alignment — see `skillsTableText`), and a published blog post count from `allPosts.length` (the same `getBlogPosts()` result Tile 3 slices for its 3 latest).
 The table alignment relies on literal space-padding rendered inside a `<pre>`; when editing it, keep the padding logic and the JSX interpolation on a single `{expr}` with no surrounding whitespace in the markup — `<pre>` preserves source indentation verbatim, so a multi-line template there would visibly break alignment.
 
 **Navigation**: There is no top navbar and no fixed bottom breadcrumb bar. Bootstrap breadcrumbs render **in-page** at the top of every non-Home page (Home has none). The Home/Bento Tile 2 has a six-item icon-only button menu next to the avatar (label is `aria-label`/`title` only, no visible text), laid out as a 3-column CSS grid (`.icon-grid`, `grid-template-columns: repeat(3, 42px)`) so the 6 buttons wrap into two even rows of 3 instead of one tall column — sized via `min-height: 120px` to roughly match the avatar's height. Email opens `#contactModal` (rendered by `Footer.astro` → `Contact.astro`), Phone opens `#phoneModal` (rendered by `Footer.astro` → `Phone.astro`), and WhatsApp/LinkedIn/GitHub/YouTube are plain external links (`target="_blank" rel="noopener noreferrer"`) to `https://wa.me/luciano.giacchetta`, `https://www.linkedin.com/in/giacchetta/`, `https://github.com/giacchetta`, and `https://www.youtube.com/@LucianoGiacchetta`. The icons are inlined SVGs imported via Vite's `?raw` suffix from `src/assets/svg/` and injected with Astro's `set:html`, and all 6 buttons share the same neutral `icon-btn-brand` circle for visual consistency. Phone uses a hand-authored monochrome glyph with `fill="currentColor"` (so it picks up the ambient text color rather than a fixed brand color); Email (Gmail), WhatsApp, LinkedIn, GitHub, and YouTube use each brand's official multi-color mark, unmodified except GitHub, which uses its dark-background/white variant to match `Layout.astro`'s hardcoded `data-bs-theme="dark"` — all sourced from thesvg.org. Because `set:html`-injected content isn't part of Astro's scoped-CSS tree, the uniform icon sizing in `HomePage.astro`'s `<style>` block uses `:global(svg)` — a plain `.icon-btn svg` selector would silently never match.
@@ -109,9 +112,9 @@ The table alignment relies on literal space-padding rendered inside a `<pre>`; w
 - **Brand vs. entity**: `site.brand` ("Giacchetta Engineering") is a DBA of the real tax name "Luciano Giacchetta". It appears as visible text only in the Home/Bento Tile 2 subtitle and as `Person.alternateName` in JSON-LD — never as the `<title>` suffix, `og:site_name`, or `<meta name="author">`, which all stay "Luciano Giacchetta", the entity with existing search history.
 - **Other `Layout.astro` props**: `description`; `ogType` (`"website"` default, `"article"` on blog permalinks, which also emits `article:published_time`/`article:modified_time`); `publishedTime`/`modifiedTime`; `breadcrumbs` — the same `{label, href?}[]` shape already used for the visible Bootstrap breadcrumb, auto-rendered as `BreadcrumbList` JSON-LD; `jsonLd` — page-specific structured-data node(s) (object or array).
 - **Structured data builders**: `src/utils/seo.js` exports pure functions (`homeGraph`, `breadcrumbList`, `blogPosting`, `techArticle`) returning plain schema.org objects; `Layout.astro` serializes each into its own `<script type="application/ld+json">`. Every non-Person node references the site's one canonical Person by `@id` (`https://lucianogiacchetta.com/#person`) instead of duplicating Person data.
-  - Home (`HomePage.astro`): `Person` (jobTitle, `sameAs` social links, `worksFor` from current roles, `knowsAbout` flattened from `src/data/credentials.json`) + `WebSite` + `ProfilePage`, as one `@graph`.
+  - Home (`HomePage.astro`): `Person` (jobTitle, `sameAs` social links, `worksFor` from current roles, `knowsAbout` from `skillNames()` in `src/utils/skills.js`) + `WebSite` + `ProfilePage`, as one `@graph`.
   - Blog permalinks (`pages/blog/[slug].astro`): `BlogPosting` (dates, `tags` as `keywords`, author/publisher → Person).
-  - Case studies (`type: "article"` collaborations) and `credentials`/`certifications` deep-dives (`SlugPage.astro`): `TechArticle`. Company profile pages get `BreadcrumbList` only, no `TechArticle` — a company's own page isn't editorial content about it.
+  - Case studies (`type: "article"` collaborations) and `credentials`/`certifications` deep-dives (`SlugPage.astro`): `TechArticle`. Company profile pages get `BreadcrumbList` only, no `TechArticle` — a company's own page isn't editorial content about it. On case studies, `techArticle()`'s `keywords`/`about` are populated from the entry's resolved `tech_stack` skill labels.
 - **Inner-page `<title>`s carry keywords the bare entry title doesn't**: `SlugPage.astro` derives the title per entry type — `"{title} — {role}"` for companies, `"{title} — Case Study"` for articles, `"{title} — Engineering Deep Dive"` for credentials, `"{title} — {provider} Certification"` for certifications — falling back to the bare title when the extra field is absent. The visible `<h1>` is untouched; only `<title>`/`og:title`/`twitter:title` use the enriched version.
 - **Description fallback chain** (all four collections): `description` (frontmatter) → `summary` (collaborations only) → `getExcerpt()` (`src/utils/content.js`) → `Layout.astro`'s site-wide `meta.description`. The `getExcerpt()` step means a page missing both `description` and `summary` gets an auto-generated excerpt instead of silently duplicating the site-wide description.
 - **Social card**: `public/og.png` (1200×630, generated once from `src/assets/img/profile.png`) is the site-wide `og:image`/`twitter:image` for every page — there is no per-page image and no build-time generation step. Regenerate it by hand (e.g. a one-off `sharp` script rendering an SVG composite, then `sharp().png().toFile()`) if the profile photo or brand copy changes.
@@ -162,7 +165,7 @@ Frontmatter fields:
 - `order` — Number controlling display position in grids
 - `type` — `"company"` | `"article"`
 - `company` — Slug of the parent company (for articles only)
-- `tech_stack` — Array of technology names shown in some article frontmatter (e.g. `villa-pinedo-gcp-migration.mdx`, `artifactory-multicloud-platform.mdx`). **Not in the Zod schema** in `src/content.config.ts`, so Astro strips it at load time and nothing currently renders it — document-only until a component is wired to read it.
+- `tech_stack` — Array of `src/data/credentials.json` skill `id`s (articles only; not used on `type: "company"` entries). Validated in `src/content.config.ts` via a `superRefine` that checks every id against the live `credentials.json` id set — **an unknown id fails the build** with a Zod error naming the offending content file, rather than silently stripping the field. `SlugPage.astro` resolves ids through `src/utils/skills.js` (`resolveSkills()`, de-duplicated and order-preserving — e.g. `helm-kustomize` collapses two ids into one badge) and renders each as a linked badge: to the skill's `credentials/[slug]` deep-dive page when it has one (`credentialPage`), else to a `/credentials/#<id>` anchor in the full matrix. See [Credentials Data](#credentials-data-non-mdx-skills-grid) for the `id`/`label` contract and the reverse "used in these case studies" index on credential deep-dive pages.
 
 ### `certifications`
 Professional certifications. Frontmatter fields:
@@ -213,21 +216,32 @@ When adding new UI strings, add the key/value to `src/i18n/en.json` and use `con
 
 ## Credentials Data (Non-MDX Skills Grid)
 
-`src/data/credentials.json` is a categorized list of skills displayed in the credentials grid on the home page. It is **not** a content collection. Structure:
+`src/data/credentials.json` is a categorized list of skills displayed in the credentials grid on the home page, and is the single skills hub `tech_stack` resolves against. It is **not** a content collection, but `src/utils/skills.js` is the only module that reads it directly — the full matrix (`Credentials.astro`), the home Bento tiles (`HomePage.astro`), and the `tech_stack` badge/reverse-index logic (`SlugPage.astro`, `src/content.config.ts`) all go through that module instead of importing the JSON themselves. Structure:
 
 ```json
 {
   "Category Name": [
     {
+      "id": "kebab-case-id",
       "product": "VendorName",
       "type": "Applied Skill",
       "name": "Specific Skill Name",
       "namelnk": "https://..." or "#",
-      "typelnk": "https://..." or "#"
+      "typelnk": "https://..." or "#",
+      "label": "Short Badge Text",
+      "credentialPage": "deep-dive-slug"
     }
   ]
 }
 ```
+
+- **`id`** (required, unique across the whole file) — the skill's stable identity, used by `tech_stack` to reference it and as the matrix card's anchor (`id="<id>"` on `/credentials/`, so `/credentials/#<id>` scrolls to the right card). Convention: kebab-case, bare skill name where globally unique (`terraform`, `nginx`); `<product>-<skill>` where the same skill exists under more than one product (`aws-iam`/`gcp-iam`, `aws-vpc`/`gcp-vpc`). `skillIndex()` in `src/utils/skills.js` throws at build time on a duplicate id.
+- **`label`** (optional) — a short, badge-friendly name, used wherever a `tech_stack` entry renders as a tech-stack badge (`skillLabel()` falls back to `name` when absent). Added only where `name` is a long descriptor (e.g. `name: "Artifactory HA & Federation"` → `label: "JFrog Artifactory"`); the matrix card title and `Person.knowsAbout` keep using `name` unchanged.
+- **`credentialPage`** (optional) — the slug of a `credentials/[slug].mdx` deep-dive that documents this skill. Distinct from `id`: `id` is the skill's identity everywhere, `credentialPage` only names a page that may or may not exist yet. Today only `github-actions` and `jfrog-artifactory` (→ `artifactory-platform`) have one.
+
+**Reverse index (case study ↔ skill), two places it surfaces:**
+- **Full matrix** (`Credentials.astro`, `/credentials/`): every card for a skill `id` that appears in *any* published article's `tech_stack` shows a "used in these case studies" list — direct id-to-id matching via `caseStudiesForSkillId(id, collaborations)` in `src/utils/skills.js`, independent of `credentialPage`. This is what makes the matrix able to link out to a case study for every referenced skill (21 of 44 today), not only the two with a deep-dive page.
+- **Deep-dive page** (`SlugPage.astro`, credential branch): the same list, but scoped to whichever skill id(s) name this page via `credentialPage`, built by `caseStudiesForCredential(slug, collaborations)` — a thin wrapper around `caseStudiesForSkillId()`.
 
 Categories currently used: `"Public Cloud"`, `"Private Cloud"`, `"Development"`, `"Networking & Security"`.
 

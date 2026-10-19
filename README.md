@@ -59,7 +59,8 @@ An English-only professional portfolio built with **Astro 7**, featuring a moder
 │   └── utils/
 │       ├── content.js              # filterByLocale(), getAllPages(), getBlogPosts(), getExcerpt(), cleanSlug()
 │       ├── date.js                 # formatDate() — UTC-locked date formatting
-│       └── seo.js                  # schema.org JSON-LD builders consumed by Layout.astro
+│       ├── seo.js                  # schema.org JSON-LD builders consumed by Layout.astro
+│       └── skills.js               # single reader of credentials.json — id/label resolution, tech_stack ↔ credential reverse index
 ├── public/og.png                   # Site-wide social share image (1200×630)
 ├── astro.config.mjs
 ├── package.json
@@ -102,7 +103,7 @@ Blog posts rendered as full Markdown (title, date, authors, tags). Listed newest
 ### `collaborations`
 Work history entries with two subtypes:
 - `type: "company"` — An employer entry (role, period, location, summary, logo)
-- `type: "article"` — A case study linked to a company via the `company` field
+- `type: "article"` — A case study linked to a company via the `company` field, optionally carrying a `tech_stack` array of `credentials.json` skill ids (renders as linked badges; an unknown id fails the build — see AGENTS.md)
 
 ### `credentials`
 Technical skill deep-dives rendered as full MDX pages.

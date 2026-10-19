@@ -6,7 +6,7 @@ import { getAllPages, getFeaturedPagesByCategory, getBlogPosts, cleanSlug } from
 import { formatDate, periodStartYear } from '../utils/date.js';
 import { homeGraph } from '../utils/seo.js';
 import { useTranslations } from '../i18n/utils';
-import credentialsRaw from '../data/credentials.json';
+import { skillNames, skillDomains, skillProducts } from '../utils/skills.js';
 import gmailIcon from '../assets/svg/gmail.svg?raw';
 import phoneIcon from '../assets/svg/phone.svg?raw';
 import whatsappIcon from '../assets/svg/whatsapp.svg?raw';
@@ -50,7 +50,7 @@ const sameAsLinks = [
   'https://github.com/giacchetta',
   'https://www.youtube.com/@LucianoGiacchetta',
 ];
-const knowsAbout = Object.values(credentialsRaw).flat().map((item) => item.name);
+const knowsAbout = skillNames();
 const worksFor = currentRoles.map((role) => ({ '@type': 'Organization', name: role.data.title }));
 const homeJsonLd = homeGraph({
   jobTitle: t('site.jobTitle'),
@@ -61,14 +61,11 @@ const homeJsonLd = homeGraph({
   description: t('meta.descriptionHome'),
 });
 
-const skillDomains = Object.entries(credentialsRaw).map(([name, items]) => ({
-  slug: name.toLowerCase().replace(/\s*&\s*/g, '-').replace(/\s+/g, '-'),
-  count: items.length,
-}));
-const skillNameWidth = Math.max(...skillDomains.map(d => d.slug.length)) + 1;
+const domains = skillDomains();
+const skillNameWidth = Math.max(...domains.map(d => d.slug.length)) + 1;
 const skillsTableText = [
   `${'NAME'.padEnd(skillNameWidth)}${'SKILLS'.padStart(6)}  ${'STATUS'.padStart(6)}`,
-  ...skillDomains.map(d =>
+  ...domains.map(d =>
     `${d.slug.padEnd(skillNameWidth)}${String(d.count).padStart(6)}  ${'Ready'.padStart(6)}`
   ),
 ].join('\n');
@@ -83,11 +80,7 @@ const badgeStyles = [
   'bg-dark text-white',
 ];
 
-const techStack = [
-  ...new Set(
-    Object.values(credentialsRaw).flat().map((item) => item.product)
-  ),
-].map((name, i) => ({ name, style: badgeStyles[i % badgeStyles.length] }));
+const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i % badgeStyles.length] }));
 ---
 
 <Layout title={t('site.title')} description={t('meta.descriptionHome')} suffix={false} jsonLd={homeJsonLd}>
