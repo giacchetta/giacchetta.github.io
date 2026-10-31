@@ -1,7 +1,7 @@
 ---
 pr: "https://github.com/giacchetta/ansina/pull/80"
-slug: bounded-opencode-execution-heart
-title: "OpenCode as a Bounded Executor"
+slug: ansina-bounded-opencode-execution-heart
+title: "Ansina: OpenCode as a Bounded Executor"
 description: "Adds a confined OpenCode executor, run API and telemetry, deterministic Heart interventions, and real-data evaluations that reject two model-led policy experiments."
 date: 2026-10-31
 authors: [giacchetta]
