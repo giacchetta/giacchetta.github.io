@@ -54,7 +54,8 @@ An English-only professional portfolio built with **Astro 7**, featuring a moder
 │   │   ├── experience/[slug].astro # /experience/[slug]  (content pages)
 │   │   ├── credentials/[slug].astro # /credentials/[slug]  (content pages)
 │   │   ├── blog/index.astro        # /blog/  (post feed, full content, centered column)
-│   │   └── blog/[slug].astro       # /blog/[slug]  (post permalink)
+│   │   ├── blog/[slug].astro       # /blog/[slug]  (post permalink)
+│   │   └── 404.astro               # dist/404.html — makes Cloudflare Pages return a real 404 for unknown URLs (without it, Pages serves index.html with 200)
 │   ├── styles/bootstrap.min.css    # PurgeCSS output — do not edit manually
 │   └── utils/
 │       ├── content.js              # filterByLocale(), getAllPages(), getBlogPosts(), getExcerpt(), cleanSlug()
