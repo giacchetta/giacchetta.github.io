@@ -67,7 +67,7 @@ const sectionIndexPriority = new Set(['/blog/', '/experience/', '/credentials/']
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://lucianogiacchetta.com',
+  site: 'https://luciano.giacchetta.com.ar',
   integrations: [
     mdx(),
     sitemap({

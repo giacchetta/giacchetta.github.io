@@ -2,7 +2,7 @@
 
 An English-only professional portfolio built with **Astro 7**, featuring a modern Bento UI dashboard homepage. Showcases career history, technical credentials, certifications, detailed case studies, and a blog.
 
-**Live site**: https://lucianogiacchetta.com
+**Live site**: https://luciano.giacchetta.com.ar
 
 ---
 

@@ -5,7 +5,7 @@ import { getCollection, render } from 'astro:content';
 import { useTranslations } from '../i18n/utils';
 import { cleanSlug, filterByLocale, getExcerpt } from '../utils/content.js';
 import { formatDate } from '../utils/date.js';
-import { techArticle } from '../utils/seo.js';
+import { techArticle, SITE } from '../utils/seo.js';
 import { resolveSkills, skillLabel, skillHref, caseStudiesForCredential, credentialSlugSet } from '../utils/skills.js';
 
 interface Props {
@@ -86,7 +86,7 @@ const breadcrumbs = [
 
 // TechArticle structured data for case studies and skill/certification deep
 // dives — not for company profile pages, which aren't editorial content.
-const pageUrl = `https://lucianogiacchetta.com/${isCollaboration ? 'experience' : 'credentials'}/${cleanSlug(page)}/`;
+const pageUrl = `${SITE}/${isCollaboration ? 'experience' : 'credentials'}/${cleanSlug(page)}/`;
 const techStackNames = techStackEntries.map(skillLabel);
 const articleJsonLd =
   isArticleCollaboration || isCredential || page.collection === 'certifications'

@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import BlogPost from '../../components/BlogPost.astro';
 import { getBlogPosts, getExcerpt } from '../../utils/content.js';
-import { blogPosting } from '../../utils/seo.js';
+import { blogPosting, SITE } from '../../utils/seo.js';
 import { useTranslations } from '../../i18n/utils';
 
 export async function getStaticPaths() {
@@ -23,14 +23,14 @@ const breadcrumbs = [
   { label: post.data.title },
 ];
 
-const postUrl = `https://lucianogiacchetta.com/blog/${post.id}/`;
+const postUrl = `${SITE}/blog/${post.id}/`;
 const postJsonLd = blogPosting({
   title: post.data.title,
   description,
   datePublished: post.data.date,
   tags: post.data.tags,
   url: postUrl,
-  image: 'https://lucianogiacchetta.com/og.png',
+  image: `${SITE}/og.png`,
 });
 ---
 <Layout
