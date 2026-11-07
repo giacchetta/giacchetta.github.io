@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { useTranslations } from '../i18n/utils';
+
+const t = useTranslations();
+---
+<Layout title={t('notFound.title')} description={t('notFound.description')}>
+  <main class="container layout mt-5 mb-5 text-center">
+    <h1 class="display-5 fw-bold mb-3">{t('notFound.heading')}</h1>
+    <p class="lead mb-4">{t('notFound.message')}</p>
+    <a class="btn btn-primary" href="/">{t('notFound.backHome')}</a>
+  </main>
+</Layout>

@@ -54,7 +54,8 @@ src/
 │   ├── experience/[slug].astro  # /experience/[slug] (dynamic content pages)
 │   ├── credentials/[slug].astro  # /credentials/[slug] (dynamic content pages)
 │   ├── blog/index.astro     # /blog/ (feed — full posts, centered single column)
-│   └── blog/[slug].astro    # /blog/[slug] (permalink for a single post)
+│   ├── blog/[slug].astro    # /blog/[slug] (permalink for a single post)
+│   └── 404.astro            # builds dist/404.html — REQUIRED: without a top-level 404.html Cloudflare Pages treats the site as an SPA and answers every unknown URL with index.html + HTTP 200 (soft-404s in Google/Bing). Do not delete.
 ├── styles/
 │   └── bootstrap.min.css    # PurgeCSS output — generated at build, do not edit manually
 ├── utils/
