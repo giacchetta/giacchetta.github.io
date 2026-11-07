@@ -1,4 +1,4 @@
-const SITE = 'https://lucianogiacchetta.com';
+export const SITE = import.meta.env.SITE.replace(/\/$/, '');
 const PERSON_ID = `${SITE}/#person`;
 
 /** ISO-8601 string for a Date (or date-like) value, or undefined if absent. */
