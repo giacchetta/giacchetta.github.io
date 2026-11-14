@@ -136,7 +136,7 @@ export function skillNames() {
 
 /**
  * `[{ slug, count }]` per category — the `kubectl get skills`-style rows in
- * the home Tile 1 `~/stack` pane.
+ * the home Tile 2 `~/stack` pane.
  */
 export function skillDomains() {
   return Object.entries(credentialsData).map(([name, entries]) => ({

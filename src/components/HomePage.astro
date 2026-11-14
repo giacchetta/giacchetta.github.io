@@ -7,6 +7,7 @@ import { formatDate, periodStartYear } from '../utils/date.js';
 import { homeGraph } from '../utils/seo.js';
 import { useTranslations } from '../i18n/utils';
 import { skillNames, skillDomains, skillProducts } from '../utils/skills.js';
+import featuredProjects from '../data/projects.json';
 import gmailIcon from '../assets/svg/gmail.svg?raw';
 import phoneIcon from '../assets/svg/phone.svg?raw';
 import whatsappIcon from '../assets/svg/whatsapp.svg?raw';
@@ -28,13 +29,18 @@ const companies = pages.collaborations.filter(p => p.data.type === 'company');
 
 const recentRoles = companies
   .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99))
-  .slice(0, 3);
+  .slice(0, 2);
 
 const allPosts = await getBlogPosts();
-const latestPosts = allPosts.slice(0, 3);
+const latestPosts = allPosts.slice(0, 9);
 
-// Hero terminal panes — everything below is derived from content already on the
-// site, so the numbers can't drift out of date (see AGENTS.md Tile 1).
+// Dot color per post, keyed on its first tag (stable hash -> Bootstrap text color).
+const tagColors = ['text-primary', 'text-success', 'text-warning', 'text-info', 'text-danger', 'text-secondary'];
+const tagColor = (tag = '') =>
+  tagColors[[...tag].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % tagColors.length];
+
+// Terminals tile panes — everything below is derived from content already on the
+// site, so the numbers can't drift out of date (see AGENTS.md Tile 2).
 const careerStart = Math.min(
   ...companies.map(c => periodStartYear(c.data.period)).filter(Boolean)
 );
@@ -72,11 +78,11 @@ const skillsTableText = [
 
 const badgeStyles = [
   'bg-warning-subtle text-warning-emphasis border',
-  'bg-primary-subtle text-primary border',
+  'bg-primary-subtle text-primary-emphasis border',
   'bg-info-subtle text-info-emphasis border',
   'bg-secondary-subtle text-secondary-emphasis border',
-  'bg-success-subtle text-success border',
-  'bg-danger-subtle text-danger border',
+  'bg-success-subtle text-success-emphasis border',
+  'bg-danger-subtle text-danger-emphasis border',
   'bg-dark text-white',
 ];
 
@@ -84,23 +90,24 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
 ---
 
 <Layout title={t('site.title')} description={t('meta.descriptionHome')} suffix={false} jsonLd={homeJsonLd}>
-  <main class="container layout mt-3 mb-5">
-    <div class="row g-4">
+  <main class="container layout home-main mt-3 mb-5">
+    <div class="row g-4 bento-grid">
 
-      <!-- Tile 2: Profile — DOM-first so it's the top thing a phone shows;
-           order-md-first on Tile 1 (Hero) below restores the desktop left/right
-           visual layout without needing to touch this tile's markup. -->
-      <div class="col-12 col-md-4">
+      <!-- Tile 1: Profile — first on every breakpoint (phone, tablet, desktop). -->
+      <div class="col-12 col-md-4 t-profile">
         <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 d-flex flex-column justify-content-center gap-3">
-          <h1 class="fs-3 fw-bold mb-0 text-center">{t('bio.name')}</h1>
-          <p class="small text-muted mb-0 text-center">{t('site.brand')}</p>
-          <div class="row g-3 align-items-center">
+          <div class="d-flex align-items-center justify-content-center gap-2">
+            <h1 class="fs-3 fw-bold mb-0 text-center">{t('bio.name')}</h1>
+            <span class="fs-3 lh-1" aria-hidden="true">🧑‍💻</span>
+          </div>
+          <div class="row g-3 align-items-center align-self-center">
             <div class="col-5 d-flex justify-content-center">
               <Picture
                 src={Profile}
                 alt="Luciano Giacchetta"
                 width={120}
                 height={120}
+                densities={[1, 2, 3]}
                 class="rounded-circle shadow-sm"
                 loading="eager"
                 fetchpriority="high"
@@ -166,8 +173,8 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
         </div>
       </div>
 
-      <!-- Tile 1: Hero -->
-      <div class="col-12 col-md-8 order-md-first">
+      <!-- Tile 2: Terminals -->
+      <div class="col-12 col-md-8 t-terminals">
         <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100">
           <div class="row g-3 h-100">
             <!-- Career pane -->
@@ -178,7 +185,7 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
                   <span class="term-dot bg-danger" aria-hidden="true"></span>
                   <span class="term-dot bg-warning" aria-hidden="true"></span>
                   <span class="term-dot bg-success" aria-hidden="true"></span>
-                  <span class="ms-auto small text-secondary">~/career</span>
+                  <span class="ms-auto small text-body-secondary">~/career</span>
                 </div>
                 <div class="font-monospace small">
                   <div><span class="text-success">$</span> whoami</div>
@@ -201,7 +208,7 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
                   <span class="term-dot bg-danger" aria-hidden="true"></span>
                   <span class="term-dot bg-warning" aria-hidden="true"></span>
                   <span class="term-dot bg-success" aria-hidden="true"></span>
-                  <span class="ms-auto small text-secondary">~/stack</span>
+                  <span class="ms-auto small text-body-secondary">~/stack</span>
                 </div>
                 <div class="font-monospace small">
                   <div><span class="text-success">$</span> kubectl get skills</div>
@@ -215,81 +222,8 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
         </div>
       </div>
 
-      <!-- Tile 3: Latest Posts -->
-      <div class="col-12 col-md-6 d-flex">
-        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 w-100 d-flex flex-column tile-tall">
-          <h2 class="h5 fw-bold text-muted mb-3">{t('hero.latestPosts')}</h2>
-          <div class="d-flex flex-column gap-2 flex-grow-1">
-            {latestPosts.map((post) => (
-              <a
-                href={`/blog/${cleanSlug(post)}/`}
-                class="text-decoration-none text-body p-2 rounded-3 tile-row"
-              >
-                <div class="fw-semibold">{post.data.title}</div>
-                <small class="text-muted">
-                  {formatDate(post.data.date)}
-                </small>
-              </a>
-            ))}
-          </div>
-          {latestPosts.length > 0 && (
-            <div class="text-end mt-3">
-              <a href="/blog/" class="text-decoration-none small text-primary">
-                {t('hero.viewAllPosts')} &rarr;
-              </a>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <!-- Tile 4: Tech Stack Matrix -->
-      <div class="col-12 col-md-6">
-        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 d-flex flex-column tile-tall">
-          <h2 class="h5 fw-bold text-muted mb-3">{t('hero.techStack')}</h2>
-          <div class="d-flex flex-wrap gap-2 flex-grow-1 align-content-start">
-            {techStack.map((skill) => (
-              <span class={`badge rounded-pill px-3 py-2 ${skill.style}`}>{skill.name}</span>
-            ))}
-          </div>
-          <div class="text-end mt-3">
-            <a href="/credentials/" class="text-decoration-none small text-primary">
-              {t('hero.viewFullStack')} &rarr;
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tile 5: Case Studies -->
-      {featuredCaseStudies.length > 0 && (
-        <div class="col-12 col-md-4">
-          <div class="bento-tile bg-primary-subtle rounded-5 shadow-sm p-4 h-100 d-flex flex-column">
-            <span class="badge bg-primary text-white rounded-pill mb-3 align-self-start">{t('hero.featuredCaseStudies')}</span>
-            <div class="d-flex flex-column gap-2 flex-grow-1">
-              {featuredCaseStudies.map((study) => (
-                <a
-                  href={`/experience/${cleanSlug(study)}/`}
-                  class="text-decoration-none text-body p-2 rounded-3 tile-row"
-                >
-                  <div class="fw-semibold">{study.data.title}</div>
-                  {study.data.description && (
-                    <small class="text-muted case-study-desc">
-                      {study.data.description.replace(/^Case Study:\s*/i, '')}
-                    </small>
-                  )}
-                </a>
-              ))}
-            </div>
-            <div class="text-end mt-3">
-              <a href="/experience/#detailed-case-studies" class="text-decoration-none small text-primary">
-                {t('hero.viewAllCaseStudies')} &rarr;
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <!-- Tile 6: Recent Experience -->
-      <div class="col-12 col-md-8">
+      <!-- Tile 3: Recent Experience -->
+      <div class="col-12 col-md-6 t-roles">
         <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 d-flex flex-column">
           <h2 class="h5 fw-bold text-muted mb-3">{t('hero.recentRoles')}</h2>
           <div class="d-flex flex-column gap-3 flex-grow-1">
@@ -314,9 +248,109 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
             ))}
           </div>
           <div class="text-end mt-3">
-            <a href="/experience/" class="btn btn-outline-secondary btn-sm">
+            <a href="/experience/" class="btn btn-outline-light btn-sm">
               {t('hero.viewFullExperience')}
             </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tile 4: Tech Stack Matrix -->
+      <div class="col-12 col-md-6 t-stack">
+        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 d-flex flex-column tile-tall">
+          <h2 class="h5 fw-bold text-muted mb-3">{t('hero.techStack')}</h2>
+          <div class="d-flex flex-wrap gap-2 flex-grow-1 align-content-start">
+            {techStack.map((skill) => (
+              <span class={`badge rounded-pill px-3 py-2 ${skill.style}`}>{skill.name}</span>
+            ))}
+          </div>
+          <div class="text-end mt-3">
+            <a href="/credentials/" class="text-decoration-none small text-primary-emphasis">
+              {t('hero.viewFullStack')} &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tile 5: Case Studies -->
+      {featuredCaseStudies.length > 0 && (
+        <div class="col-12 col-md-4 t-cases">
+          <div class="bento-tile bg-primary-subtle rounded-5 shadow-sm p-4 h-100 d-flex flex-column">
+            <span class="badge bg-primary text-white rounded-pill mb-3 align-self-start">{t('hero.featuredCaseStudies')}</span>
+            <div class="d-flex flex-column gap-2 flex-grow-1">
+              {featuredCaseStudies.map((study) => (
+                <a
+                  href={`/experience/${cleanSlug(study)}/`}
+                  class="text-decoration-none text-body p-2 rounded-3 tile-row"
+                >
+                  <div class="fw-semibold">{study.data.title}</div>
+                  {study.data.description && (
+                    <small class="text-muted case-study-desc">
+                      {study.data.description.replace(/^Case Study:\s*/i, '')}
+                    </small>
+                  )}
+                </a>
+              ))}
+            </div>
+            <div class="text-end mt-3">
+              <a href="/experience/#detailed-case-studies" class="text-decoration-none small text-primary-emphasis">
+                {t('hero.viewAllCaseStudies')} &rarr;
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <!-- Tile 6: Latest Posts — pill grid, newest first (no dates: order is the date).
+           Only the first 6 show by default; the 7th-9th appear on tall desktops (see <style>). -->
+      <div class="col-12 col-md-8 t-posts">
+        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 d-flex flex-column">
+          <h2 class="h5 fw-bold text-muted mb-3">{t('hero.latestPosts')}</h2>
+          <div class="flex-grow-1">
+            <div class="row row-cols-1 row-cols-lg-3 g-2">
+              {latestPosts.map((post) => (
+                <div class="col post-pill">
+                  <a
+                    href={`/blog/${cleanSlug(post)}/`}
+                    title={post.data.title}
+                    class="d-flex align-items-center gap-2 text-decoration-none text-body rounded-pill border bg-body px-3 py-2 pill-link"
+                  >
+                    <span class={`flex-shrink-0 lh-1 ${tagColor(post.data.tags?.[0])}`} aria-hidden="true">&#9679;</span>
+                    <span class="text-truncate small fw-semibold">{post.data.title}</span>
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+          {latestPosts.length > 0 && (
+            <div class="text-end mt-3">
+              <a href="/blog/" class="text-decoration-none small text-primary-emphasis">
+                {t('hero.viewAllPosts')} &rarr;
+              </a>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <!-- Tile 7: Featured Projects (data-driven — add entries to src/data/projects.json) -->
+      <div class="col-12 t-projects">
+        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4">
+          <h2 class="h5 fw-bold text-muted mb-3">{t('hero.featuredProjects')}</h2>
+          <div class="d-flex flex-column gap-2">
+            {featuredProjects.map((project) => (
+              <div>
+                <a
+                  href={project.href}
+                  class="d-flex align-items-center gap-3 text-decoration-none text-body p-2 rounded-3 tile-row h-100"
+                >
+                  <span class="fs-1 flex-shrink-0" aria-hidden="true">{project.emoji}</span>
+                  <div class="flex-grow-1 min-w-0">
+                    <div class="fw-semibold">{project.title} &rarr;</div>
+                    <small class="text-muted">{project.description}</small>
+                  </div>
+                </a>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -326,6 +360,107 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
 </Layout>
 
 <style>
+  /* Desktop "one screen" Bento: from 1200x700 up (covers a 1080p panel at 125%
+     scaling, i.e. 1536x864 minus browser chrome) the grid fills the viewport so
+     every tile is visible without scrolling. Overflowing tile content is clipped
+     / scrolled inside its tile. Below that, Bootstrap's stacked/flowing layout. */
+  @media (min-width: 1200px) and (min-height: 700px) {
+    .home-main {
+      max-width: 94%;
+    }
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-rows: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 0.97fr);
+      gap: 1rem;
+      grid-template-areas:
+        "prof prof prof prof term term term term term term term term"
+        "roles roles roles roles stack stack stack stack proj proj proj proj"
+        "cases cases cases cases posts posts posts posts posts posts posts posts";
+      height: calc(100dvh - 3.5rem);
+      margin: 0;
+      --bs-gutter-x: 1.5rem;
+    }
+    .bento-grid > * {
+      width: auto;
+      max-width: none;
+      margin: 0;
+      padding: 0;
+      min-height: 0;
+    }
+    .bento-grid .tile-tall {
+      min-height: 0;
+    }
+    .bento-grid .bento-tile {
+      overflow: auto;
+      padding: 1rem 1.25rem !important;
+    }
+    /* Keep each tile's "View all" footer link pinned; clip the list instead. */
+    .bento-grid .bento-tile {
+      overflow: hidden;
+    }
+    .bento-grid .bento-tile > .flex-grow-1 {
+      min-height: 0;
+      overflow: hidden;
+    }
+    .bento-grid .bento-tile .tile-row {
+      padding: 0.25rem 0.5rem !important;
+    }
+    .bento-grid .bento-tile > .flex-grow-1 {
+      gap: 0.25rem !important;
+    }
+    .bento-grid .bento-tile h2.h5 {
+      margin-bottom: 0.5rem !important;
+    }
+    .bento-grid .t-profile .bento-tile {
+      gap: 0.5rem !important;
+    }
+    /* Shorter viewports (e.g. 1536x864 minus browser chrome): trim list rows
+       so nothing is cut mid-item. */
+    @media (max-height: 800px) {
+      .t-cases .tile-row:nth-child(n + 2) {
+        display: none !important;
+      }
+      .t-roles .tile-row small {
+        display: none !important;
+      }
+      .t-roles img {
+        max-height: 32px !important;
+      }
+      .t-stack .badge:nth-last-child(-n + 6) {
+        display: none !important;
+      }
+      .t-stack .badge {
+        padding-top: 0.25em !important;
+        padding-bottom: 0.25em !important;
+      }
+    }
+    .t-roles .tile-row:nth-child(n + 3) {
+      display: none !important;
+    }
+    .t-profile { grid-area: prof; }
+    .t-terminals { grid-area: term; }
+    .t-posts { grid-area: posts; }
+    .t-stack { grid-area: stack; }
+    .t-projects { grid-area: proj; }
+    .t-cases { grid-area: cases; }
+    .t-roles { grid-area: roles; }
+  }
+  .pill-link {
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+  .pill-link:hover {
+    background-color: var(--bs-secondary-bg) !important;
+    border-color: var(--bs-primary) !important;
+  }
+  .post-pill:nth-child(n + 7) {
+    display: none;
+  }
+  @media (min-width: 1200px) and (min-height: 900px) {
+    .post-pill:nth-child(n + 7) {
+      display: block;
+    }
+  }
   .bento-tile {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }

@@ -26,6 +26,12 @@ function frontmatterDate(filePath, keys) {
  */
 function buildLastmodMap() {
   const map = new Map();
+  // Section indexes have no frontmatter of their own: their lastmod is the
+  // newest date among the entries they list (ISO dates compare as strings).
+  const newest = new Map();
+  const bump = (route, date) => {
+    if (date && (!newest.get(route) || date > newest.get(route))) newest.set(route, date);
+  };
 
   const blogDir = path.join(contentDir, 'blog');
   for (const file of readdirSync(blogDir)) {
@@ -34,7 +40,15 @@ function buildLastmodMap() {
     const slug = readFileSync(full, 'utf-8').match(/^slug:\s*"?([\w-]+)"?/m)?.[1];
     const id = slug ?? file.replace(/\.mdx?$/, '');
     const date = frontmatterDate(full, ['date']);
-    if (date) map.set(`/blog/${id}/`, date);
+    if (date) {
+      map.set(`/blog/${id}/`, date);
+      bump('/blog/', date);
+      bump('/', date); // the home page lists the latest posts
+      // /ansina/ is built from a remote README; the newest Ansina post is the
+      // closest local proxy for when the project last changed.
+      const raw = readFileSync(full, 'utf-8');
+      if (/^pr:.*\/giacchetta\/ansina\//m.test(raw) || /^title:.*ansina/im.test(raw)) bump('/ansina/', date);
+    }
   }
 
   // Both `credentials` and `certifications` route under /credentials/[slug]/.
@@ -55,9 +69,14 @@ function buildLastmodMap() {
       const full = path.join(dir, file);
       const id = file.replace(/\.mdx?$/, '');
       const date = frontmatterDate(full, ['updateDate', 'publishDate']);
-      if (date) map.set(`/${routePrefix}/${id}/`, date);
+      if (date) {
+        map.set(`/${routePrefix}/${id}/`, date);
+        bump(`/${routePrefix}/`, date);
+      }
     }
   }
+
+  for (const [route, date] of newest) map.set(route, date);
 
   return map;
 }
