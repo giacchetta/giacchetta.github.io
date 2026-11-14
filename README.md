@@ -109,7 +109,7 @@ An English-only professional portfolio built with **Astro 7**, featuring a moder
 Blog posts rendered as full Markdown (title, date, authors, tags). Listed newest-first on `/blog/` as summaries (title, tags, description, "Read more"); the full text lives only at each `/blog/[slug]/` permalink. Ansina-repo posts link back to `/ansina/`. Always set a frontmatter `description` — it becomes the page's meta description; without one it falls back to an auto-generated excerpt rather than the site-wide default.
 
 ### `ansina`
-Remote collection: the `giacchetta/ansina` README, fetched with `fetch` from raw.githubusercontent.com on every build and rendered at `/ansina/`. A failed fetch fails the build. The page adds its own intro, a text caption under the diagram, a list of related Ansina posts and `SoftwareSourceCode` JSON-LD. Relative links are rewritten to GitHub; the mermaid diagram renders client-side (pinned mermaid.js from jsDelivr, this page only).
+Remote collection: the `giacchetta/ansina` README, fetched with `fetch` from raw.githubusercontent.com on every build and rendered at `/ansina/`. A failed fetch fails the build. The page adds its own intro, a text caption under the diagram, a list of related Ansina posts and `SoftwareSourceCode` JSON-LD. Relative links are rewritten to GitHub; the mermaid diagram renders client-side (pinned mermaid.js from jsDelivr, lazy-loaded, this page only).
 
 ### `collaborations`
 Work history entries with two subtypes:

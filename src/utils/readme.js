@@ -37,6 +37,12 @@ export function prepareReadme(md) {
           : part;
       }
       return part
+        // Size GitHub Actions status badges up front (they're always 20px tall;
+        // "CI - passing" is 90px wide) so they don't shift layout when loaded.
+        .replace(
+          /!\[([^\]]*)\]\((https:\/\/github\.com\/[^)\s]*\/actions\/workflows\/[^)\s]*badge\.svg[^)\s]*)\)/g,
+          '<img src="$2" alt="$1" width="90" height="20">'
+        )
         .replace(/(!\[[^\]]*\]\()([^)\s]+)/g, (all, pre, target) =>
           isAbsolute(target) ? all : `${pre}${RAW_BASE}${clean(target)}`
         )

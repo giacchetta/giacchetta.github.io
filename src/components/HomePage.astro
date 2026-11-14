@@ -78,11 +78,11 @@ const skillsTableText = [
 
 const badgeStyles = [
   'bg-warning-subtle text-warning-emphasis border',
-  'bg-primary-subtle text-primary border',
+  'bg-primary-subtle text-primary-emphasis border',
   'bg-info-subtle text-info-emphasis border',
   'bg-secondary-subtle text-secondary-emphasis border',
-  'bg-success-subtle text-success border',
-  'bg-danger-subtle text-danger border',
+  'bg-success-subtle text-success-emphasis border',
+  'bg-danger-subtle text-danger-emphasis border',
   'bg-dark text-white',
 ];
 
@@ -107,6 +107,7 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
                 alt="Luciano Giacchetta"
                 width={120}
                 height={120}
+                densities={[1, 2, 3]}
                 class="rounded-circle shadow-sm"
                 loading="eager"
                 fetchpriority="high"
@@ -184,7 +185,7 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
                   <span class="term-dot bg-danger" aria-hidden="true"></span>
                   <span class="term-dot bg-warning" aria-hidden="true"></span>
                   <span class="term-dot bg-success" aria-hidden="true"></span>
-                  <span class="ms-auto small text-secondary">~/career</span>
+                  <span class="ms-auto small text-body-secondary">~/career</span>
                 </div>
                 <div class="font-monospace small">
                   <div><span class="text-success">$</span> whoami</div>
@@ -207,7 +208,7 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
                   <span class="term-dot bg-danger" aria-hidden="true"></span>
                   <span class="term-dot bg-warning" aria-hidden="true"></span>
                   <span class="term-dot bg-success" aria-hidden="true"></span>
-                  <span class="ms-auto small text-secondary">~/stack</span>
+                  <span class="ms-auto small text-body-secondary">~/stack</span>
                 </div>
                 <div class="font-monospace small">
                   <div><span class="text-success">$</span> kubectl get skills</div>
@@ -247,7 +248,7 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
             ))}
           </div>
           <div class="text-end mt-3">
-            <a href="/experience/" class="btn btn-outline-secondary btn-sm">
+            <a href="/experience/" class="btn btn-outline-light btn-sm">
               {t('hero.viewFullExperience')}
             </a>
           </div>
@@ -264,7 +265,7 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
             ))}
           </div>
           <div class="text-end mt-3">
-            <a href="/credentials/" class="text-decoration-none small text-primary">
+            <a href="/credentials/" class="text-decoration-none small text-primary-emphasis">
               {t('hero.viewFullStack')} &rarr;
             </a>
           </div>
@@ -292,7 +293,7 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
               ))}
             </div>
             <div class="text-end mt-3">
-              <a href="/experience/#detailed-case-studies" class="text-decoration-none small text-primary">
+              <a href="/experience/#detailed-case-studies" class="text-decoration-none small text-primary-emphasis">
                 {t('hero.viewAllCaseStudies')} &rarr;
               </a>
             </div>
@@ -323,7 +324,7 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
           </div>
           {latestPosts.length > 0 && (
             <div class="text-end mt-3">
-              <a href="/blog/" class="text-decoration-none small text-primary">
+              <a href="/blog/" class="text-decoration-none small text-primary-emphasis">
                 {t('hero.viewAllPosts')} &rarr;
               </a>
             </div>

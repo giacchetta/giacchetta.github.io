@@ -44,7 +44,7 @@
     padding-left: 1rem;
     margin: 1.5rem 0;
     font-style: italic;
-    color: var(--bs-secondary);
+    color: var(--bs-secondary-color);
   }
 
   .content :global(code) {
@@ -68,8 +68,14 @@
     color: inherit;
   }
 
+  /* github-dark's comment color (#6A737D) is below WCAG AA on its background. */
+  .content :global(.astro-code span[style*='#6A737D']) {
+    color: #959da5 !important;
+  }
+
   .content :global(pre.mermaid) {
     background: none;
     text-align: center;
+    min-height: 14rem;
   }
 </style>

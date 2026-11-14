@@ -55,7 +55,38 @@ const breadcrumbs = [
     )}
   </main>
   <script type="module" is:inline>
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12.3.0/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+    // Lazy-load mermaid (~270 KiB) only once the diagram is about to scroll into view.
+    const nodes = document.querySelectorAll('pre.mermaid');
+    const render = async () => {
+      const { default: mermaid } = await import(
+        'https://cdn.jsdelivr.net/npm/mermaid@12.3.0/dist/mermaid.esm.min.mjs'
+      );
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: 'dark',
+        // Default dark edge-label background (#585858) fails WCAG contrast against its text.
+        themeVariables: { edgeLabelBackground: '#343a40' },
+      });
+      await mermaid.run({ nodes });
+    };
+    if (nodes.length) {
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            if (entries.some((e) => e.isIntersecting)) {
+              io.disconnect();
+              // Let the page finish loading and go idle first, so the ~270 KiB
+              // download/parse doesn't compete with initial rendering.
+              const go = () => ('requestIdleCallback' in window ? requestIdleCallback(render, { timeout: 2000 }) : setTimeout(render, 0));
+              document.readyState === 'complete' ? go() : addEventListener('load', go, { once: true });
+            }
+          },
+          { rootMargin: '200px' }
+        );
+        nodes.forEach((n) => io.observe(n));
+      } else {
+        render();
+      }
+    }
   </script>
 </Layout>

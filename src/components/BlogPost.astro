@@ -24,7 +24,7 @@ const isoDate = new Date(post.data.date).toISOString();
 ---
 
 <header class="mb-3">
-  <Heading class={headingTag === 'h1' ? 'display-6 fw-bold text-primary mb-1' : 'h3 fw-bold text-primary mb-1'}>
+  <Heading class={headingTag === 'h1' ? 'display-6 fw-bold text-primary-emphasis mb-1' : 'h3 fw-bold text-primary-emphasis mb-1'}>
     {linked ? (
       <a href={`/blog/${cleanSlug(post)}/`} class="text-decoration-none">{post.data.title}</a>
     ) : (
@@ -54,7 +54,7 @@ const isoDate = new Date(post.data.date).toISOString();
 {summary ? (
   <>
     <p class="mb-2">{description}</p>
-    <a href={`/blog/${cleanSlug(post)}/`} class="text-decoration-none small text-primary">
+    <a href={`/blog/${cleanSlug(post)}/`} class="text-decoration-none small text-primary-emphasis">
       {t('blog.readMore')} &rarr;
     </a>
   </>
