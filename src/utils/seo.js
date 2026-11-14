@@ -7,6 +7,16 @@ function toISO(value) {
 }
 
 /**
+ * Inline author/publisher reference. Google resolves each page on its own, so
+ * a bare `{ "@id": ... }` pointing at the Person node that only lives in the
+ * home page's graph leaves the author without a name on every other page —
+ * carry `name` and `url` alongside the `@id`.
+ */
+function personRef() {
+  return { '@type': 'Person', '@id': PERSON_ID, name: 'Luciano Giacchetta', url: SITE };
+}
+
+/**
  * The site's single canonical Person node. Referenced by @id from every other
  * node (WebSite.publisher, BlogPosting.author, TechArticle.author) so crawlers
  * resolve them all to the same entity instead of duplicating Person data.
@@ -81,8 +91,8 @@ export function blogPosting({ title, description, datePublished, dateModified, t
     description,
     datePublished: toISO(datePublished),
     dateModified: toISO(dateModified) ?? toISO(datePublished),
-    author: { '@id': PERSON_ID },
-    publisher: { '@id': PERSON_ID },
+    author: personRef(),
+    publisher: personRef(),
     keywords: tags?.length ? tags.join(', ') : undefined,
     image,
     url,
@@ -103,11 +113,26 @@ export function techArticle({ title, description, datePublished, dateModified, u
     description,
     datePublished: toISO(datePublished),
     dateModified: toISO(dateModified),
-    author: { '@id': PERSON_ID },
-    publisher: { '@id': PERSON_ID },
+    author: personRef(),
+    publisher: personRef(),
     url,
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
     keywords: keywords.length ? keywords.join(', ') : undefined,
     about: about.length ? about.map((name) => ({ '@type': 'Thing', name })) : undefined,
+  };
+}
+
+/** Structured data for a software project page (e.g. /ansina/). */
+export function softwareSourceCode({ name, description, url, codeRepository, programmingLanguage }) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareSourceCode',
+    name,
+    description,
+    url,
+    codeRepository,
+    programmingLanguage,
+    author: personRef(),
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
   };
 }

@@ -29,7 +29,7 @@ const breadcrumbs = [
         ) : (
           posts.map((post) => (
             <article class="mb-5 pb-4 border-bottom">
-              <BlogPost post={post} linked={true} />
+              <BlogPost post={post} linked={true} summary={true} />
             </article>
           ))
         )}

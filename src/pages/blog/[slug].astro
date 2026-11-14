@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import BlogPost from '../../components/BlogPost.astro';
 import { getBlogPosts, getExcerpt } from '../../utils/content.js';
 import { blogPosting, SITE } from '../../utils/seo.js';
+import { isAnsinaPost } from '../../utils/readme.js';
 import { useTranslations } from '../../i18n/utils';
 
 export async function getStaticPaths() {
@@ -55,6 +56,11 @@ const postJsonLd = blogPosting({
     <div class="row justify-content-center">
       <div class="col-12 col-lg-8">
         <BlogPost post={post} headingTag="h1" />
+        {isAnsinaPost(post) && (
+          <p class="mt-4 small text-muted">
+            {t('blog.partOfAnsina')} &rarr; <a href="/ansina/">/ansina/</a>
+          </p>
+        )}
       </div>
     </div>
   </main>

@@ -2,7 +2,9 @@
 import { getEntry, render } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Prose from '../components/Prose.astro';
-import { ANSINA_REPO_URL } from '../utils/readme.js';
+import { getBlogPosts, cleanSlug } from '../utils/content.js';
+import { ANSINA_REPO_URL, isAnsinaPost } from '../utils/readme.js';
+import { softwareSourceCode, SITE } from '../utils/seo.js';
 import { useTranslations } from '../i18n/utils';
 
 const t = useTranslations();
@@ -10,12 +12,22 @@ const entry = await getEntry('ansina', 'readme');
 if (!entry) throw new Error('ansina README entry missing');
 const { Content } = await render(entry);
 
+const relatedPosts = (await getBlogPosts()).filter(isAnsinaPost);
+
+const ansinaJsonLd = softwareSourceCode({
+  name: 'Ansina',
+  description: t('meta.descriptionAnsina'),
+  url: `${SITE}/ansina/`,
+  codeRepository: ANSINA_REPO_URL,
+  programmingLanguage: 'Python',
+});
+
 const breadcrumbs = [
   { label: t('nav.home'), href: '/' },
   { label: t('nav.ansina') },
 ];
 ---
-<Layout title={t('meta.titleAnsina')} description={t('meta.descriptionAnsina')} breadcrumbs={breadcrumbs}>
+<Layout title={t('meta.titleAnsina')} description={t('meta.descriptionAnsina')} breadcrumbs={breadcrumbs} jsonLd={ansinaJsonLd}>
   <main class="container layout mt-3 mb-5">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-3">
@@ -27,7 +39,20 @@ const breadcrumbs = [
       {t('ansina.synced')} ·
       <a href={ANSINA_REPO_URL} target="_blank" rel="noopener noreferrer">{t('ansina.viewOnGithub')} ↗</a>
     </p>
+    <p class="lead mb-4">{t('ansina.intro')}</p>
     <Prose><Content /></Prose>
+    {relatedPosts.length > 0 && (
+      <section class="mt-5">
+        <h2 class="h3 fw-bold text-primary mb-3">{t('ansina.relatedPosts')}</h2>
+        <ul class="list-unstyled d-flex flex-column gap-2">
+          {relatedPosts.map((post) => (
+            <li>
+              <a href={`/blog/${cleanSlug(post)}/`} class="text-decoration-none">{post.data.title}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
   </main>
   <script type="module" is:inline>
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12.3.0/dist/mermaid.esm.min.mjs';

@@ -1,7 +1,7 @@
 ---
 import { render } from 'astro:content';
 import Prose from './Prose.astro';
-import { cleanSlug } from '../utils/content.js';
+import { cleanSlug, getExcerpt } from '../utils/content.js';
 import { formatDate } from '../utils/date.js';
 import { useTranslations } from '../i18n/utils';
 
@@ -9,11 +9,14 @@ interface Props {
   post: any;
   linked?: boolean;
   headingTag?: 'h1' | 'h2';
+  /** Feed mode: render title/tags/description + "Read more" instead of the full body. */
+  summary?: boolean;
 }
 
-const { post, linked = false, headingTag = 'h2' } = Astro.props;
+const { post, linked = false, headingTag = 'h2', summary = false } = Astro.props;
 const Heading = headingTag;
-const { Content } = await render(post);
+const Content = summary ? null : (await render(post)).Content;
+const description = post.data.description || getExcerpt(post);
 const t = useTranslations();
 
 const formattedDate = formatDate(post.data.date);
@@ -48,6 +51,15 @@ const isoDate = new Date(post.data.date).toISOString();
   )}
 </header>
 
-<Prose>
-  <Content />
-</Prose>
+{summary ? (
+  <>
+    <p class="mb-2">{description}</p>
+    <a href={`/blog/${cleanSlug(post)}/`} class="text-decoration-none small text-primary">
+      {t('blog.readMore')} &rarr;
+    </a>
+  </>
+) : (
+  <Prose>
+    <Content />
+  </Prose>
+)}

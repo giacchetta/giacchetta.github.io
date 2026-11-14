@@ -99,17 +99,17 @@ An English-only professional portfolio built with **Astro 7**, featuring a moder
 
 ## SEO & Structured Data
 
-`Layout.astro` composes every page's `<title>` (page title + `" | Luciano Giacchetta"`, except the homepage), meta description, canonical link, Open Graph/Twitter tags, and JSON-LD structured data (via builders in `src/utils/seo.js`). "Giacchetta Engineering" is a DBA of the real name "Luciano Giacchetta" and appears only as a `Person.alternateName` in JSON-LD (not as visible text) — the title suffix and `og:site_name` stay "Luciano Giacchetta". Every page carries `BreadcrumbList` JSON-LD from the same data driving its visible breadcrumb; the homepage additionally carries a `Person` + `WebSite` + `ProfilePage` graph, blog permalinks carry `BlogPosting`, and case studies/credential/certification pages carry `TechArticle`. The sitemap (`@astrojs/sitemap` in `astro.config.mjs`) attaches `lastmod`/`changefreq`/`priority` per URL, read from content frontmatter.
+`Layout.astro` composes every page's `<title>` (page title + `" | Luciano Giacchetta"`, except the homepage), meta description, canonical link, Open Graph/Twitter tags, and JSON-LD structured data (via builders in `src/utils/seo.js`). "Giacchetta Engineering" is a DBA of the real name "Luciano Giacchetta" and appears only as a `Person.alternateName` in JSON-LD (not as visible text) — the title suffix and `og:site_name` stay "Luciano Giacchetta". Every page carries `BreadcrumbList` JSON-LD from the same data driving its visible breadcrumb; the homepage additionally carries a `Person` + `WebSite` + `ProfilePage` graph, blog permalinks carry `BlogPosting` (author/publisher inline `name` + `url`, so they resolve without the home page's Person node), `/ansina/` carries `SoftwareSourceCode`, and case studies/credential/certification pages carry `TechArticle`. The sitemap (`@astrojs/sitemap` in `astro.config.mjs`) attaches `lastmod`/`changefreq`/`priority` per URL — `lastmod` from content frontmatter, and for index routes (`/`, `/blog/`, `/experience/`, `/credentials/`, `/ansina/`) derived from the newest related entry.
 
 ---
 
 ## Content Collections
 
 ### `blog`
-Blog posts rendered as full Markdown (title, date, authors, tags). Listed newest-first on `/blog/`, each with its own `/blog/[slug]/` permalink. Always set a frontmatter `description` — it becomes the page's meta description; without one it falls back to an auto-generated excerpt rather than the site-wide default.
+Blog posts rendered as full Markdown (title, date, authors, tags). Listed newest-first on `/blog/` as summaries (title, tags, description, "Read more"); the full text lives only at each `/blog/[slug]/` permalink. Ansina-repo posts link back to `/ansina/`. Always set a frontmatter `description` — it becomes the page's meta description; without one it falls back to an auto-generated excerpt rather than the site-wide default.
 
 ### `ansina`
-Remote collection: the `giacchetta/ansina` README, fetched with `fetch` from raw.githubusercontent.com on every build and rendered at `/ansina/`. A failed fetch fails the build. Relative links are rewritten to GitHub; the mermaid diagram renders client-side (pinned mermaid.js from jsDelivr, this page only).
+Remote collection: the `giacchetta/ansina` README, fetched with `fetch` from raw.githubusercontent.com on every build and rendered at `/ansina/`. A failed fetch fails the build. The page adds its own intro, a text caption under the diagram, a list of related Ansina posts and `SoftwareSourceCode` JSON-LD. Relative links are rewritten to GitHub; the mermaid diagram renders client-side (pinned mermaid.js from jsDelivr, this page only).
 
 ### `collaborations`
 Work history entries with two subtypes:
