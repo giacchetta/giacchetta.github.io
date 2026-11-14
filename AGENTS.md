@@ -35,13 +35,13 @@ A professional portfolio site for Luciano Giacchetta, a DevOps/Cloud/Systems Eng
 src/
 ├── assets/img/              # Images and logos (PNG/SVG) imported in MDX and components
 ├── assets/svg/              # Icon SVGs (brand marks + phone) imported via `?raw` and inlined with set:html in HomePage.astro (whatsapp.svg is the WhatsApp glyph used on the contact icon row — do not confuse with a full "Chat on WhatsApp" button asset)
-├── components/              # All UI components (Astro components only)
+├── components/              # All UI components (Astro components only; Prose.astro = shared markdown typography wrapper used by BlogPost and the /ansina/ page)
 ├── content/                 # MD/MDX content collections
 │   ├── blog/                # Blog posts (Markdown, auto-generated + manual)
 │   ├── certifications/      # Certification entries
 │   ├── collaborations/      # Company and article entries
 │   └── credentials/         # Technical skill deep-dives
-├── data/                    # credentials.json (skills grid data)
+├── data/                    # credentials.json (skills grid data), projects.json (Home Tile 7 Featured Projects)
 ├── i18n/
 │   ├── en.json              # UI strings (single English dictionary)
 │   └── utils.ts             # useTranslations() helper
@@ -53,6 +53,7 @@ src/
 │   ├── credentials.astro    # /credentials/ (full skills matrix)
 │   ├── experience/[slug].astro  # /experience/[slug] (dynamic content pages)
 │   ├── credentials/[slug].astro  # /credentials/[slug] (dynamic content pages)
+│   ├── ansina.astro         # /ansina/ (giacchetta/ansina README, fetched at build time — see Ansina page)
 │   ├── blog/index.astro     # /blog/ (feed — full posts, centered single column)
 │   ├── blog/[slug].astro    # /blog/[slug] (permalink for a single post)
 │   └── 404.astro            # builds dist/404.html — REQUIRED: without a top-level 404.html Cloudflare Pages treats the site as an SPA and answers every unknown URL with index.html + HTTP 200 (soft-404s in Google/Bing). Do not delete.
@@ -60,6 +61,7 @@ src/
 │   └── bootstrap.min.css    # PurgeCSS output — generated at build, do not edit manually
 ├── utils/
 │   ├── content.js           # Collection helpers: filterByLocale, getAllPages, getBlogPosts, getExcerpt, cleanSlug
+│   ├── readme.js             # /ansina/ helpers: README URLs + prepareReadme() (relative-link rewriting, mermaid fence → <pre class="mermaid">)
 │   ├── date.js               # formatDate() — locks toLocaleDateString to UTC so authored dates render the same day regardless of build-machine timezone
 │   ├── seo.js                # schema.org JSON-LD builders (Person/WebSite/ProfilePage graph, BreadcrumbList, BlogPosting, TechArticle) consumed by Layout.astro
 │   └── skills.js             # The single reader of src/data/credentials.json — id/label resolution, the tech_stack ↔ case-study reverse index (matrix-wide via caseStudiesForSkillId, and credentialPage-scoped via caseStudiesForCredential), and the derivations behind the matrix and home Bento tiles (see Credentials Data)
@@ -72,13 +74,14 @@ src/
 
 ```
 Layout.astro (HTML shell — title composition, canonical link, OG/Twitter tags, JSON-LD, footer slot — no navbar)
-└── pages/index.astro → HomePage.astro (Bento dashboard — 6 tiles)
+└── pages/index.astro → HomePage.astro (Bento dashboard — 7 tiles)
     ├── Tile 1: Hero (two side-by-side terminal panes — `~/career` and `~/stack` — showing build-time-derived stats; no prose copy, no name)
     ├── Tile 2: Profile (name on top as the page's only `<h1>`; avatar + a vertical row of 6 circular icon-only buttons below: Email → opens #contactModal, Phone → opens #phoneModal, WhatsApp/LinkedIn/GitHub/YouTube → external links)
     ├── Tile 3: Latest Posts (3 most recent blog posts by `date`, each row clickable, + View All Posts link to /blog/)
     ├── Tile 4: Tech Stack Matrix (9 curated badges + View Full Stack → /credentials/)
     ├── Tile 5: Case Studies (2 most recent `type: "article"` entries by publishDate, each row clickable, + View All link to /experience/#detailed-case-studies)
-    └── Tile 6: Recent Experience (top 3 roles + View Full Experience → /experience/)
+    ├── Tile 6: Recent Experience (top 3 roles + View Full Experience → /experience/)
+    └── Tile 7: Featured Projects (full-width; one clickable row per entry in `src/data/projects.json` — `emoji`, `title`, `href`, `description` — two per row from `md` up, so adding a project is a JSON edit only. Currently: Ansina → /ansina/)
 
 pages/experience.astro → Collaboration.astro (full roles + case studies listing, in-page breadcrumb)
 pages/credentials.astro → Credentials.astro (full skills matrix listing, in-page breadcrumb)
@@ -176,6 +179,12 @@ Professional certifications. Frontmatter fields:
 - `certificationLevel` — e.g., `"Professional"`, `"Associate"`
 - `status` — `"Active"` | `"Expired"`
 - `credentialUrl` — URL to verify credential
+
+---
+
+## Ansina page (`/ansina/`)
+
+Built from the README of the public `giacchetta/ansina` repo, **re-fetched on every `npm run build`** (and at `astro dev` start) by an inline loader for the `ansina` collection in `src/content.config.ts` — a remote collection, not a glob. It uses a plain `fetch` of `https://raw.githubusercontent.com/giacchetta/ansina/main/README.md` (not `gh api`: Cloudflare Pages' build image has no `gh`/token). A failed fetch **throws and fails the build** (Cloudflare keeps the last good deploy). `prepareReadme()` (`src/utils/readme.js`) rewrites repo-relative links to `github.com/giacchetta/ansina/blob/main/...` (images to raw URLs), leaving fenced code untouched, and converts ```mermaid fences to `<pre class="mermaid">`. `pages/ansina.astro` renders it via `Prose.astro`; the README's own `# title` is the page's single `<h1>`. The page loads mermaid.js (pinned version, jsDelivr ESM, dark theme) via an `is:inline` module script — a deliberate page-scoped exception to the no-client-JS rule. Bump the pinned version by editing `ansina.astro`.
 
 ---
 

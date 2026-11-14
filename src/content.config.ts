@@ -1,6 +1,7 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 import credentialsData from './data/credentials.json';
+import { ANSINA_README_URL, prepareReadme } from './utils/readme.js';
 
 /**
  * Every known skill id, built directly from the JSON import rather than
@@ -93,7 +94,31 @@ const certificationsCollection = defineCollection({
   }),
 });
 
+// Remote content: the giacchetta/ansina README, fetched on every build/dev start.
+// A failed fetch throws, which fails the build (Cloudflare keeps the last good deploy).
+const ansinaCollection = defineCollection({
+  loader: {
+    name: 'ansina-readme',
+    async load({ store, renderMarkdown, generateDigest, logger }) {
+      const res = await fetch(ANSINA_README_URL);
+      if (!res.ok) throw new Error(`Failed to fetch ${ANSINA_README_URL}: HTTP ${res.status}`);
+      const body = prepareReadme(await res.text());
+      store.clear();
+      store.set({
+        id: 'readme',
+        data: {},
+        body,
+        rendered: await renderMarkdown(body),
+        digest: generateDigest(body),
+      });
+      logger.info('Fetched ansina README');
+    },
+  },
+  schema: z.object({}),
+});
+
 export const collections = {
+  ansina: ansinaCollection,
   credentials: credentialsCollection,
   collaborations: collaborationsCollection,
   certifications: certificationsCollection,

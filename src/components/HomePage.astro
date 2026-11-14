@@ -7,6 +7,7 @@ import { formatDate, periodStartYear } from '../utils/date.js';
 import { homeGraph } from '../utils/seo.js';
 import { useTranslations } from '../i18n/utils';
 import { skillNames, skillDomains, skillProducts } from '../utils/skills.js';
+import featuredProjects from '../data/projects.json';
 import gmailIcon from '../assets/svg/gmail.svg?raw';
 import phoneIcon from '../assets/svg/phone.svg?raw';
 import whatsappIcon from '../assets/svg/whatsapp.svg?raw';
@@ -317,6 +318,29 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
             <a href="/experience/" class="btn btn-outline-secondary btn-sm">
               {t('hero.viewFullExperience')}
             </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tile 7: Featured Projects (data-driven — add entries to src/data/projects.json) -->
+      <div class="col-12">
+        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4">
+          <h2 class="h5 fw-bold text-muted mb-3">{t('hero.featuredProjects')}</h2>
+          <div class="row g-3">
+            {featuredProjects.map((project) => (
+              <div class="col-12 col-md-6">
+                <a
+                  href={project.href}
+                  class="d-flex align-items-center gap-3 text-decoration-none text-body p-2 rounded-3 tile-row h-100"
+                >
+                  <span class="fs-1 flex-shrink-0" aria-hidden="true">{project.emoji}</span>
+                  <div class="flex-grow-1 min-w-0">
+                    <div class="fw-semibold">{project.title} &rarr;</div>
+                    <small class="text-muted">{project.description}</small>
+                  </div>
+                </a>
+              </div>
+            ))}
           </div>
         </div>
       </div>
