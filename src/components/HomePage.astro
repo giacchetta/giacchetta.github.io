@@ -29,10 +29,15 @@ const companies = pages.collaborations.filter(p => p.data.type === 'company');
 
 const recentRoles = companies
   .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99))
-  .slice(0, 3);
+  .slice(0, 2);
 
 const allPosts = await getBlogPosts();
-const latestPosts = allPosts.slice(0, 3);
+const latestPosts = allPosts.slice(0, 9);
+
+// Dot color per post, keyed on its first tag (stable hash -> Bootstrap text color).
+const tagColors = ['text-primary', 'text-success', 'text-warning', 'text-info', 'text-danger', 'text-secondary'];
+const tagColor = (tag = '') =>
+  tagColors[[...tag].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % tagColors.length];
 
 // Terminals tile panes — everything below is derived from content already on the
 // site, so the numbers can't drift out of date (see AGENTS.md Tile 2).
@@ -216,30 +221,36 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
         </div>
       </div>
 
-      <!-- Tile 3: Latest Posts -->
-      <div class="col-12 col-md-6 d-flex t-posts">
-        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 w-100 d-flex flex-column tile-tall">
-          <h2 class="h5 fw-bold text-muted mb-3">{t('hero.latestPosts')}</h2>
-          <div class="d-flex flex-column gap-2 flex-grow-1">
-            {latestPosts.map((post) => (
+      <!-- Tile 3: Recent Experience -->
+      <div class="col-12 col-md-6 t-roles">
+        <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 d-flex flex-column">
+          <h2 class="h5 fw-bold text-muted mb-3">{t('hero.recentRoles')}</h2>
+          <div class="d-flex flex-column gap-3 flex-grow-1">
+            {recentRoles.map((role) => (
               <a
-                href={`/blog/${cleanSlug(post)}/`}
-                class="text-decoration-none text-body p-2 rounded-3 tile-row"
+                href={`/experience/${cleanSlug(role)}/`}
+                class="d-flex align-items-center gap-3 text-decoration-none text-body p-2 rounded-3 tile-row"
               >
-                <div class="fw-semibold">{post.data.title}</div>
-                <small class="text-muted">
-                  {formatDate(post.data.date)}
-                </small>
+                {role.data.logo && (
+                  <Image
+                    src={role.data.logo}
+                    alt={role.data.title}
+                    style="max-height: 48px; max-width: 64px; object-fit: contain;"
+                    class="rounded-2 flex-shrink-0"
+                  />
+                )}
+                <div class="flex-grow-1 min-w-0">
+                  <div class="fw-semibold text-truncate">{role.data.title}</div>
+                  <small class="text-muted">{role.data.role} · {role.data.period}</small>
+                </div>
               </a>
             ))}
           </div>
-          {latestPosts.length > 0 && (
-            <div class="text-end mt-3">
-              <a href="/blog/" class="text-decoration-none small text-primary">
-                {t('hero.viewAllPosts')} &rarr;
-              </a>
-            </div>
-          )}
+          <div class="text-end mt-3">
+            <a href="/experience/" class="btn btn-outline-secondary btn-sm">
+              {t('hero.viewFullExperience')}
+            </a>
+          </div>
         </div>
       </div>
 
@@ -289,36 +300,34 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
         </div>
       )}
 
-      <!-- Tile 6: Recent Experience -->
-      <div class="col-12 col-md-8 t-roles">
+      <!-- Tile 6: Latest Posts — pill grid, newest first (no dates: order is the date).
+           Only the first 6 show by default; the 7th-9th appear on tall desktops (see <style>). -->
+      <div class="col-12 col-md-8 t-posts">
         <div class="bento-tile bg-body-tertiary rounded-5 shadow-sm p-4 h-100 d-flex flex-column">
-          <h2 class="h5 fw-bold text-muted mb-3">{t('hero.recentRoles')}</h2>
-          <div class="d-flex flex-column gap-3 flex-grow-1">
-            {recentRoles.map((role) => (
-              <a
-                href={`/experience/${cleanSlug(role)}/`}
-                class="d-flex align-items-center gap-3 text-decoration-none text-body p-2 rounded-3 tile-row"
-              >
-                {role.data.logo && (
-                  <Image
-                    src={role.data.logo}
-                    alt={role.data.title}
-                    style="max-height: 48px; max-width: 64px; object-fit: contain;"
-                    class="rounded-2 flex-shrink-0"
-                  />
-                )}
-                <div class="flex-grow-1 min-w-0">
-                  <div class="fw-semibold text-truncate">{role.data.title}</div>
-                  <small class="text-muted">{role.data.role} · {role.data.period}</small>
+          <h2 class="h5 fw-bold text-muted mb-3">{t('hero.latestPosts')}</h2>
+          <div class="flex-grow-1">
+            <div class="row row-cols-1 row-cols-lg-3 g-2">
+              {latestPosts.map((post) => (
+                <div class="col post-pill">
+                  <a
+                    href={`/blog/${cleanSlug(post)}/`}
+                    title={post.data.title}
+                    class="d-flex align-items-center gap-2 text-decoration-none text-body rounded-pill border bg-body px-3 py-2 pill-link"
+                  >
+                    <span class={`flex-shrink-0 lh-1 ${tagColor(post.data.tags?.[0])}`} aria-hidden="true">&#9679;</span>
+                    <span class="text-truncate small fw-semibold">{post.data.title}</span>
+                  </a>
                 </div>
+              ))}
+            </div>
+          </div>
+          {latestPosts.length > 0 && (
+            <div class="text-end mt-3">
+              <a href="/blog/" class="text-decoration-none small text-primary">
+                {t('hero.viewAllPosts')} &rarr;
               </a>
-            ))}
-          </div>
-          <div class="text-end mt-3">
-            <a href="/experience/" class="btn btn-outline-secondary btn-sm">
-              {t('hero.viewFullExperience')}
-            </a>
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -365,8 +374,8 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
       gap: 1rem;
       grid-template-areas:
         "prof prof prof prof term term term term term term term term"
-        "posts posts posts posts stack stack stack stack proj proj proj proj"
-        "cases cases cases cases roles roles roles roles roles roles roles roles";
+        "roles roles roles roles stack stack stack stack proj proj proj proj"
+        "cases cases cases cases posts posts posts posts posts posts posts posts";
       height: calc(100dvh - 3.5rem);
       margin: 0;
       --bs-gutter-x: 1.5rem;
@@ -408,11 +417,6 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
     /* Shorter viewports (e.g. 1536x864 minus browser chrome): trim list rows
        so nothing is cut mid-item. */
     @media (max-height: 800px) {
-      .t-posts .tile-row .fw-semibold {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
       .t-cases .tile-row:nth-child(n + 2) {
         display: none !important;
       }
@@ -421,9 +425,6 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
       }
       .t-roles img {
         max-height: 32px !important;
-      }
-      .t-posts .tile-row:nth-child(n + 3) {
-        display: none !important;
       }
       .t-stack .badge:nth-last-child(-n + 6) {
         display: none !important;
@@ -443,6 +444,21 @@ const techStack = skillProducts().map((name, i) => ({ name, style: badgeStyles[i
     .t-projects { grid-area: proj; }
     .t-cases { grid-area: cases; }
     .t-roles { grid-area: roles; }
+  }
+  .pill-link {
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+  .pill-link:hover {
+    background-color: var(--bs-secondary-bg) !important;
+    border-color: var(--bs-primary) !important;
+  }
+  .post-pill:nth-child(n + 7) {
+    display: none;
+  }
+  @media (min-width: 1200px) and (min-height: 900px) {
+    .post-pill:nth-child(n + 7) {
+      display: block;
+    }
   }
   .bento-tile {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
